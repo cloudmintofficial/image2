@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lab {
+  id            Int      @id @default(autoincrement())
+  labName       String
+  labAddress    String
+  contactPerson String?
+  primaryPhone  String
+  email         String?
+  logo          String?
+  status        String   @default("Active") // Active, InActive
+  users         User[]
+  bills         Bill[]
+  tests         TestMaster[]
+  expenses      Expense[]
+  createdAt     DateTime @default(now())
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  username     String     @unique
+  passwordHash String
+  displayName  String
+  role         String     // Owner, Reception, LabEntry
+  status       String     @default("Active") // Active, InActive
+  lab          Lab        @relation(fields: [labId], references: [id])
+  labId        Int
+  bills        Bill[]
+  payments     Payment[]  @relation("ReceivedBy")
+  auditLogs    AuditLog[]
+  createdAt    DateTime   @default(now())
+}
+
+model Patient {
+  id                Int      @id @default(autoincrement())
+  umr               String   @unique @default(cuid())
+  name              String
+  age               Int?
+  gender            String   @default("M") // M, F
+  phone             String?
+  source            String?
+  externalId        String?
+  email             String?
+  photoUrl          String?
+  additionalDetails String?  // Changed from Json to String for SQLite compatibility
+  bills             Bill[]
+  createdAt         DateTime @default(now())
+}
+
+model Doctor {
+  id             Int      @id @default(autoincrement())
+  name           String
+  phone          String?
+  specialization String?
+  hospital       String?
+  status         String   @default("Active") // Active, InActive
+  bills          Bill[]
+  createdAt      DateTime @default(now())
+}
+
+model Bill {
+  id             Int        @id @default(autoincrement())
+  billNumber     Int        @unique
+  billDate       DateTime   @default(now())
+  patient        Patient    @relation(fields: [patientId], references: [id])
+  patientId      Int
+  doctor         Doctor?    @relation(fields: [doctorId], references: [id])
+  doctorId       Int?
+  totalBill      Float      @default(0)
+  discount       Float      @default(0)
+  discountReason String?
+  paidAmount     Float      @default(0)
+  balance        Float      @default(0)
+  status         String     @default("InProcess") // InProcess, Completed, Cancelled, Refunded
+  createdByUser  User       @relation(fields: [createdBy], references: [id])
+  createdBy      Int
+  lab            Lab        @relation(fields: [labId], references: [id])
+  labId          Int
+  orders         OrderItem[]
+  payments       Payment[]
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model OrderItem {
+  id           Int          @id @default(autoincrement())
+  bill         Bill         @relation(fields: [billId], references: [id])
+  billId       Int
+  orderName    String
+  orderDate    DateTime     @default(now())
+  amount       Float
+  resultStatus String       @default("Pending") // Pending, Entered, Verified
+  resultData   String?      // Changed from Json to String for SQLite compatibility
+  verifiedBy   String?
+  verifiedAt   DateTime?
+  createdAt    DateTime     @default(now())
+}
+
+model Payment {
+  id         Int           @id @default(autoincrement())
+  bill       Bill          @relation(fields: [billId], references: [id])
+  billId     Int
+  amount     Float
+  method     String        @default("Cash") // Cash, Card, UPI, Online
+  reference  String?
+  receivedBy User          @relation("ReceivedBy", fields: [userId], references: [id])
+  userId     Int
+  paidAt     DateTime      @default(now())
+}
+
+model TestMaster {
+  id             Int    @id @default(autoincrement())
+  testName       String @unique
+  category       String
+  price          Float
+  department     String?
+  resultTemplate String? // Changed from Json to String for SQLite compatibility
+  status         String @default("Active") // Active, InActive
+  lab            Lab    @relation(fields: [labId], references: [id])
+  labId          Int
+}
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  description String
+  amount      Float
+  category    String?
+  expenseDate DateTime @default(now())
+  createdBy   Int
+  lab         Lab      @relation(fields: [labId], references: [id])
+  labId       Int
+  createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  action    String
+  entity    String
+  entityId  Int?
+  oldData   String?  // Changed from Json to String for SQLite compatibility
+  newData   String?  // Changed from Json to String for SQLite compatibility
+  createdAt DateTime @default(now())
+}

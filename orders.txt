@@ -1,0 +1,25 @@
+X-Ray LEFT ANKLE LAT	400	Internal	Active	
+ANTI CCP	1500	Internal	Active	
+125-Di HYDROXYCHOLECALCIFEROL(VITAMIN D3)	3200	Internal	Active	
+17 - HYDROXY OH PROGESTERONE	1400	Internal	Active	
+17 - KETOSTEROIDS	4500	Internal	Active	
+17-alphavhydroxy progesterone(17-OHP)	1400	Internal	Active	
+17-KETOSTEROIDS, 24 HOUR URINE	6000	Internal	Active	
+24 HOURS - VANILLYL MANDELIC ACID	1600	Internal	Active	
+24 HOURS URINE 5 HIAA	3000	Internal	Active	
+24 HOURS URINE ALDOSTERONE	2500	Internal	Active	
+24 HOURS URINE COPPER	2000	Internal	Active	
+24 HOURS URINE CORTISOL	1500	Internal	Active	
+24 HOURS URINE FOR ALBUMIN	300	Internal	Active	
+24 HRS URINE FOR METANEPHRINES	3500	Internal	Active	
+24 hrs urine protein	500	Internal	Active	
+24 hrs urine Urea	300	Internal	Active	
+24 hrs urine Uric Acid	300	Internal	Active	
+24hrs protein / creatnine ratio	500	Internal	Active	
+24hrs urinary cortisol/creatinine ratio	600	Internal	Active	
+25 -Hydroxy vitamin D	1500	Internal	Active	
+25 OFF VITAMIN D3	1200	Internal	Active	
+2D ECHO (I)	2000	Internal	InActive	
+2D ECHO ..	2000	Internal	InActive	
+3D CT ELBOW JOINT	4500	Internal	Active	
+3D CT KNEE	4500	Internal	InActive
