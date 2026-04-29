@@ -635,7 +635,7 @@ export default function OrderEntryPage() {
         {/* Main Form */}
         <div style={{ flex: 1, minWidth: 0 }}>
           {/* Patient Info Card */}
-          <div className={`card ${patientId ? 'patient-card-selected' : ''}`} style={{ marginBottom: 20 }}>
+          <div className={`card ${patientId ? 'patient-card-selected' : ''}`} style={{ marginBottom: 20, overflow: 'visible', position: 'relative', zIndex: 10 }}>
             <div className="card-header">
               <span className="card-title">Patient Information</span>
               <div style={{ display: 'flex', gap: 6 }}>
@@ -795,7 +795,7 @@ export default function OrderEntryPage() {
           </div>
 
           {/* Order Section */}
-          <div className="card" style={{ marginBottom: 20 }}>
+          <div className="card" style={{ marginBottom: 20, overflow: 'visible', position: 'relative', zIndex: 9 }}>
             <div className="card-header">
               <span className="card-title">Orders</span>
             </div>
@@ -1737,7 +1737,7 @@ export default function OrderEntryPage() {
       {showManageSources && (
         <div className="modal-overlay" onClick={() => { setShowManageSources(false); setEditingSourceId(null); }}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 800, width: '90%', height: '80vh', display: 'flex', flexDirection: 'column' }}>
-            <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f5f5f5', padding: '12px 20px', borderBottom: '1px solid #e0e0e0' }}>
+            <div className="modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 {!editingSourceId ? (
                   <>
@@ -1746,9 +1746,9 @@ export default function OrderEntryPage() {
                       if (formContainer) {
                         formContainer.style.display = formContainer.style.display === 'none' ? 'flex' : 'none';
                       }
-                    }} style={{ background: '#e65100', color: 'white', border: 'none', borderRadius: 2 }}>Add Source Names</button>
+                    }}>Add Source Names</button>
                     <span 
-                      style={{ fontWeight: 600, color: '#333', cursor: 'pointer' }} 
+                      style={{ fontWeight: 600, cursor: 'pointer' }} 
                       onClick={() => { setShowManageSources(false); setShowAddlDetails(true); }}
                     >
                       Back To Patient Addl Details
@@ -1756,10 +1756,10 @@ export default function OrderEntryPage() {
                   </>
                 ) : (
                   <>
-                    <button style={{ background: 'none', border: 'none', fontWeight: 600, fontSize: 16, cursor: 'pointer', color: '#000' }} onClick={handleUpdateSource} disabled={isUpdatingSource}>
+                    <button className="btn btn-ghost" onClick={handleUpdateSource} disabled={isUpdatingSource}>
                       {isUpdatingSource ? 'Saving...' : 'Save'}
                     </button>
-                    <button className="btn btn-ghost btn-sm" onClick={() => setEditingSourceId(null)}>Cancel</button>
+                    <button className="btn btn-ghost" onClick={() => setEditingSourceId(null)}>Cancel</button>
                   </>
                 )}
               </div>
@@ -1769,7 +1769,7 @@ export default function OrderEntryPage() {
             <div className="modal-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
               {!editingSourceId ? (
                 <>
-                  <div id="add-source-form" style={{ display: 'none', padding: 20, background: '#fff9f5', borderBottom: '1px solid #e0e0e0', gap: 12, alignItems: 'flex-end' }}>
+                  <div id="add-source-form" style={{ display: 'none', padding: 20, background: 'var(--bg-tertiary)', borderBottom: '1px solid var(--border)', gap: 12, alignItems: 'flex-end' }}>
                     <div className="form-group" style={{ margin: 0, flex: 1 }}>
                       <label className="form-label">Source Name</label>
                       <input className="form-input" value={newSourceName} onChange={e => setNewSourceName(e.target.value)} placeholder="Enter new source name" />
@@ -1790,16 +1790,16 @@ export default function OrderEntryPage() {
                     <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                       <thead>
                         <tr>
-                          <th style={{ textAlign: 'left', padding: '12px 16px', borderBottom: '2px solid #e0e0e0', color: '#e65100', fontWeight: 600 }}>Source Name</th>
-                          <th style={{ textAlign: 'left', padding: '12px 16px', borderBottom: '2px solid #e0e0e0', color: '#e65100', fontWeight: 600 }}>Status</th>
-                          <th style={{ textAlign: 'right', padding: '12px 16px', borderBottom: '2px solid #e0e0e0', color: '#e65100', fontWeight: 600 }}>Action</th>
+                          <th style={{ textAlign: 'left', padding: '12px 16px', borderBottom: '2px solid var(--border)', color: 'var(--primary)', fontWeight: 600 }}>Source Name</th>
+                          <th style={{ textAlign: 'left', padding: '12px 16px', borderBottom: '2px solid var(--border)', color: 'var(--primary)', fontWeight: 600 }}>Status</th>
+                          <th style={{ textAlign: 'right', padding: '12px 16px', borderBottom: '2px solid var(--border)', color: 'var(--primary)', fontWeight: 600 }}>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         {allSources.map((s, idx) => (
-                          <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
+                          <tr key={idx} style={{ borderBottom: '1px solid var(--border)' }}>
                             <td style={{ padding: '12px 16px' }}>{s.name}</td>
-                            <td style={{ padding: '12px 16px', color: s.status === 'InActive' ? 'red' : 'inherit' }}>{s.status}</td>
+                            <td style={{ padding: '12px 16px', color: s.status === 'InActive' ? 'var(--danger)' : 'inherit' }}>{s.status}</td>
                             <td style={{ padding: '12px 16px', textAlign: 'right' }}>
                               <button className="btn btn-outline btn-sm" onClick={() => {
                                 setEditingSourceId(s.id);
@@ -1811,7 +1811,7 @@ export default function OrderEntryPage() {
                         ))}
                         {allSources.length === 0 && (
                           <tr>
-                            <td colSpan={3} style={{ padding: 20, textAlign: 'center', color: '#888' }}>No sources found</td>
+                            <td colSpan={3} style={{ padding: 20, textAlign: 'center', color: 'var(--text-muted)' }}>No sources found</td>
                           </tr>
                         )}
                       </tbody>
@@ -1820,17 +1820,17 @@ export default function OrderEntryPage() {
                 </>
               ) : (
                 <div style={{ padding: 20 }}>
-                  <div style={{ border: '1px solid #e0e0e0', borderRadius: 4, padding: 0 }}>
-                    <div style={{ padding: '12px 16px', background: '#fafafa', borderBottom: '1px solid #e0e0e0', fontWeight: 600, color: '#999', fontSize: 18 }}>Update Source</div>
+                  <div style={{ border: '1px solid var(--border)', borderRadius: 4, padding: 0 }}>
+                    <div style={{ padding: '12px 16px', background: 'var(--bg-tertiary)', borderBottom: '1px solid var(--border)', fontWeight: 600, color: 'var(--text-secondary)', fontSize: 18 }}>Update Source</div>
                     <div style={{ padding: 40, display: 'flex', flexDirection: 'column', gap: 24 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <label style={{ width: 120, textAlign: 'right', fontWeight: 500, color: '#333' }}>Source Name:</label>
+                        <label style={{ width: 120, textAlign: 'right', fontWeight: 500, color: 'var(--text-primary)' }}>Source Name:</label>
                         <input className="form-input" style={{ width: 250 }} value={editingSourceName} onChange={e => setEditingSourceName(e.target.value)} />
-                        <span style={{ color: '#333' }}>*</span>
+                        <span style={{ color: 'var(--text-primary)' }}>*</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{ width: 120 }}></div>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: '#333', fontWeight: 500 }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: 'var(--text-primary)', fontWeight: 500 }}>
                           <input type="checkbox" style={{ width: 16, height: 16, cursor: 'pointer' }} checked={editingSourceStatus === 'InActive'} onChange={e => setEditingSourceStatus(e.target.checked ? 'InActive' : 'Active')} />
                           Check to Inactive
                         </label>
