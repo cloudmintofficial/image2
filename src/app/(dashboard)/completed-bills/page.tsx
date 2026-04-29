@@ -24,7 +24,7 @@ export default function CompletedBillsPage() {
   const printRef = useRef<HTMLDivElement>(null);
   
   const handlePrint = useReactToPrint({
-    content: () => printRef.current,
+    contentRef: printRef,
     documentTitle: `Bill-${printBillData?.billNo || 'Invoice'}`,
     onAfterPrint: () => setPrintBillData(null),
   });
@@ -32,7 +32,10 @@ export default function CompletedBillsPage() {
   // Automatically trigger print when printBillData is set
   React.useEffect(() => {
     if (printBillData && printRef.current) {
-      handlePrint();
+      const timer = setTimeout(() => {
+        handlePrint();
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [printBillData, handlePrint]);
 

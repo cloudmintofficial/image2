@@ -27,7 +27,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const patient = await prisma.patient.create({
+    let patient = await prisma.patient.create({
       data: {
         name: data.name,
         age: data.age ? parseInt(data.age) : null,
@@ -35,6 +35,13 @@ export async function POST(request: Request) {
         phone: data.phone,
         source: data.source,
       }
+    });
+
+    // Auto-generate UMR
+    const umr = `UMR-${patient.id.toString().padStart(6, '0')}`;
+    patient = await prisma.patient.update({
+      where: { id: patient.id },
+      data: { umr }
     });
 
     return NextResponse.json(patient);

@@ -57,9 +57,16 @@ model Patient {
 model Doctor {
   id             Int      @id @default(autoincrement())
   name           String
+  type           String?  @default("Referral") // From "Doctor Type" dropdown
+  percentage     Float?   // From "Percentage To Doctor"
+  address        String?
   phone          String?
+  email          String?
+  department     String?
   specialization String?
+  location       String?
   hospital       String?
+  salesExecutive String?
   status         String   @default("Active") // Active, InActive
   bills          Bill[]
   createdAt      DateTime @default(now())
@@ -116,15 +123,30 @@ model Payment {
 }
 
 model TestMaster {
-  id             Int    @id @default(autoincrement())
-  testName       String @unique
-  category       String
-  price          Float
-  department     String?
-  resultTemplate String? // Changed from Json to String for SQLite compatibility
-  status         String @default("Active") // Active, InActive
-  lab            Lab    @relation(fields: [labId], references: [id])
-  labId          Int
+  id                    Int      @id @default(autoincrement())
+  testName              String   @unique
+  hasComponents         Boolean  @default(false)
+  testCode              String?
+  displayOrderName      String?
+  category              String   @default("General")
+  price                 Float
+  department            String?
+  processTime           String?
+  machineName           String?
+  sampleType            String?
+  method                String?
+  resultNotes           String?
+  advice                String?
+  workSheet             String?
+  purpose               String?
+  orderType             String   @default("Internal")
+  ipBillingCategoryType String?
+  recurring             Boolean  @default(false)
+  serviceDoctorRequired Boolean  @default(false)
+  resultTemplate        String?
+  status                String   @default("Active") // Active, InActive
+  lab                   Lab      @relation(fields: [labId], references: [id])
+  labId                 Int
 }
 
 model Expense {

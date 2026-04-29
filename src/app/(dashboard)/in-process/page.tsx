@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Loader2 } from 'lucide-react';
 
 interface InProcessBill {
   billNo: number;
@@ -18,9 +19,22 @@ export default function InProcessPage() {
   const [loading, setLoading] = React.useState(true);
   const [selectedBill, setSelectedBill] = React.useState<InProcessBill | null>(null);
   const [resultInput, setResultInput] = React.useState<{ [key: number]: string }>({});
+  const [showSearchModal, setShowSearchModal] = React.useState(false);
+  const [isSavingResult, setIsSavingResult] = React.useState<number | null>(null);
+  
+  const [searchParams, setSearchParams] = React.useState({
+    orderName: '', primaryPhone: '', patientName: '', umrCard: '',
+    fromDate: '', toDate: '', fromBillNo: '', toBillNo: '',
+    department: '', externalId: ''
+  });
 
   const fetchBills = () => {
-    fetch('/api/bills/in-process')
+    const params = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, val]) => {
+      if (val) params.append(key, val);
+    });
+    setLoading(true);
+    fetch(`/api/bills/in-process?${params.toString()}`)
       .then(res => res.json())
       .then(bills => {
         if (Array.isArray(bills)) {
@@ -58,6 +72,7 @@ export default function InProcessPage() {
   const handleSaveResult = async (orderId: number) => {
     const val = resultInput[orderId];
     if (!val) return;
+    setIsSavingResult(orderId);
     try {
       const res = await fetch(`/api/orders/${orderId}/result`, {
         method: 'PUT',
@@ -71,6 +86,8 @@ export default function InProcessPage() {
     } catch (e) {
       console.error(e);
       alert('Failed to save result');
+    } finally {
+      setIsSavingResult(null);
     }
   };
 
@@ -81,10 +98,13 @@ export default function InProcessPage() {
         <p className="page-subtitle">Track active lab orders being processed</p>
       </div>
 
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">Active Orders {loading ? '(Loading...)' : `(${data.length})`}</span>
+      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        {/* Main Content */}
+        <div className="card" style={{ flex: 1, minWidth: 300 }}>
+          <div className="card-header">
+          <span className="card-title">Active Orders {loading ? <Loader2 size={16} className="animate-spin" style={{ display: 'inline', marginLeft: 8, verticalAlign: 'middle' }} /> : `(${data.length})`}</span>
           <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowSearchModal(true)}>Search Orders</button>
             <button className="btn btn-outline btn-sm">Non Financial Report</button>
             <button className="btn btn-outline btn-sm">WorkSheet</button>
           </div>
@@ -158,6 +178,7 @@ export default function InProcessPage() {
             .mobile-cards { display: block !important; }
           }
         `}</style>
+        </div>
       </div>
 
       {selectedBill && (
@@ -193,10 +214,12 @@ export default function InProcessPage() {
                           onChange={e => setResultInput(prev => ({ ...prev, [order.id]: e.target.value }))}
                         />
                         <button 
-                          className="btn btn-primary btn-sm" 
-                          style={{ alignSelf: 'flex-end' }}
+                          className="btn btn-primary btn-sm"
+                          style={{ marginTop: 12, float: 'right' }}
                           onClick={() => handleSaveResult(order.id)}
+                          disabled={isSavingResult === order.id}
                         >
+                          {isSavingResult === order.id ? <Loader2 size={14} className="animate-spin" style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} /> : null}
                           Save Result
                         </button>
                       </div>
@@ -211,6 +234,40 @@ export default function InProcessPage() {
             </div>
             <div className="modal-footer">
               <button className="btn btn-ghost" onClick={() => setSelectedBill(null)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showSearchModal && (
+        <div className="modal-overlay" onClick={() => setShowSearchModal(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 400 }}>
+            <div className="modal-header">
+              <h3>Search Orders</h3>
+              <button className="modal-close" onClick={() => setShowSearchModal(false)}>✕</button>
+            </div>
+            <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="Order Name" value={searchParams.orderName} onChange={e => setSearchParams(prev => ({...prev, orderName: e.target.value}))} />
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="Primary Phone" value={searchParams.primaryPhone} onChange={e => setSearchParams(prev => ({...prev, primaryPhone: e.target.value}))} />
+              
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="Patient Name" value={searchParams.patientName} onChange={e => setSearchParams(prev => ({...prev, patientName: e.target.value}))} />
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="UMR/Card" value={searchParams.umrCard} onChange={e => setSearchParams(prev => ({...prev, umrCard: e.target.value}))} />
+              
+              <input className="form-input" type="date" style={{ fontSize: 13 }} title="From Date" value={searchParams.fromDate} onChange={e => setSearchParams(prev => ({...prev, fromDate: e.target.value}))} />
+              <input className="form-input" type="date" style={{ fontSize: 13 }} title="To Date" value={searchParams.toDate} onChange={e => setSearchParams(prev => ({...prev, toDate: e.target.value}))} />
+              
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="From Bill No." value={searchParams.fromBillNo} onChange={e => setSearchParams(prev => ({...prev, fromBillNo: e.target.value}))} />
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="To Bill No." value={searchParams.toBillNo} onChange={e => setSearchParams(prev => ({...prev, toBillNo: e.target.value}))} />
+              
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="Department" value={searchParams.department} onChange={e => setSearchParams(prev => ({...prev, department: e.target.value}))} />
+              <input className="form-input" style={{ fontSize: 13 }} placeholder="ExternalId" value={searchParams.externalId} onChange={e => setSearchParams(prev => ({...prev, externalId: e.target.value}))} />
+              
+              <button className="btn btn-primary" style={{ gridColumn: '1 / -1', marginTop: 8 }} onClick={() => {
+                fetchBills();
+                setShowSearchModal(false);
+              }}>
+                Search
+              </button>
             </div>
           </div>
         </div>

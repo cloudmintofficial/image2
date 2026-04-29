@@ -36,3 +36,46 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to fetch tests' }, { status: 500 });
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { 
+      orderName, hasComponents, testCode, displayOrderName, department, amount, 
+      processTime, machineName, sampleType, method, resultNotes, advice, 
+      workSheet, purpose, orderType, ipBillingCategoryType, recurring, 
+      serviceDoctorRequired, status, labId
+    } = body;
+
+    const test = await prisma.testMaster.create({
+      data: {
+        testName: orderName,
+        hasComponents: hasComponents || false,
+        testCode,
+        displayOrderName,
+        department: department === 'NONE' ? null : department,
+        price: parseFloat(amount) || 0,
+        processTime,
+        machineName,
+        sampleType: sampleType === 'Select Sample' ? null : sampleType,
+        method,
+        resultNotes,
+        advice,
+        workSheet,
+        purpose,
+        category: 'General',
+        orderType: orderType || 'Internal',
+        ipBillingCategoryType: ipBillingCategoryType === 'Select Category' ? null : ipBillingCategoryType,
+        recurring: recurring || false,
+        serviceDoctorRequired: serviceDoctorRequired || false,
+        status: status || 'Active',
+        labId: labId || 1
+      }
+    });
+
+    return NextResponse.json(test);
+  } catch (error) {
+    console.error('Error creating order/test:', error);
+    return NextResponse.json({ error: 'Failed to create order', details: String(error) }, { status: 500 });
+  }
+}

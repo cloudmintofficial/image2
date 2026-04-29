@@ -24,15 +24,25 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, phone, specialization, hospital } = body;
+    const { 
+      name, type, percentage, address, phone, email, 
+      department, specialization, location, hospital, salesExecutive, status 
+    } = body;
 
     const doctor = await prisma.doctor.create({
       data: {
         name,
+        type: type || 'Referral',
+        percentage: percentage !== '' && percentage !== null && percentage !== undefined ? parseFloat(percentage) : null,
+        address,
         phone,
+        email,
+        department,
         specialization,
+        location,
         hospital,
-        status: 'Active'
+        salesExecutive,
+        status: status || 'Active'
       }
     });
 

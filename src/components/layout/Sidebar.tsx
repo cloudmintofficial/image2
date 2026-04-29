@@ -16,7 +16,6 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: <Home size={20} />, label: 'Home', path: '/order-entry' },
   { icon: <Search size={20} />, label: 'Search', path: '/order-entry?search=true' },
   { icon: <Monitor size={20} />, label: 'Order Entry', path: '/order-entry', shortcut: 'Alt+O' },
   { icon: <Settings size={20} />, label: 'In Process', path: '/in-process', shortcut: 'Alt+I' },
@@ -42,6 +41,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
   const filteredItems = navItems.filter(item => {
     if (item.adminOnly && userRole !== 'Owner') return false;
+    if (item.label === 'Search' && pathname === '/order-entry') return false;
     return true;
   });
 
