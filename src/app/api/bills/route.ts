@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { patientId, doctorId, totalBill, discount, discountReason, paidAmount, balance, paymentType, orders, createdBy, labId } = data;
+    const { patientId, doctorId, totalBill, discount, discountReason, paidAmount, balance, paymentType, referenceNumber, orders, createdBy, labId } = data;
 
     // In SQLite we must manually generate billNumber if not using autoincrement
     const lastBill = await prisma.bill.findFirst({
@@ -36,6 +36,7 @@ export async function POST(request: Request) {
           create: [{
             amount: paidAmount,
             method: paymentType,
+            reference: referenceNumber || null,
             userId: createdBy
           }]
         }

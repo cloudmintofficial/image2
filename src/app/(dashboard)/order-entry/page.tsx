@@ -46,6 +46,7 @@ export default function OrderEntryPage() {
   // Loading States
   const [isSearchingOrdersDropdown, setIsSearchingOrdersDropdown] = useState(false);
   const [isSearchingDoctorsDropdown, setIsSearchingDoctorsDropdown] = useState(false);
+  const [isSearchingSourcesDropdown, setIsSearchingSourcesDropdown] = useState(false);
   const [isSearchingPatientInfo, setIsSearchingPatientInfo] = useState(false);
   const [isLoadingPatOrders, setIsLoadingPatOrders] = useState(false);
   const [isSubmittingBill, setIsSubmittingBill] = useState(false);
@@ -56,8 +57,10 @@ export default function OrderEntryPage() {
   const orderSearchRef = useRef<HTMLInputElement>(null);
   const [orderSuggestions, setOrderSuggestions] = useState<any[]>([]);
   const [doctorSuggestions, setDoctorSuggestions] = useState<any[]>([]);
+  const [sourceSuggestions, setSourceSuggestions] = useState<any[]>([]);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [paymentType, setPaymentType] = useState('Cash');
+  const [referenceNumber, setReferenceNumber] = useState('');
   const [paidAmount, setPaidAmount] = useState(0);
 
   // Add Order Modals
@@ -105,6 +108,27 @@ export default function OrderEntryPage() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [discountReason, setDiscountReason] = useState('');
 
+  // Source Management Modal
+  const [showManageSources, setShowManageSources] = useState(false);
+  const [allSources, setAllSources] = useState<any[]>([]);
+  const [newSourceName, setNewSourceName] = useState('');
+  const [newSourceStatus, setNewSourceStatus] = useState('Active');
+  const [isSavingSource, setIsSavingSource] = useState(false);
+
+  const [editingSourceId, setEditingSourceId] = useState<number | null>(null);
+  const [editingSourceName, setEditingSourceName] = useState('');
+  const [editingSourceStatus, setEditingSourceStatus] = useState('Active');
+  const [isUpdatingSource, setIsUpdatingSource] = useState(false);
+
+  useEffect(() => {
+    if (showManageSources) {
+      fetch('/api/sources')
+        .then(res => res.json())
+        .then(data => setAllSources(data))
+        .catch(console.error);
+    }
+  }, [showManageSources]);
+
   // Bill Details Modal
   const [showBillDetails, setShowBillDetails] = useState(false);
 
@@ -119,16 +143,28 @@ export default function OrderEntryPage() {
   const balance = totalBill - discountAmount - paidAmount;
   const today = new Date().toLocaleDateString('en-GB');
 
+  // Dispatch disabled actions for TopNav
+  useEffect(() => {
+    const disabled = [];
+    // Disable Submit and Enter Results if form is incomplete
+    if (!name || orders.length === 0 || isSubmittingBill) {
+      disabled.push('Submit');
+      disabled.push('Enter Results');
+    }
+    window.dispatchEvent(new CustomEvent('set-disabled-actions', { detail: disabled }));
+  }, [name, orders.length, isSubmittingBill]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
+        setAdvSearchState(prev => ({ ...prev, patientName: name || prev.patientName, phone: phone || prev.phone }));
         setShowAdvSearch(true);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [name, phone]);
 
   // Autocomplete for orders
   useEffect(() => {
@@ -181,6 +217,31 @@ export default function OrderEntryPage() {
     return () => clearTimeout(timeoutId);
   }, [doctor]);
 
+  // Autocomplete for sources
+  useEffect(() => {
+    const fetchSources = async () => {
+      if (source.length >= 2) {
+        setIsSearchingSourcesDropdown(true);
+        try {
+          const res = await fetch(`/api/sources?search=${encodeURIComponent(source)}`);
+          if (res.ok) {
+            const data = await res.json();
+            setSourceSuggestions(data);
+          }
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsSearchingSourcesDropdown(false);
+        }
+      } else {
+        setSourceSuggestions([]);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchSources, 300);
+    return () => clearTimeout(timeoutId);
+  }, [source]);
+
   const addOrder = (test: any) => {
     setOrders(prev => [
       ...prev,
@@ -230,8 +291,8 @@ export default function OrderEntryPage() {
       const res = await fetch('/api/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: advSearchState.patientName || 'New Patient', 
+        body: JSON.stringify({
+          name: advSearchState.patientName || 'New Patient',
           phone: advSearchState.phone || '',
           gender: advSearchState.gender || 'M',
         })
@@ -269,7 +330,6 @@ export default function OrderEntryPage() {
     }
     setAdvSearchResults([]);
     setShowAdvSearch(false);
-    showToast('Patient loaded', 'success');
   };
 
   const handleSubmit = async () => {
@@ -284,7 +344,7 @@ export default function OrderEntryPage() {
 
     try {
       setIsSubmittingBill(true);
-      showToast('Processing order...', 'info');
+      setIsSubmittingBill(true);
       let finalPatientId = patientId;
 
       // Create patient if new
@@ -326,6 +386,7 @@ export default function OrderEntryPage() {
           paidAmount,
           balance,
           paymentType,
+          referenceNumber,
           orders,
           createdBy: user.id || 1,
           labId: user.labId || 1
@@ -486,6 +547,67 @@ export default function OrderEntryPage() {
     }
   };
 
+  const handleUpdateSource = async () => {
+    if (!editingSourceId || !editingSourceName.trim()) {
+      showToast('Source name is required', 'error');
+      return;
+    }
+    try {
+      setIsUpdatingSource(true);
+      const res = await fetch(`/api/sources/${editingSourceId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: editingSourceName.trim(), status: editingSourceStatus })
+      });
+      if (res.ok) {
+        showToast('Source updated successfully', 'success');
+        setEditingSourceId(null);
+        // refresh sources
+        const newRes = await fetch('/api/sources');
+        const newData = await newRes.json();
+        setAllSources(newData);
+      } else {
+        const err = await res.json();
+        showToast(err.error || 'Failed to update source', 'error');
+      }
+    } catch (e) {
+      showToast('Error updating source', 'error');
+    } finally {
+      setIsUpdatingSource(false);
+    }
+  };
+
+  const handleSaveSource = async () => {
+    if (!newSourceName.trim()) {
+      showToast('Source name is required', 'error');
+      return;
+    }
+    try {
+      setIsSavingSource(true);
+      const res = await fetch('/api/sources', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newSourceName.trim(), status: newSourceStatus })
+      });
+      if (res.ok) {
+        showToast('Source added successfully', 'success');
+        setNewSourceName('');
+        setNewSourceStatus('Active');
+        // refresh sources
+        const newRes = await fetch('/api/sources');
+        const newData = await newRes.json();
+        setAllSources(newData);
+      } else {
+        const err = await res.json();
+        showToast(err.error || 'Failed to add source', 'error');
+      }
+    } catch (e) {
+      showToast('Error saving source', 'error');
+    } finally {
+      setIsSavingSource(false);
+    }
+  };
+
   return (
     <div>
       {/* Page Header */}
@@ -517,27 +639,61 @@ export default function OrderEntryPage() {
             <div className="card-header">
               <span className="card-title">Patient Information</span>
               <div style={{ display: 'flex', gap: 6 }}>
-                <button className="btn btn-primary btn-sm" onClick={() => setShowAdvSearch(true)}>
+                <button className="btn btn-primary btn-sm" onClick={() => {
+                  setAdvSearchState(prev => ({ ...prev, patientName: name || prev.patientName, phone: phone || prev.phone }));
+                  setShowAdvSearch(true);
+                }}>
                   <Search size={14} /> Search (Ctrl+K)
                 </button>
                 <button className="btn btn-success btn-sm" onClick={async () => {
-                  if (!patientId) {
-                    showToast('Please select a Patient first.', 'error');
-                    return;
-                  }
-                  setIsLoadingPatOrders(true);
-                  showToast('Loading history...', 'info');
-                  try {
-                    const res = await fetch(`/api/patients/${patientId}/orders`);
-                    if (res.ok) {
-                      const data = await res.json();
-                      setPastOrders(data);
-                      setShowPatOrders(true);
-                    } else {
-                      showToast('Failed to load patient history', 'error');
+                  let targetPatientId = patientId;
+
+                  if (!targetPatientId) {
+                    if (!name.trim() && !phone.trim()) {
+                      showToast('Please select a Patient or enter Name/Phone first.', 'error');
+                      return;
                     }
-                  } finally {
-                    setIsLoadingPatOrders(false);
+                    setIsLoadingPatOrders(true);
+                    setIsLoadingPatOrders(true);
+                    try {
+                      const searchRes = await fetch(`/api/patients/advanced-search`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name: name.trim(), phone: phone.trim() })
+                      });
+                      if (searchRes.ok) {
+                        const data = await searchRes.json();
+                        if (data.length > 0) {
+                          targetPatientId = data[0].id;
+                          handleSelectPatient(data[0]); // auto-fill and set patientId
+                        } else {
+                          showToast('No past orders found for this Name/Phone.', 'warning');
+                          setIsLoadingPatOrders(false);
+                          return;
+                        }
+                      }
+                    } catch (e) {
+                      showToast('Search failed', 'error');
+                      setIsLoadingPatOrders(false);
+                      return;
+                    }
+                  }
+
+                  if (targetPatientId) {
+                    setIsLoadingPatOrders(true);
+                    setIsLoadingPatOrders(true);
+                    try {
+                      const res = await fetch(`/api/patients/${targetPatientId}/orders`);
+                      if (res.ok) {
+                        const data = await res.json();
+                        setPastOrders(data);
+                        setShowPatOrders(true);
+                      } else {
+                        showToast('Failed to load patient history', 'error');
+                      }
+                    } finally {
+                      setIsLoadingPatOrders(false);
+                    }
                   }
                 }} disabled={isLoadingPatOrders}>
                   {isLoadingPatOrders ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />} Pat Orders
@@ -561,9 +717,38 @@ export default function OrderEntryPage() {
                     </div>
                   </div>
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Source</label>
-                  <input className="form-input" placeholder="Referral source" value={source} onChange={e => setSource(e.target.value)} />
+                  <div style={{ position: 'relative' }}>
+                    <input className="form-input" placeholder="Referral source" value={source} onChange={e => setSource(e.target.value)} style={{ paddingRight: 32 }} />
+                    {isSearchingSourcesDropdown && (
+                      <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                    )}
+                  </div>
+                  {sourceSuggestions.length > 0 && (
+                    <div style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0,
+                      background: 'var(--bg-card)', border: '1px solid var(--border)',
+                      borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)',
+                      zIndex: 50, maxHeight: 250, overflowY: 'auto',
+                    }}>
+                      {sourceSuggestions.map((src, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => { setSource(src.name); setSourceSuggestions([]); }}
+                          style={{
+                            padding: '10px 14px', cursor: 'pointer',
+                            borderBottom: '1px solid var(--border)',
+                            fontSize: 13, transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-light)')}
+                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <div style={{ fontWeight: 500 }}>{src.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="form-row form-row-3">
@@ -571,19 +756,38 @@ export default function OrderEntryPage() {
                   <label className="form-label">Phone *</label>
                   <input className="form-input" placeholder="Contact number" value={phone} onChange={e => setPhone(e.target.value)} />
                 </div>
-                <div className="form-group">
-                  <label className="form-label">Doctor *</label>
+                <div className="form-group" style={{ position: 'relative' }}>
+                  <label className="form-label">Doctor</label>
                   <div style={{ position: 'relative' }}>
-                    <input className="form-input" placeholder="Referring doctor" list="doctor-list" value={doctor} onChange={e => setDoctor(e.target.value)} style={{ paddingRight: 32 }} />
+                    <input className="form-input" placeholder="Referring doctor" value={doctor} onChange={e => setDoctor(e.target.value)} style={{ paddingRight: 32 }} />
                     {isSearchingDoctorsDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                     )}
                   </div>
-                  <datalist id="doctor-list">
-                    {doctorSuggestions.map((doc, idx) => (
-                      <option key={idx} value={doc.name} />
-                    ))}
-                  </datalist>
+                  {doctorSuggestions.length > 0 && (
+                    <div style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0,
+                      background: 'var(--bg-card)', border: '1px solid var(--border)',
+                      borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)',
+                      zIndex: 50, maxHeight: 250, overflowY: 'auto',
+                    }}>
+                      {doctorSuggestions.map((doc, idx) => (
+                        <div
+                          key={idx}
+                          onClick={() => { setDoctor(doc.name); setDoctorSuggestions([]); }}
+                          style={{
+                            padding: '10px 14px', cursor: 'pointer',
+                            borderBottom: '1px solid var(--border)',
+                            fontSize: 13, transition: 'background 0.15s',
+                          }}
+                          onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-light)')}
+                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                        >
+                          <div style={{ fontWeight: 500 }}>{doc.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div />
               </div>
@@ -693,7 +897,7 @@ export default function OrderEntryPage() {
               </button>
             </div>
             <div className="card-body">
-              <div className="form-row form-row-4" style={{ gridTemplateColumns: discountAmount > 0 ? 'repeat(5, 1fr)' : 'repeat(4, 1fr)' }}>
+              <div className="form-row" style={{ gridTemplateColumns: `repeat(${4 + (discountAmount > 0 ? 1 : 0) + (paymentType === 'Cheque' ? 1 : 0)}, 1fr)` }}>
                 <div className="form-group">
                   <label className="form-label">Total Bill</label>
                   <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--primary)' }}>₹{totalBill}</div>
@@ -711,8 +915,15 @@ export default function OrderEntryPage() {
                     <option>Card</option>
                     <option>UPI</option>
                     <option>Online</option>
+                    <option>Cheque</option>
                   </select>
                 </div>
+                {paymentType === 'Cheque' && (
+                  <div className="form-group">
+                    <label className="form-label">Cheque Number</label>
+                    <input className="form-input" placeholder="Enter cheque no." value={referenceNumber} onChange={e => setReferenceNumber(e.target.value)} />
+                  </div>
+                )}
                 <div className="form-group">
                   <label className="form-label">Paid Amount</label>
                   <input className="form-input" type="number" value={paidAmount} onChange={e => setPaidAmount(Number(e.target.value))} />
@@ -1314,11 +1525,40 @@ export default function OrderEntryPage() {
                   <label className="form-label">Designation</label>
                   <input className="form-input" value={addlDetails.designation} onChange={e => setAddlDetails({ ...addlDetails, designation: e.target.value })} />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Source</label>
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <input className="form-input" value={source} onChange={e => setSource(e.target.value)} />
-                    <button className="btn btn-outline">Add</button>
+                    <div style={{ position: 'relative', flex: 1 }}>
+                      <input className="form-input" value={source} onChange={e => setSource(e.target.value)} style={{ width: '100%' }} />
+                      {isSearchingSourcesDropdown && (
+                        <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                      )}
+                      {sourceSuggestions.length > 0 && (
+                        <div style={{
+                          position: 'absolute', top: '100%', left: 0, right: 0,
+                          background: 'var(--bg-card)', border: '1px solid var(--border)',
+                          borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)',
+                          zIndex: 50, maxHeight: 200, overflowY: 'auto',
+                        }}>
+                          {sourceSuggestions.map((src, idx) => (
+                            <div
+                              key={idx}
+                              onClick={() => { setSource(src.name); setSourceSuggestions([]); }}
+                              style={{
+                                padding: '10px 14px', cursor: 'pointer',
+                                borderBottom: '1px solid var(--border)',
+                                fontSize: 13, transition: 'background 0.15s',
+                              }}
+                              onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-light)')}
+                              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                            >
+                              <div style={{ fontWeight: 500 }}>{src.name}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <button className="btn btn-outline" onClick={() => setShowManageSources(true)}>Add</button>
                   </div>
                 </div>
                 <div className="form-group">
@@ -1412,28 +1652,28 @@ export default function OrderEntryPage() {
             </div>
             <div className="modal-body" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
               <div className="form-row form-row-4" style={{ marginBottom: 16 }}>
+                <div className="form-group" style={{ gridColumn: 'span 2' }}>
+                  <label className="form-label">Patient Name</label>
+                  <input autoFocus className="form-input" placeholder="Search by name" value={advSearchState.patientName} onChange={e => setAdvSearchState({ ...advSearchState, patientName: e.target.value })} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
+                </div>
                 <div className="form-group">
                   <label className="form-label">Phone</label>
-                  <input autoFocus className="form-input" placeholder="Search by phone" value={advSearchState.phone} onChange={e => setAdvSearchState({...advSearchState, phone: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
+                  <input className="form-input" placeholder="Search by phone" value={advSearchState.phone} onChange={e => setAdvSearchState({ ...advSearchState, phone: e.target.value })} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">UMR</label>
-                  <input className="form-input" placeholder="Search by UMR" value={advSearchState.umr} onChange={e => setAdvSearchState({...advSearchState, umr: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
-                </div>
-                <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                  <label className="form-label">Patient Name</label>
-                  <input className="form-input" placeholder="Search by name" value={advSearchState.patientName} onChange={e => setAdvSearchState({...advSearchState, patientName: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
+                  <input className="form-input" placeholder="Search by UMR" value={advSearchState.umr} onChange={e => setAdvSearchState({ ...advSearchState, umr: e.target.value })} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
                 </div>
               </div>
 
               <div className="form-row form-row-4" style={{ marginBottom: 24 }}>
                 <div className="form-group">
                   <label className="form-label">Age</label>
-                  <input className="form-input" placeholder="Age" value={advSearchState.age} onChange={e => setAdvSearchState({...advSearchState, age: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
+                  <input className="form-input" placeholder="Age" value={advSearchState.age} onChange={e => setAdvSearchState({ ...advSearchState, age: e.target.value })} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Gender</label>
-                  <select className="form-input" value={advSearchState.gender} onChange={e => setAdvSearchState({...advSearchState, gender: e.target.value})}>
+                  <select className="form-input" value={advSearchState.gender} onChange={e => setAdvSearchState({ ...advSearchState, gender: e.target.value })}>
                     <option value="">Any</option>
                     <option value="M">Male</option>
                     <option value="F">Female</option>
@@ -1441,11 +1681,11 @@ export default function OrderEntryPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Referred Doctor</label>
-                  <input className="form-input" placeholder="Search by doctor" value={advSearchState.doctor} onChange={e => setAdvSearchState({...advSearchState, doctor: e.target.value})} />
+                  <input className="form-input" placeholder="Search by doctor" value={advSearchState.doctor} onChange={e => setAdvSearchState({ ...advSearchState, doctor: e.target.value })} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Source</label>
-                  <input className="form-input" placeholder="Search by source" value={advSearchState.source} onChange={e => setAdvSearchState({...advSearchState, source: e.target.value})} />
+                  <input className="form-input" placeholder="Search by source" value={advSearchState.source} onChange={e => setAdvSearchState({ ...advSearchState, source: e.target.value })} />
                 </div>
               </div>
 
@@ -1494,6 +1734,115 @@ export default function OrderEntryPage() {
         </div>
       )}
 
+      {showManageSources && (
+        <div className="modal-overlay" onClick={() => { setShowManageSources(false); setEditingSourceId(null); }}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 800, width: '90%', height: '80vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f5f5f5', padding: '12px 20px', borderBottom: '1px solid #e0e0e0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                {!editingSourceId ? (
+                  <>
+                    <button className="btn btn-primary" onClick={() => {
+                      const formContainer = document.getElementById('add-source-form');
+                      if (formContainer) {
+                        formContainer.style.display = formContainer.style.display === 'none' ? 'flex' : 'none';
+                      }
+                    }} style={{ background: '#e65100', color: 'white', border: 'none', borderRadius: 2 }}>Add Source Names</button>
+                    <span 
+                      style={{ fontWeight: 600, color: '#333', cursor: 'pointer' }} 
+                      onClick={() => { setShowManageSources(false); setShowAddlDetails(true); }}
+                    >
+                      Back To Patient Addl Details
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <button style={{ background: 'none', border: 'none', fontWeight: 600, fontSize: 16, cursor: 'pointer', color: '#000' }} onClick={handleUpdateSource} disabled={isUpdatingSource}>
+                      {isUpdatingSource ? 'Saving...' : 'Save'}
+                    </button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setEditingSourceId(null)}>Cancel</button>
+                  </>
+                )}
+              </div>
+              <button className="modal-close" onClick={() => { setShowManageSources(false); setEditingSourceId(null); }}>✕</button>
+            </div>
+            
+            <div className="modal-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
+              {!editingSourceId ? (
+                <>
+                  <div id="add-source-form" style={{ display: 'none', padding: 20, background: '#fff9f5', borderBottom: '1px solid #e0e0e0', gap: 12, alignItems: 'flex-end' }}>
+                    <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                      <label className="form-label">Source Name</label>
+                      <input className="form-input" value={newSourceName} onChange={e => setNewSourceName(e.target.value)} placeholder="Enter new source name" />
+                    </div>
+                    <div className="form-group" style={{ margin: 0, width: 150 }}>
+                      <label className="form-label">Status</label>
+                      <select className="form-input form-select" value={newSourceStatus} onChange={e => setNewSourceStatus(e.target.value)}>
+                        <option value="Active">Active</option>
+                        <option value="InActive">InActive</option>
+                      </select>
+                    </div>
+                    <button className="btn btn-primary" onClick={handleSaveSource} disabled={isSavingSource} style={{ height: 38 }}>
+                      {isSavingSource ? 'Saving...' : 'Save Source'}
+                    </button>
+                  </div>
+
+                  <div style={{ padding: 20 }}>
+                    <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr>
+                          <th style={{ textAlign: 'left', padding: '12px 16px', borderBottom: '2px solid #e0e0e0', color: '#e65100', fontWeight: 600 }}>Source Name</th>
+                          <th style={{ textAlign: 'left', padding: '12px 16px', borderBottom: '2px solid #e0e0e0', color: '#e65100', fontWeight: 600 }}>Status</th>
+                          <th style={{ textAlign: 'right', padding: '12px 16px', borderBottom: '2px solid #e0e0e0', color: '#e65100', fontWeight: 600 }}>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {allSources.map((s, idx) => (
+                          <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
+                            <td style={{ padding: '12px 16px' }}>{s.name}</td>
+                            <td style={{ padding: '12px 16px', color: s.status === 'InActive' ? 'red' : 'inherit' }}>{s.status}</td>
+                            <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                              <button className="btn btn-outline btn-sm" onClick={() => {
+                                setEditingSourceId(s.id);
+                                setEditingSourceName(s.name);
+                                setEditingSourceStatus(s.status || 'Active');
+                              }}>Edit</button>
+                            </td>
+                          </tr>
+                        ))}
+                        {allSources.length === 0 && (
+                          <tr>
+                            <td colSpan={3} style={{ padding: 20, textAlign: 'center', color: '#888' }}>No sources found</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : (
+                <div style={{ padding: 20 }}>
+                  <div style={{ border: '1px solid #e0e0e0', borderRadius: 4, padding: 0 }}>
+                    <div style={{ padding: '12px 16px', background: '#fafafa', borderBottom: '1px solid #e0e0e0', fontWeight: 600, color: '#999', fontSize: 18 }}>Update Source</div>
+                    <div style={{ padding: 40, display: 'flex', flexDirection: 'column', gap: 24 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <label style={{ width: 120, textAlign: 'right', fontWeight: 500, color: '#333' }}>Source Name:</label>
+                        <input className="form-input" style={{ width: 250 }} value={editingSourceName} onChange={e => setEditingSourceName(e.target.value)} />
+                        <span style={{ color: '#333' }}>*</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <div style={{ width: 120 }}></div>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: '#333', fontWeight: 500 }}>
+                          <input type="checkbox" style={{ width: 16, height: 16, cursor: 'pointer' }} checked={editingSourceStatus === 'InActive'} onChange={e => setEditingSourceStatus(e.target.checked ? 'InActive' : 'Active')} />
+                          Check to Inactive
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

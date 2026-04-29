@@ -172,3 +172,10 @@ model AuditLog {
   newData   String?  // Changed from Json to String for SQLite compatibility
   createdAt DateTime @default(now())
 }
+
+model Source {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  status    String   @default("Active") // Active, InActive
+  createdAt DateTime @default(now())
+}

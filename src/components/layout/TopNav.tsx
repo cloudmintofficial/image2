@@ -25,6 +25,17 @@ export default function TopNav({ sidebarCollapsed, onMenuClick, userName = 'IMAG
   const { theme, toggleTheme } = useTheme();
 
   const actions = moduleActions[pathname || ''] || [];
+  const [disabledActions, setDisabledActions] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    const handleSetDisabled = (e: any) => {
+      if (e.detail && Array.isArray(e.detail)) {
+        setDisabledActions(e.detail);
+      }
+    };
+    window.addEventListener('set-disabled-actions', handleSetDisabled);
+    return () => window.removeEventListener('set-disabled-actions', handleSetDisabled);
+  }, []);
 
   return (
     <header className={`topnav ${sidebarCollapsed ? 'collapsed' : ''}`}>
@@ -49,27 +60,38 @@ export default function TopNav({ sidebarCollapsed, onMenuClick, userName = 'IMAG
 
         {/* Context-sensitive action buttons */}
         <div className="topnav-actions-list" style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>
-          {actions.map((action) => (
-            <button
-              key={action}
-              onClick={() => onAction?.(action)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--text-secondary)',
-                fontSize: '15px',
-                fontWeight: 500,
-                cursor: 'pointer',
-                padding: '4px 0',
-                transition: 'color 0.2s',
-                fontFamily: 'inherit'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary)'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
-            >
-              {action}
-            </button>
-          ))}
+          {actions.map((action) => {
+            const isDisabled = disabledActions.includes(action);
+            return (
+              <button
+                key={action}
+                onClick={() => {
+                  if (!isDisabled) onAction?.(action);
+                }}
+                disabled={isDisabled}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: isDisabled ? 'var(--text-muted, #999)' : 'var(--text-secondary)',
+                  fontSize: '15px',
+                  fontWeight: isDisabled ? 400 : 500,
+                  cursor: isDisabled ? 'not-allowed' : 'pointer',
+                  padding: '4px 0',
+                  transition: 'color 0.2s',
+                  fontFamily: 'inherit',
+                  opacity: isDisabled ? 0.6 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isDisabled) e.currentTarget.style.color = 'var(--primary)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isDisabled) e.currentTarget.style.color = 'var(--text-secondary)';
+                }}
+              >
+                {action}
+              </button>
+            );
+          })}
         </div>
       </div>
 
