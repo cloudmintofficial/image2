@@ -51,6 +51,7 @@ export async function GET(request: Request) {
       include: {
         patient: true,
         orders: true,
+        doctor: true,
       },
       orderBy: {
         billNumber: 'desc'

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
-    const { id: idStr } = await params;
+    const { id: idStr } = await context.params;
     const id = parseInt(idStr);
     const body = await request.json();
     const { resultData, resultStatus = 'Entered', resultMethod, resultDoctor, resultAdvice } = body;

@@ -11,6 +11,9 @@ const moduleActions: Record<string, string[]> = {
   '/in-process': ['Non Financial Report', 'Non Financial Status Report', 'Online Request Sample Status', 'WorkSheet'],
   '/previous-bills': ['ShiftCollectionDetailed', 'ShiftCollection', 'SummaryReport'],
   '/work-sheet': ['Get Report', 'Clear'],
+  '/non-financial': ['Get Report', 'Clear'],
+  '/non-financial-status': ['Get Report', 'Clear'],
+  '/online-request-sample-status': ['Get Report', 'Clear'],
 };
 
 interface TopNavProps {
@@ -60,33 +63,26 @@ export default function TopNav({ sidebarCollapsed, onMenuClick, userName = 'IMAG
         `}</style>
 
         {/* Context-sensitive action buttons */}
-        <div className="topnav-actions-list" style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="topnav-actions-list" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
           {actions.map((action) => {
             const isDisabled = disabledActions.includes(action);
+            const isPrimary = action === 'Submit' || action === 'Get Report' || action === 'WorkSheet';
             return (
               <button
                 key={action}
+                className={isPrimary ? 'btn btn-primary' : 'btn btn-ghost'}
                 onClick={() => {
                   if (!isDisabled) onAction?.(action);
                 }}
                 disabled={isDisabled}
                 style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: isDisabled ? 'var(--text-muted, #999)' : 'var(--text-secondary)',
-                  fontSize: '15px',
-                  fontWeight: isDisabled ? 400 : 500,
-                  cursor: isDisabled ? 'not-allowed' : 'pointer',
-                  padding: '4px 0',
-                  transition: 'color 0.2s',
-                  fontFamily: 'inherit',
-                  opacity: isDisabled ? 0.6 : 1
-                }}
-                onMouseEnter={(e) => {
-                  if (!isDisabled) e.currentTarget.style.color = 'var(--primary)';
-                }}
-                onMouseLeave={(e) => {
-                  if (!isDisabled) e.currentTarget.style.color = 'var(--text-secondary)';
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  padding: '6px 16px',
+                  borderRadius: '8px',
+                  boxShadow: isPrimary ? '0 4px 12px rgba(249,115,22,0.2)' : 'none',
+                  opacity: isDisabled ? 0.6 : 1,
+                  cursor: isDisabled ? 'not-allowed' : 'pointer'
                 }}
               >
                 {action}

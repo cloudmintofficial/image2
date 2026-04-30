@@ -26,7 +26,13 @@ export default function InProcessPage() {
   const [resultDoctor, setResultDoctor] = useState('');
   const [resultAdvice, setResultAdvice] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const [doctorsList, setDoctorsList] = useState<any[]>([]);
+
+  const [isEditingPatient, setIsEditingPatient] = useState(false);
+  const [editPatientForm, setEditPatientForm] = useState<any>({});
+  
+  const [doctorSearchText, setDoctorSearchText] = useState('');
+  const [doctorSuggestions, setDoctorSuggestions] = useState<any[]>([]);
+  const [isSearchingDoctor, setIsSearchingDoctor] = useState(false);
 
   const fetchBills = async () => {
     setLoading(true);
@@ -47,6 +53,7 @@ export default function InProcessPage() {
             orders: b.orders.map((o: any) => o.orderName).join(', '),
             rawOrders: b.orders,
             patientObj: b.patient,
+            doctor: b.doctor,
             isCompleted
           };
         });
@@ -78,16 +85,6 @@ export default function InProcessPage() {
 
   useEffect(() => {
     fetchBills();
-    
-    // Fetch doctors for the dropdown
-    fetch('/api/doctors')
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setDoctorsList(data);
-        }
-      })
-      .catch(err => console.error('Failed to fetch doctors', err));
 
     const now = new Date();
     setDispatchDate(now.toISOString().split('T')[0]);
@@ -97,6 +94,28 @@ export default function InProcessPage() {
     hours = hours ? hours : 12; 
     setDispatchTime(`${hours}:${now.getMinutes().toString().padStart(2, '0')}${ampm}`);
   }, []);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      if (doctorSearchText.length >= 2) {
+        setIsSearchingDoctor(true);
+        try {
+          const res = await fetch(`/api/doctors?search=${encodeURIComponent(doctorSearchText)}`);
+          if (res.ok) {
+            const data = await res.json();
+            setDoctorSuggestions(data);
+          }
+        } catch (e) {
+        } finally {
+          setIsSearchingDoctor(false);
+        }
+      } else {
+        setDoctorSuggestions([]);
+      }
+    };
+    const timeoutId = setTimeout(fetchDoctors, 300);
+    return () => clearTimeout(timeoutId);
+  }, [doctorSearchText]);
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -164,6 +183,28 @@ export default function InProcessPage() {
       }
     } catch (e) {
       alert('Network error while dispatching');
+    }
+  };
+
+  const handleUpdatePatientDetails = async () => {
+    if (!selectedBill) return;
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/bills/${selectedBill.id}/patient-details`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editPatientForm)
+      });
+      if (res.ok) {
+        await fetchBills();
+        setIsEditingPatient(false);
+      } else {
+        alert('Failed to update patient details');
+      }
+    } catch (e) {
+      alert('Error saving patient details');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -236,39 +277,69 @@ export default function InProcessPage() {
           {/* Local Top Nav for Bill Orders */}
           <div style={{ display: 'flex', gap: 12, background: 'var(--bg-card)', padding: '12px 16px', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
             <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('list')}><ArrowLeft size={14} /> Back To Bills</button>
-            <button className="btn btn-ghost btn-sm" onClick={() => router.push('/order-entry')}><Edit size={14} /> Edit Patient Details</button>
+            <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('edit')}><Edit size={14} /> Edit Patient Details</button>
             <button className="btn btn-ghost btn-sm" disabled={!selectedBill.isCompleted} onClick={() => setShowDispatchModal(true)}>
               <Send size={14} /> Dispatch
             </button>
             <button className="btn btn-ghost btn-sm" onClick={fetchBills}><RefreshCw size={14} /> Refresh Bill</button>
           </div>
 
-          <div className="card">
-            <div style={{ padding: 16, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, borderBottom: '1px solid var(--border)' }}>
-              <div><strong>Bill No:</strong> {selectedBill.billNo}</div>
-              <div><strong>Patient Name:</strong> {selectedBill.patient}</div>
-              <div><strong>Phone Number:</strong> {selectedBill.phone}</div>
-              <div><strong>Gender:</strong> {selectedBill.patientObj?.gender}</div>
-              <div><strong>Age:</strong> {selectedBill.patientObj?.age}Y</div>
-              <div><strong>UMR:</strong> {selectedBill.patientObj?.umr || '—'}</div>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.06)', overflow: 'hidden', border: '1px solid var(--border-color)', animation: 'fadeIn 0.3s ease' }}>
+            <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(to right, rgba(249,115,22,0.05), transparent)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22, fontWeight: 700, boxShadow: '0 4px 12px rgba(249,115,22,0.3)' }}>
+                  {selectedBill.patient?.charAt(0)?.toUpperCase() || 'P'}
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>{selectedBill.patient}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, fontSize: 13, color: 'var(--text-secondary)' }}>
+                    <span>{selectedBill.patientObj?.gender === 'M' ? 'Male' : selectedBill.patientObj?.gender === 'F' ? 'Female' : selectedBill.patientObj?.gender || '—'}</span>
+                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#cbd5e1' }}></span>
+                    <span>{selectedBill.patientObj?.age ? `${selectedBill.patientObj?.age} Years` : '—'}</span>
+                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#cbd5e1' }}></span>
+                    <span>{selectedBill.phone || '—'}</span>
+                  </div>
+                </div>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Bill Number</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>#{selectedBill.billNo}</div>
+              </div>
             </div>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th style={{ color: '#d35400', fontWeight: 600 }}>GroupNumber</th>
-                  <th style={{ color: '#d35400', fontWeight: 600 }}>Orders</th>
-                  <th style={{ color: '#d35400', fontWeight: 600 }}>Date Taken</th>
-                  <th style={{ color: '#d35400', fontWeight: 600 }}>Sample.Type</th>
-                </tr>
-              </thead>
+            
+            <div style={{ padding: '16px 24px', background: 'var(--bg-card)', borderTop: '1px solid var(--border-color)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+               <div>
+                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>UMR Number</span>
+                  <div style={{ marginTop: 4, fontSize: 14, fontWeight: 600, color: '#f97316' }}>{selectedBill.patientObj?.umr || '—'}</div>
+               </div>
+               <div>
+                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Assigned Doctor</span>
+                  <div style={{ marginTop: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.doctor?.name || 'No Doctor Assigned'}</div>
+               </div>
+               <div>
+                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Source</span>
+                  <div style={{ marginTop: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.source || '—'}</div>
+               </div>
+            </div>
+            <div style={{ background: 'var(--bg-card)', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border-color)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', marginTop: 16 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: 'linear-gradient(to right, #f8fafc, #f1f5f9)', color: 'var(--text-secondary)', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid var(--border-color)' }}>
+                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Group Number</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Orders</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Date Taken</th>
+                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Sample Type</th>
+                  </tr>
+                </thead>
               <tbody>
                 {selectedBill.rawOrders.map((o: any, idx: number) => {
                   const isCompleted = o.resultStatus === 'Completed' || o.resultStatus === 'Verified';
                   return (
                     <tr key={o.id}>
-                      <td style={{ display: 'flex', gap: 12, alignItems: 'center', border: 'none' }}>
+                      <td style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '1px solid #f1f5f9', padding: '12px 16px' }}>
                         <button 
-                          style={{ padding: '4px 12px', background: isCompleted ? '#27ae60' : '#e67e22', color: '#fff', border: '1px solid #d35400', borderRadius: 4, cursor: 'pointer', fontWeight: 600, fontSize: 13 }}
+                          className="btn btn-primary"
+                          style={{ padding: '6px 16px', background: isCompleted ? '#22c55e' : '#f97316', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 12, boxShadow: isCompleted ? '0 4px 12px rgba(34,197,94,0.2)' : '0 4px 12px rgba(249,115,22,0.2)' }}
                           onClick={() => {
                             setSelectedOrder(o);
                             setResultInput(o.resultData || '');
@@ -278,21 +349,22 @@ export default function InProcessPage() {
                             setViewMode('result');
                           }}
                         >
-                          Result Entry
+                          {isCompleted ? 'View Result' : 'Result Entry'}
                         </button>
-                        <span style={{ border: '1px solid var(--border)', padding: '2px 8px', borderRadius: 4 }}>{idx + 1}</span>
+                        <span style={{ border: '1px solid var(--border-color)', background: '#f8fafc', padding: '2px 8px', borderRadius: 6, fontWeight: 500, color: 'var(--text-secondary)' }}>{idx + 1}</span>
                       </td>
-                      <td style={{ border: 'none' }}>{o.orderName}</td>
-                      <td style={{ display: 'flex', gap: 12, alignItems: 'center', border: 'none' }}>
+                      <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px', fontWeight: 500, color: 'var(--text-primary)' }}>{o.orderName}</td>
+                      <td style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '1px solid #f1f5f9', padding: '12px 16px', color: 'var(--text-secondary)' }}>
                         {new Date(o.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit', hour12: true })}
-                        <button style={{ padding: '2px 8px', background: '#d35400', color: '#fff', border: 'none', borderRadius: 2, fontSize: 11, cursor: 'pointer' }}>Edit Dates</button>
+                        <button style={{ padding: '4px 10px', background: '#e2e8f0', color: '#475569', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#cbd5e1'} onMouseLeave={e => e.currentTarget.style.background = '#e2e8f0'}>Edit Dates</button>
                       </td>
-                      <td style={{ border: 'none' }}>--</td>
+                      <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px', color: 'var(--text-secondary)' }}>--</td>
                     </tr>
                   )
                 })}
               </tbody>
             </table>
+          </div>
           </div>
 
           {showDispatchModal && (
@@ -314,6 +386,189 @@ export default function InProcessPage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {viewMode === 'edit' && selectedBill && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ display: 'flex', gap: 12, background: 'var(--bg-card)', padding: '16px 24px', borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', alignItems: 'center' }}>
+            <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('bill')} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 8, transition: 'all 0.2s' }}>
+              <ArrowLeft size={16} /> 
+              <span style={{ fontWeight: 600 }}>Back to Bill Orders</span>
+            </button>
+          </div>
+
+          <div style={{ background: 'var(--bg-card)', borderRadius: 16, boxShadow: '0 8px 24px rgba(0,0,0,0.08)', overflow: 'hidden', border: '1px solid var(--border-color)', position: 'relative' }}>
+            {/* Header Area */}
+            <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, rgba(249,115,22,0.05), transparent)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 24, fontWeight: 700, boxShadow: '0 4px 12px rgba(249,115,22,0.3)' }}>
+                  {selectedBill.patientObj?.name?.charAt(0)?.toUpperCase() || 'P'}
+                </div>
+                <div>
+                  <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>Patient Details</h2>
+                  <p style={{ margin: '4px 0 0 0', fontSize: 13, color: 'var(--text-secondary)' }}>Review and update demographic information</p>
+                </div>
+              </div>
+              
+              {!isEditingPatient ? (
+                <button 
+                  className="btn btn-primary"
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 24px', borderRadius: 8, fontWeight: 600, boxShadow: '0 4px 12px rgba(249,115,22,0.2)' }}
+                  onClick={() => {
+                    setEditPatientForm({
+                      name: selectedBill.patientObj?.name || '',
+                      age: selectedBill.patientObj?.age || '',
+                      gender: selectedBill.patientObj?.gender || 'M',
+                      source: selectedBill.patientObj?.source || '',
+                      phone: selectedBill.patientObj?.phone || '',
+                      doctorId: selectedBill.doctor?.id || ''
+                    });
+                    setDoctorSearchText(selectedBill.doctor?.name || '');
+                    setIsEditingPatient(true);
+                  }}
+                >
+                  <Edit size={16} /> Edit Details
+                </button>
+              ) : (
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <button 
+                    className="btn btn-ghost"
+                    style={{ padding: '8px 24px', borderRadius: 8, fontWeight: 600 }}
+                    onClick={() => setIsEditingPatient(false)}
+                    disabled={isSaving}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    className="btn btn-primary"
+                    style={{ padding: '8px 24px', borderRadius: 8, fontWeight: 600, boxShadow: '0 4px 12px rgba(249,115,22,0.2)' }}
+                    onClick={handleUpdatePatientDetails}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Main Content Area */}
+            <div style={{ padding: '32px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 32 }}>
+              
+              {/* Personal Info Section */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Full Name</label>
+                  {isEditingPatient ? (
+                    <input type="text" className="form-input" style={{ width: '100%', borderRadius: 8 }} value={editPatientForm.name || ''} onChange={e => setEditPatientForm({...editPatientForm, name: e.target.value})} />
+                  ) : (
+                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.name || '—'}</div>
+                  )}
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Age</label>
+                    {isEditingPatient ? (
+                      <input type="number" className="form-input" style={{ width: '100%', borderRadius: 8 }} value={editPatientForm.age || ''} onChange={e => setEditPatientForm({...editPatientForm, age: e.target.value})} />
+                    ) : (
+                      <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.age ? `${selectedBill.patientObj?.age} Years` : '—'}</div>
+                    )}
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Gender</label>
+                    {isEditingPatient ? (
+                      <select className="form-input" style={{ width: '100%', borderRadius: 8 }} value={editPatientForm.gender || 'M'} onChange={e => setEditPatientForm({...editPatientForm, gender: e.target.value})}>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+                      </select>
+                    ) : (
+                      <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.gender === 'M' ? 'Male' : selectedBill.patientObj?.gender === 'F' ? 'Female' : selectedBill.patientObj?.gender || '—'}</div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Phone Number</label>
+                  {isEditingPatient ? (
+                    <input type="text" className="form-input" style={{ width: '100%', borderRadius: 8 }} value={editPatientForm.phone || ''} onChange={e => setEditPatientForm({...editPatientForm, phone: e.target.value})} />
+                  ) : (
+                    <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.phone || '—'}</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Reference Info Section */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>UMR Number</label>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: '#f97316', background: 'rgba(249,115,22,0.1)', padding: '8px 12px', borderRadius: 8, display: 'inline-block' }}>
+                    {selectedBill.patientObj?.umr}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Source</label>
+                  {isEditingPatient ? (
+                    <input type="text" className="form-input" style={{ width: '100%', borderRadius: 8 }} value={editPatientForm.source || ''} onChange={e => setEditPatientForm({...editPatientForm, source: e.target.value})} />
+                  ) : (
+                    <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.source || '—'}</div>
+                  )}
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Assigned Doctor</label>
+                  {isEditingPatient ? (
+                    <div style={{ position: 'relative' }}>
+                      <input 
+                        type="text" 
+                        className="form-input"
+                        style={{ width: '100%', borderRadius: 8 }}
+                        placeholder="Search Doctor..."
+                        value={doctorSearchText}
+                        onChange={e => {
+                          setDoctorSearchText(e.target.value);
+                          setEditPatientForm({...editPatientForm, doctorId: ''});
+                        }}
+                      />
+                      {isSearchingDoctor && (
+                        <div style={{ position: 'absolute', right: 12, top: 12 }}><Loader2 size={16} className="animate-spin text-gray-400" /></div>
+                      )}
+                      {doctorSuggestions.length > 0 && (
+                        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid var(--border-color)', borderRadius: 8, zIndex: 50, maxHeight: 200, overflowY: 'auto', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', marginTop: 4 }}>
+                          {doctorSuggestions.map((doc, idx) => (
+                            <div 
+                              key={idx} 
+                              style={{ padding: '10px 16px', fontSize: 14, cursor: 'pointer', borderBottom: idx < doctorSuggestions.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background 0.2s' }}
+                              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
+                              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#fff'}
+                              onClick={() => { 
+                                setDoctorSearchText(doc.name); 
+                                setEditPatientForm({...editPatientForm, doctorId: doc.id});
+                                setDoctorSuggestions([]); 
+                              }}
+                            >
+                              <div style={{ fontWeight: 500, color: '#0f172a' }}>{doc.name}</div>
+                              {doc.specialization && <div style={{ fontSize: 12, color: '#64748b' }}>{doc.specialization}</div>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#e0e7ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#4338ca', fontWeight: 600, fontSize: 14 }}>
+                        D
+                      </div>
+                      <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.doctor?.name || 'No Doctor Assigned'}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+            </div>
+          </div>
         </div>
       )}
 
