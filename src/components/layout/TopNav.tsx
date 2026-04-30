@@ -10,6 +10,7 @@ const moduleActions: Record<string, string[]> = {
   '/order-entry': ['Submit', 'Clear', 'Enter Results', 'Discount', 'Bill Details', 'Add Doctor', 'Add Order', 'Add Expense'],
   '/in-process': ['Non Financial Report', 'Non Financial Status Report', 'Online Request Sample Status', 'WorkSheet'],
   '/previous-bills': ['ShiftCollectionDetailed', 'ShiftCollection', 'SummaryReport'],
+  '/work-sheet': ['Get Report', 'Clear'],
 };
 
 interface TopNavProps {

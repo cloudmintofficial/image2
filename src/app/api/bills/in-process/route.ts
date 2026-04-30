@@ -53,7 +53,7 @@ export async function GET(request: Request) {
         orders: true,
       },
       orderBy: {
-        createdAt: 'desc'
+        billNumber: 'desc'
       }
     });
     

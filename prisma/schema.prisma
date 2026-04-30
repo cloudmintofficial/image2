@@ -103,11 +103,14 @@ model OrderItem {
   orderName    String
   orderDate    DateTime     @default(now())
   amount       Float
-  resultStatus String       @default("Pending") // Pending, Entered, Verified
-  resultData   String?      // Changed from Json to String for SQLite compatibility
-  verifiedBy   String?
-  verifiedAt   DateTime?
-  createdAt    DateTime     @default(now())
+  resultStatus  String       @default("Pending") // Pending, Entered, Verified
+  resultData    String?      // HTML result from quill
+  resultMethod  String?
+  resultDoctor  String?
+  resultAdvice  String?
+  verifiedBy    String?
+  verifiedAt    DateTime?
+  createdAt     DateTime     @default(now())
 }
 
 model Payment {

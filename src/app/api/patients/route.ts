@@ -27,6 +27,11 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+
+    if (!data.phone || !data.phone.trim()) {
+      return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
+    }
+
     let patient = await prisma.patient.create({
       data: {
         name: data.name,

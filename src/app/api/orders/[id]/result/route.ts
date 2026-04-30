@@ -6,14 +6,17 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     const { id: idStr } = await params;
     const id = parseInt(idStr);
     const body = await request.json();
-    const { resultData, resultStatus = 'Entered' } = body;
+    const { resultData, resultStatus = 'Entered', resultMethod, resultDoctor, resultAdvice } = body;
 
     // Update the specific order item
     const updatedOrder = await prisma.orderItem.update({
       where: { id },
       data: {
         resultData,
-        resultStatus
+        resultStatus,
+        resultMethod,
+        resultDoctor,
+        resultAdvice
       }
     });
 

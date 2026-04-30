@@ -14,6 +14,10 @@ export async function PUT(
 
     const data = await request.json();
 
+    if (data.phone !== undefined && (!data.phone || !data.phone.trim())) {
+      return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
+    }
+
     const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.age !== undefined) updateData.age = data.age ? parseInt(data.age) : null;

@@ -147,12 +147,12 @@ export default function OrderEntryPage() {
   useEffect(() => {
     const disabled = [];
     // Disable Submit and Enter Results if form is incomplete
-    if (!name || orders.length === 0 || isSubmittingBill) {
+    if (!name || !phone || orders.length === 0 || isSubmittingBill) {
       disabled.push('Submit');
       disabled.push('Enter Results');
     }
     window.dispatchEvent(new CustomEvent('set-disabled-actions', { detail: disabled }));
-  }, [name, orders.length, isSubmittingBill]);
+  }, [name, phone, orders.length, isSubmittingBill]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -339,6 +339,10 @@ export default function OrderEntryPage() {
     }
     if (orders.length === 0) {
       showToast('Please add at least one order', 'error');
+      return;
+    }
+    if (!phone || !phone.trim()) {
+      showToast('Phone number is required', 'error');
       return;
     }
 
@@ -622,8 +626,8 @@ export default function OrderEntryPage() {
           </button>
           <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
           <button className="btn btn-primary btn-sm" onClick={() => {
-            if (name.trim()) showToast('Patient added', 'success');
-            else showToast('Enter patient name first', 'error');
+            if (!name.trim() || !phone.trim()) showToast('Patient name and phone number are required', 'error');
+            else showToast('Patient added', 'success');
           }}>
             <UserPlus size={14} /> Add
           </button>
@@ -649,8 +653,8 @@ export default function OrderEntryPage() {
                   let targetPatientId = patientId;
 
                   if (!targetPatientId) {
-                    if (!name.trim() && !phone.trim()) {
-                      showToast('Please select a Patient or enter Name/Phone first.', 'error');
+                    if (!name.trim() || !phone.trim()) {
+                      showToast('Patient name and phone number are required', 'error');
                       return;
                     }
                     setIsLoadingPatOrders(true);
