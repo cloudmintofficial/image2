@@ -277,129 +277,20 @@ export default function InProcessPage() {
         </>
       )}
 
-      {viewMode === 'bill' && selectedBill && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {/* Local Top Nav for Bill Orders */}
-          <div style={{ display: 'flex', gap: 12, background: 'var(--bg-card)', padding: '12px 16px', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('list')}><ArrowLeft size={14} /> Back To Bills</button>
-            <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('edit')}><Edit size={14} /> Edit Patient Details</button>
-            <button className="btn btn-ghost btn-sm" disabled={!selectedBill.isCompleted} onClick={() => setShowDispatchModal(true)}>
-              <Send size={14} /> Dispatch
-            </button>
-            <button className="btn btn-ghost btn-sm" onClick={fetchBills}><RefreshCw size={14} /> Refresh Bill</button>
-          </div>
 
-          <div style={{ background: 'var(--bg-card)', borderRadius: 16, boxShadow: '0 4px 16px rgba(0,0,0,0.06)', overflow: 'hidden', border: '1px solid var(--border-color)', animation: 'fadeIn 0.3s ease' }}>
-            <div style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(to right, rgba(249,115,22,0.05), transparent)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <div style={{ width: 56, height: 56, borderRadius: 14, background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 22, fontWeight: 700, boxShadow: '0 4px 12px rgba(249,115,22,0.3)' }}>
-                  {selectedBill.patient?.charAt(0)?.toUpperCase() || 'P'}
-                </div>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>{selectedBill.patient}</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, fontSize: 13, color: 'var(--text-secondary)' }}>
-                    <span>{selectedBill.patientObj?.gender === 'M' ? 'Male' : selectedBill.patientObj?.gender === 'F' ? 'Female' : selectedBill.patientObj?.gender || '—'}</span>
-                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#cbd5e1' }}></span>
-                    <span>{selectedBill.patientObj?.age ? `${selectedBill.patientObj?.age} Years` : '—'}</span>
-                    <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#cbd5e1' }}></span>
-                    <span>{selectedBill.phone || '—'}</span>
-                  </div>
-                </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Bill Number</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>#{selectedBill.billNo}</div>
-              </div>
-            </div>
-            
-            <div style={{ padding: '16px 24px', background: 'var(--bg-card)', borderTop: '1px solid var(--border-color)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
-               <div>
-                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>UMR Number</span>
-                  <div style={{ marginTop: 4, fontSize: 14, fontWeight: 600, color: '#f97316' }}>{selectedBill.patientObj?.umr || '—'}</div>
-               </div>
-               <div>
-                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Assigned Doctor</span>
-                  <div style={{ marginTop: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.doctor?.name || 'No Doctor Assigned'}</div>
-               </div>
-               <div>
-                  <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Source</span>
-                  <div style={{ marginTop: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.source || '—'}</div>
-               </div>
-            </div>
-            <div style={{ background: 'var(--bg-card)', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border-color)', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', marginTop: 16 }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 13 }}>
-                <thead>
-                  <tr style={{ background: 'linear-gradient(to right, #f8fafc, #f1f5f9)', color: 'var(--text-secondary)', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid var(--border-color)' }}>
-                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Group Number</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Orders</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Date Taken</th>
-                    <th style={{ padding: '12px 16px', fontWeight: 600 }}>Sample Type</th>
-                  </tr>
-                </thead>
-              <tbody>
-                {selectedBill.rawOrders.map((o: any, idx: number) => {
-                  const isCompleted = o.resultStatus === 'Completed' || o.resultStatus === 'Verified';
-                  return (
-                    <tr key={o.id}>
-                      <td style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '1px solid #f1f5f9', padding: '12px 16px' }}>
-                        <button 
-                          className="btn btn-primary"
-                          style={{ padding: '6px 16px', background: isCompleted ? '#22c55e' : '#f97316', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 12, boxShadow: isCompleted ? '0 4px 12px rgba(34,197,94,0.2)' : '0 4px 12px rgba(249,115,22,0.2)' }}
-                          onClick={() => {
-                            setSelectedOrder(o);
-                            setResultInput(o.resultData || '');
-                            setResultMethod(o.resultMethod || '');
-                            setResultDoctor(o.resultDoctor || 'Select Service Doctor');
-                            setResultAdvice(o.resultAdvice || '');
-                            setViewMode('result');
-                          }}
-                        >
-                          {isCompleted ? 'View Result' : 'Result Entry'}
-                        </button>
-                        <span style={{ border: '1px solid var(--border-color)', background: '#f8fafc', padding: '2px 8px', borderRadius: 6, fontWeight: 500, color: 'var(--text-secondary)' }}>{idx + 1}</span>
-                      </td>
-                      <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px', fontWeight: 500, color: 'var(--text-primary)' }}>{o.orderName}</td>
-                      <td style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '1px solid #f1f5f9', padding: '12px 16px', color: 'var(--text-secondary)' }}>
-                        {new Date(o.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit', hour12: true })}
-                        <button style={{ padding: '4px 10px', background: '#e2e8f0', color: '#475569', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#cbd5e1'} onMouseLeave={e => e.currentTarget.style.background = '#e2e8f0'}>Edit Dates</button>
-                      </td>
-                      <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px', color: 'var(--text-secondary)' }}>--</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-          </div>
-
-          {showDispatchModal && (
-            <div className="modal-overlay">
-              <div className="modal" style={{ maxWidth: 400 }}>
-                <div className="modal-header" style={{ background: '#d35400', color: '#fff' }}>
-                  <h3 style={{ color: '#fff', margin: 0, fontSize: 16 }}>Bill Payment</h3>
-                  <button className="modal-close" style={{ color: '#fff' }} onClick={() => setShowDispatchModal(false)}>✕</button>
-                </div>
-                <div className="modal-body" style={{ padding: 32, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
-                  <strong style={{ color: 'var(--text-primary)' }}>Bill Date:</strong>
-                  <input type="date" className="form-input" style={{ width: 140 }} value={dispatchDate} onChange={e => setDispatchDate(e.target.value)} />
-                  <input type="text" className="form-input" style={{ width: 100 }} value={dispatchTime} onChange={e => setDispatchTime(e.target.value)} />
-                </div>
-                <div className="modal-footer" style={{ justifyContent: 'center' }}>
-                  <button className="btn" style={{ background: '#d35400', color: '#fff' }} onClick={handleDispatch}>Submit</button>
-                  <button className="btn btn-outline" onClick={() => setShowDispatchModal(false)}>Close</button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {viewMode === 'edit' && selectedBill && (
+      {(viewMode === 'bill' || viewMode === 'edit') && selectedBill && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24, animation: 'fadeIn 0.3s ease' }}>
           <div style={{ display: 'flex', gap: 12, background: 'var(--bg-card)', padding: '16px 24px', borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', alignItems: 'center' }}>
-            <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('bill')} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 8, transition: 'all 0.2s' }}>
+            <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('list')} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 8, transition: 'all 0.2s' }}>
               <ArrowLeft size={16} /> 
-              <span style={{ fontWeight: 600 }}>Back to Bill Orders</span>
+              <span style={{ fontWeight: 600 }}>Back to Active Orders</span>
+            </button>
+            <div style={{ width: 1, height: 24, background: 'var(--border-color)', margin: '0 8px' }} />
+            <button className="btn btn-ghost btn-sm" disabled={!selectedBill.isCompleted} onClick={() => setShowDispatchModal(true)} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Send size={16} /> Dispatch Bill
+            </button>
+            <button className="btn btn-ghost btn-sm" onClick={fetchBills} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <RefreshCw size={16} /> Refresh Data
             </button>
           </div>
 
@@ -408,7 +299,7 @@ export default function InProcessPage() {
             <div style={{ padding: '24px 32px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(to right, rgba(249,115,22,0.05), transparent)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <div style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg, #f97316 0%, #fb923c 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 24, fontWeight: 700, boxShadow: '0 4px 12px rgba(249,115,22,0.3)' }}>
-                  {selectedBill.patientObj?.name?.charAt(0)?.toUpperCase() || 'P'}
+                  {selectedBill.patient?.charAt(0)?.toUpperCase() || 'P'}
                 </div>
                 <div>
                   <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: 'var(--text-primary)' }}>Patient Details</h2>
@@ -467,7 +358,7 @@ export default function InProcessPage() {
                   {isEditingPatient ? (
                     <input type="text" className="form-input" style={{ width: '100%', borderRadius: 8 }} value={editPatientForm.name || ''} onChange={e => setEditPatientForm({...editPatientForm, name: e.target.value})} />
                   ) : (
-                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.name || '—'}</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)' }}>{selectedBill.patient || '—'}</div>
                   )}
                 </div>
 
@@ -499,7 +390,7 @@ export default function InProcessPage() {
                   {isEditingPatient ? (
                     <input type="text" className="form-input" style={{ width: '100%', borderRadius: 8 }} value={editPatientForm.phone || ''} onChange={e => setEditPatientForm({...editPatientForm, phone: e.target.value})} />
                   ) : (
-                    <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.patientObj?.phone || '—'}</div>
+                    <div style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.phone || '—'}</div>
                   )}
                 </div>
               </div>
@@ -573,70 +464,192 @@ export default function InProcessPage() {
               </div>
               
             </div>
+
+            {/* Orders Section */}
+            <div style={{ padding: '0 32px 32px 32px' }}>
+              <div style={{ border: '1px solid var(--border-color)', borderRadius: 12, overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead style={{ background: '#f8fafc' }}>
+                    <tr>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Order Name</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Amount</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'left', fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Status</th>
+                      <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedBill.rawOrders.map((order: any, idx: number) => (
+                      <tr key={idx} style={{ borderTop: '1px solid var(--border-color)' }}>
+                        <td style={{ padding: '16px', fontSize: 14, fontWeight: 500, color: '#0f172a' }}>{order.orderName}</td>
+                        <td style={{ padding: '16px', fontSize: 14, color: '#64748b' }}>₹{order.amount}</td>
+                        <td style={{ padding: '16px' }}>
+                          <span style={{ 
+                            padding: '4px 10px', 
+                            borderRadius: 6, 
+                            fontSize: 12, 
+                            fontWeight: 600,
+                            background: order.resultStatus === 'Completed' ? '#dcfce7' : order.resultStatus === 'Entered' ? '#fef9c3' : '#f1f5f9',
+                            color: order.resultStatus === 'Completed' ? '#166534' : order.resultStatus === 'Entered' ? '#854d0e' : '#64748b'
+                          }}>
+                            {order.resultStatus}
+                          </span>
+                        </td>
+                        <td style={{ padding: '16px', textAlign: 'right' }}>
+                          <button 
+                            className="btn btn-primary btn-sm" 
+                            style={{ padding: '6px 16px', borderRadius: 8 }}
+                            onClick={() => { setSelectedOrder(order); setViewMode('result'); }}
+                          >
+                            Enter Result
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {viewMode === 'result' && selectedOrder && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, margin: '-24px', minHeight: 'calc(100vh - 64px)' }}>
-          {/* Top Navbar */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#ffffff', padding: '12px 24px', borderBottom: '1px solid #e2e8f0', borderTop: '4px solid #ea580c' }}>
-            <div style={{ display: 'flex', gap: 32, fontSize: 14, fontWeight: 700 }}>
-              <button style={{ background: 'none', border: 'none', color: '#0f172a', cursor: 'pointer', padding: 0 }} onClick={() => setViewMode('bill')}>Bill Orders</button>
-              <button style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'not-allowed', padding: 0 }}>Edit Order</button>
-              <button style={{ background: 'none', border: 'none', color: '#0f172a', cursor: 'pointer', padding: 0 }} onClick={fetchBills}>Refresh Order</button>
+      {showDispatchModal && (
+            <div className="modal-overlay">
+              <div className="modal" style={{ maxWidth: 400 }}>
+                <div className="modal-header" style={{ background: '#d35400', color: '#fff' }}>
+                  <h3 style={{ color: '#fff', margin: 0, fontSize: 16 }}>Bill Payment</h3>
+                  <button className="modal-close" style={{ color: '#fff' }} onClick={() => setShowDispatchModal(false)}>✕</button>
+                </div>
+                <div className="modal-body" style={{ padding: 32, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
+                  <strong style={{ color: 'var(--text-primary)' }}>Bill Date:</strong>
+                  <input type="date" className="form-input" style={{ width: 140 }} value={dispatchDate} onChange={e => setDispatchDate(e.target.value)} />
+                  <input type="text" className="form-input" style={{ width: 100 }} value={dispatchTime} onChange={e => setDispatchTime(e.target.value)} />
+                </div>
+                <div className="modal-footer" style={{ justifyContent: 'center' }}>
+                  <button className="btn" style={{ background: '#d35400', color: '#fff' }} onClick={handleDispatch}>Submit</button>
+                  <button className="btn btn-outline" onClick={() => setShowDispatchModal(false)}>Close</button>
+                </div>
+              </div>
             </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
-              Hi! <span style={{ textTransform: 'uppercase' }}>IMAGEE OWNER</span>
+          )}
+
+      {viewMode === 'result' && selectedOrder && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, margin: '-24px', background: '#f8fafc', minHeight: 'calc(100vh - 64px)' }}>
+          {/* Diagnostic Toolbar */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            background: '#ffffff', 
+            padding: '12px 32px', 
+            borderBottom: '1px solid #e2e8f0',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            position: 'sticky',
+            top: 0,
+            zIndex: 100
+          }}>
+            <div style={{ display: 'flex', gap: 24, alignItems: 'center', flex: 1 }}>
+              <button 
+                onClick={() => setViewMode('bill')}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, transition: 'all 0.2s', padding: '6px 12px', borderRadius: 8 }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#f97316'; e.currentTarget.style.background = '#fff7ed'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'none'; }}
+              >
+                <ArrowLeft size={16} /> Patient Dashboard
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 2 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#0f172a' }}>{selectedBill.patient}</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Bill #{selectedBill.billNo} • Result Entry</div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16, flex: 1, justifyContent: 'flex-end' }}>
+              <div style={{ textAlign: 'right', marginRight: 12 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#0f172a' }}>IMAGEE OWNER</div>
+                <div style={{ fontSize: 10, color: '#64748b', fontWeight: 600 }}>Authorized Staff</div>
+              </div>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 13, fontWeight: 700, boxShadow: '0 4px 8px rgba(234, 88, 12, 0.2)' }}>
+                IO
+              </div>
             </div>
           </div>
 
-          <div style={{ padding: '16px' }}>
-            <div style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: 4, boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
-              
-              {/* Context Bar */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '12px 16px', borderBottom: '1px solid #cbd5e1', fontSize: 12, fontWeight: 500, fontFamily: 'sans-serif' }}>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <div><strong style={{ color: '#0f172a' }}>Bill No:</strong> <span style={{ color: '#475569' }}>{selectedBill.billNo}+</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Department:</strong> <span style={{ color: '#475569' }}>{selectedOrder.department || 'RADIOLOGY'}</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Order Name:</strong> <span style={{ color: '#475569' }}>{selectedOrder.orderName}</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Status:</strong> <span style={{ color: '#16a34a' }}>Sample Received</span></div>
+          <div style={{ padding: '24px 32px' }}>
+            {/* Patient Context Card */}
+            <div style={{ 
+              background: '#ffffff', 
+              borderRadius: 16, 
+              border: '1px solid #e2e8f0', 
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              marginBottom: 24,
+              overflow: 'hidden'
+            }}>
+              <div style={{ background: '#f8fafc', padding: '16px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ background: '#f97316', color: '#fff', padding: '4px 12px', borderRadius: 6, fontSize: 11, fontWeight: 800, textTransform: 'uppercase' }}>Active Order</div>
+                  <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: 0 }}>{selectedOrder.orderName}</h2>
                 </div>
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-                  <div><strong style={{ color: '#0f172a' }}>UMR(Card) :</strong> <span style={{ color: '#475569' }}>{selectedBill.patientObj?.umr || '—'}()</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Patient Name:</strong> <span style={{ color: '#475569' }}>{selectedBill.patient}</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Phone Number:</strong> <span style={{ color: '#475569' }}>{selectedBill.phone}</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Gender:</strong> <span style={{ color: '#475569' }}>{selectedBill.patientObj?.gender}</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Age:</strong> <span style={{ color: '#475569' }}>{selectedBill.patientObj?.age}Y</span></div>
-                  <div><strong style={{ color: '#0f172a' }}>Reff.Doctor:</strong> <span style={{ color: '#475569' }}>{selectedBill.patientObj?.referredBy || '—'}</span></div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#16a34a' }} />
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#16a34a' }}>Sample Received</span>
                 </div>
               </div>
-
-              {/* Form Area */}
-              <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {/* Editor Container */}
+              
+              <div style={{ padding: '24px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: 4, marginBottom: -1, position: 'relative', zIndex: 10 }}>
-                    <div style={{ padding: '4px 24px', background: '#d35400', color: '#ffffff', fontSize: 12, fontWeight: 500, border: '1px solid #c2410c', borderBottom: 'none', cursor: 'pointer' }}>Page 1</div>
-                    <div style={{ padding: '4px 24px', background: '#fbeee6', color: '#d35400', fontSize: 12, fontWeight: 500, border: '1px solid #f5cba7', borderBottom: 'none', cursor: 'pointer' }}>Page 2</div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>Bill Information</label>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>#{selectedBill.billNo}</div>
+                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{selectedOrder.department || 'RADIOLOGY'}</div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>Patient Details</label>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{selectedBill.patient}</div>
+                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{selectedBill.patientObj?.age}Y / {selectedBill.patientObj?.gender}</div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>UMR (Card)</label>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#f97316' }}>{selectedBill.patientObj?.umr || '—'}</div>
+                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{selectedBill.phone}</div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>Referring Doctor</label>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{selectedBill.doctor?.name || 'SELF'}</div>
+                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>Source: {selectedBill.patientObj?.source || 'Direct'}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Diagnostic Workspace */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
+              
+              {/* Main Editor Section */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
+                  <div style={{ display: 'flex', background: '#f8fafc', padding: '0 16px', borderBottom: '1px solid #e2e8f0' }}>
+                    <div style={{ padding: '12px 24px', color: '#f97316', fontSize: 13, fontWeight: 700, borderBottom: '2px solid #f97316', cursor: 'pointer' }}>Diagnostic Report</div>
+                    <div style={{ padding: '12px 24px', color: '#94a3b8', fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'color 0.2s' }}>Templates</div>
                   </div>
-                  <div style={{ border: '1px solid #cbd5e1', background: '#ffffff' }}>
+                  
+                  <div style={{ padding: '24px' }}>
                     <style>{`
-                      .ql-container { height: 350px; font-family: "Times New Roman", serif; font-size: 14px; border: none !important; }
-                      .ql-toolbar { background: #fafafa; border-top: 1px solid #cbd5e1 !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid #cbd5e1 !important; padding: 8px !important; }
-                      .ql-editor { padding: 16px; }
+                      .ql-container { height: 450px; font-family: "Inter", system-ui, sans-serif; font-size: 15px; border: none !important; }
+                      .ql-toolbar { background: #fff; border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid #f1f5f9 !important; padding: 12px !important; margin: -24px -24px 24px -24px; }
+                      .ql-editor { padding: 0; line-height: 1.6; }
+                      .ql-editor.ql-blank::before { left: 0; font-style: normal; color: #94a3b8; }
                     `}</style>
                     <ReactQuill 
                       theme="snow" 
                       value={resultInput} 
                       onChange={setResultInput}
-                      placeholder="Enter result details here..."
+                      placeholder="Start typing diagnostic observations..."
                       modules={{
                         toolbar: [
                           [{ 'header': [1, 2, 3, false] }],
-                          ['bold', 'italic', 'underline'],
+                          ['bold', 'italic', 'underline', 'strike'],
                           [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                           [{ 'color': [] }, { 'background': [] }],
+                          [{ 'align': [] }],
                           ['clean']
                         ],
                       }}
@@ -644,61 +657,102 @@ export default function InProcessPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  {/* Left Controls */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '50%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div style={{ color: '#0f172a', fontSize: 12, fontWeight: 500, width: '120px' }}>Method:</div>
-                      <input type="text" style={{ width: '250px', padding: '4px 8px', border: '1px solid #cbd5e1', borderRadius: 2, fontSize: 12, outline: 'none' }} value={resultMethod} onChange={e => setResultMethod(e.target.value)} />
+                {/* Advice Section */}
+                <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 12 }}>Clinical Advice</label>
+                  <textarea 
+                    style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, resize: 'vertical', outline: 'none', transition: 'border-color 0.2s' }} 
+                    rows={3} 
+                    placeholder="Enter patient advice or follow-up instructions..."
+                    value={resultAdvice} 
+                    onChange={e => setResultAdvice(e.target.value)}
+                    onFocus={e => e.currentTarget.style.borderColor = '#f97316'}
+                    onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'}
+                  />
+                </div>
+              </div>
+
+              {/* Sidebar Controls */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+                <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+                  <h3 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 20 }}>Report Metadata</h3>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Methodology</label>
+                      <input 
+                        type="text" 
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none' }} 
+                        placeholder="e.g. Automated"
+                        value={resultMethod} 
+                        onChange={e => setResultMethod(e.target.value)} 
+                      />
                     </div>
                     
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div style={{ color: '#0f172a', fontSize: 12, fontWeight: 500, width: '120px' }}>Service Doctor:</div>
-                      <select style={{ width: '250px', padding: '4px 8px', border: '1px solid #cbd5e1', borderRadius: 2, fontSize: 12, outline: 'none', background: '#fff' }} value={resultDoctor} onChange={e => setResultDoctor(e.target.value)}>
-                        <option value="">Select Service Doctor</option>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Service Doctor</label>
+                      <select 
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }} 
+                        value={resultDoctor} 
+                        onChange={e => setResultDoctor(e.target.value)}
+                      >
+                        <option value="">Select Doctor</option>
                         {doctorsList.map(doc => (
                           <option key={doc.id} value={doc.name}>{doc.name}</option>
                         ))}
                       </select>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                      <div style={{ color: '#0f172a', fontSize: 12, fontWeight: 500, width: '120px', marginTop: 4 }}>ADVICE:</div>
-                      <textarea style={{ width: '250px', padding: '4px 8px', border: '1px solid #cbd5e1', borderRadius: 2, fontSize: 12, resize: 'vertical', outline: 'none' }} rows={3} value={resultAdvice} onChange={e => setResultAdvice(e.target.value)}></textarea>
-                    </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div style={{ color: '#0f172a', fontSize: 12, fontWeight: 500, width: '120px' }}>Select Signature:</div>
-                      <select style={{ width: '250px', padding: '4px 8px', border: '1px solid #cbd5e1', borderRadius: 2, fontSize: 12, outline: 'none', background: '#fff' }}>
-                        <option>Default</option>
+                    <div>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Authorized Signature</label>
+                      <select style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}>
+                        <option>Default System Signature</option>
                       </select>
                     </div>
-                  </div>
 
-                  {/* Right Controls */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-end', paddingTop: 4 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                      <span style={{ color: '#0f172a', fontSize: 12, fontWeight: 500 }}>Upload Result File:</span>
-                      <button style={{ padding: '6px 12px', background: '#d35400', color: '#ffffff', border: 'none', borderRadius: 2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Add Attachments</button>
+                    <div style={{ marginTop: 8 }}>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Attachments</label>
+                      <button style={{ width: '100%', padding: '10px', background: '#f8fafc', color: '#475569', border: '1px dashed #cbd5e1', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+                        + Add Result Files
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Bottom Actions */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
-                  <div style={{ fontSize: 12, color: '#94a3b8' }}></div>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button style={{ padding: '6px 16px', background: '#d35400', color: '#ffffff', border: 'none', borderRadius: 2, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'opacity 0.2s', opacity: isSaving ? 0.7 : 1 }} onClick={() => handleSaveResult(false)} disabled={isSaving}>
-                      Save
+                {/* Final Actions */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <button 
+                    onClick={() => handleSaveResult(true)}
+                    disabled={isSaving}
+                    style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px rgba(234, 88, 12, 0.2)', transition: 'transform 0.2s, opacity 0.2s', opacity: isSaving ? 0.7 : 1 }}
+                    onMouseEnter={e => !isSaving && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                    onMouseLeave={e => !isSaving && (e.currentTarget.style.transform = 'translateY(0)')}
+                  >
+                    {isSaving ? 'Finalizing...' : 'Verify & Complete'}
+                  </button>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <button 
+                      onClick={() => handleSaveResult(false)}
+                      disabled={isSaving}
+                      style={{ padding: '12px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                      onMouseLeave={e => e.currentTarget.style.background = '#fff'}
+                    >
+                      Save Draft
                     </button>
-                    <button style={{ padding: '6px 16px', background: '#d35400', color: '#ffffff', border: 'none', borderRadius: 2, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'opacity 0.2s', opacity: isSaving ? 0.7 : 1 }} onClick={() => handleSaveResult(true)} disabled={isSaving}>
-                      SaveAndComplete
+                    <button style={{ padding: '12px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                      Print
                     </button>
-                    <button style={{ padding: '6px 16px', background: '#d35400', color: '#ffffff', border: 'none', borderRadius: 2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Print</button>
-                    <button style={{ padding: '6px 16px', background: '#d35400', color: '#ffffff', border: 'none', borderRadius: 2, fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>Next</button>
                   </div>
+                  <button 
+                    style={{ width: '100%', padding: '12px', background: 'transparent', color: '#64748b', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+                    onClick={() => setViewMode('bill')}
+                  >
+                    Discard Changes
+                  </button>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
