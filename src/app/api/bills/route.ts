@@ -4,7 +4,15 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const { patientId, doctorId, totalBill, discount, discountReason, paidAmount, balance, paymentType, referenceNumber, orders, createdBy, labId } = data;
+    const { patientId, doctorId, doctorName, totalBill, discount, discountReason, paidAmount, balance, paymentType, referenceNumber, orders, createdBy, labId } = data;
+
+    let finalDoctorId = doctorId ? parseInt(doctorId) : null;
+    
+    if (!finalDoctorId && doctorName) {
+      const allDocs = await prisma.doctor.findMany();
+      const matched = allDocs.find(d => d.name.toLowerCase().trim() === doctorName.toLowerCase().trim());
+      if (matched) finalDoctorId = matched.id;
+    }
 
     // In SQLite we must manually generate billNumber if not using autoincrement
     const lastBill = await prisma.bill.findFirst({
@@ -16,7 +24,7 @@ export async function POST(request: Request) {
       data: {
         billNumber: nextBillNumber,
         patientId,
-        doctorId: doctorId || null,
+        doctorId: finalDoctorId,
         totalBill,
         discount,
         discountReason,

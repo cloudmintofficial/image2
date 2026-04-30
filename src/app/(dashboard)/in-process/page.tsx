@@ -13,7 +13,7 @@ export default function InProcessPage() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [viewMode, setViewMode] = useState<'list' | 'bill' | 'result'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'bill' | 'result' | 'edit'>('list');
   const [selectedBill, setSelectedBill] = useState<any>(null);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   
@@ -33,6 +33,11 @@ export default function InProcessPage() {
   const [doctorSearchText, setDoctorSearchText] = useState('');
   const [doctorSuggestions, setDoctorSuggestions] = useState<any[]>([]);
   const [isSearchingDoctor, setIsSearchingDoctor] = useState(false);
+  const [doctorsList, setDoctorsList] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/doctors').then(res => res.json()).then(setDoctorsList).catch(console.error);
+  }, []);
 
   const fetchBills = async () => {
     setLoading(true);
@@ -193,7 +198,7 @@ export default function InProcessPage() {
       const res = await fetch(`/api/bills/${selectedBill.id}/patient-details`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editPatientForm)
+        body: JSON.stringify({ ...editPatientForm, doctorName: doctorSearchText })
       });
       if (res.ok) {
         await fetchBills();

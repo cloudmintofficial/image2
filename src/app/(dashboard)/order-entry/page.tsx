@@ -393,7 +393,8 @@ export default function OrderEntryPage() {
           referenceNumber,
           orders,
           createdBy: user.id || 1,
-          labId: user.labId || 1
+          labId: user.labId || 1,
+          doctorName: doctor
         })
       });
 

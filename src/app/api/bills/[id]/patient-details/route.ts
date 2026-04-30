@@ -10,7 +10,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     }
 
     const data = await request.json();
-    const { name, age, gender, source, phone, doctorId } = data;
+    const { name, age, gender, source, phone, doctorId, doctorName } = data;
 
     // Get the bill to find the patient ID
     const bill = await prisma.bill.findUnique({
@@ -37,11 +37,20 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       });
 
       // Update doctor on the bill
-      if (doctorId !== undefined) {
+      let finalDoctorId = doctorId ? parseInt(doctorId) : null;
+      
+      if (!finalDoctorId && doctorName) {
+        // User typed a name but didn't click the suggestion, try to auto-resolve case-insensitively
+        const allDocs = await tx.doctor.findMany();
+        const matched = allDocs.find(d => d.name.toLowerCase().trim() === doctorName.toLowerCase().trim());
+        if (matched) finalDoctorId = matched.id;
+      }
+
+      if (finalDoctorId !== null || doctorId === '' || doctorName === '') {
         await tx.bill.update({
           where: { id },
           data: {
-            doctorId: doctorId ? parseInt(doctorId) : null
+            doctorId: finalDoctorId
           }
         });
       }
