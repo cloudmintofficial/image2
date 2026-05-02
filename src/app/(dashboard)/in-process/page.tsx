@@ -876,13 +876,28 @@ export default function InProcessPage() {
                         <tbody>
                           {testTemplate.components.map((comp: any, idx: number) => {
                             const val = panelResults[comp.name] || '';
+                            const gender = selectedBill?.patientObj?.gender;
                             const isAbnormal = (() => {
-                              if (!val || !comp.normalRange) return false;
+                              if (!val) return false;
                               const num = parseFloat(val);
                               if (isNaN(num)) return false;
+                              
+                              if (gender === 'M' && comp.minMale != null && comp.maxMale != null) {
+                                return num < comp.minMale || num > comp.maxMale;
+                              }
+                              if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) {
+                                return num < comp.minFemale || num > comp.maxFemale;
+                              }
+                              
+                              if (!comp.normalRange) return false;
                               const rangeMatch = comp.normalRange.match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)/);
                               if (rangeMatch) return num < parseFloat(rangeMatch[1]) || num > parseFloat(rangeMatch[2]);
                               return false;
+                            })();
+                            const displayRange = (() => {
+                              if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
+                              if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
+                              return comp.normalRange || '—';
                             })();
                             return (
                               <tr key={idx} style={{ borderTop: '1px solid #f1f5f9', background: isAbnormal ? '#fef2f2' : 'transparent', transition: 'background 0.2s' }}>
@@ -901,7 +916,7 @@ export default function InProcessPage() {
                                 <td style={{ padding: '10px 8px', textAlign: 'center' }}>
                                   {isAbnormal && <span style={{ color: '#dc2626', fontWeight: 800, fontSize: 16 }}>▲</span>}
                                 </td>
-                                <td style={{ padding: '10px 16px', color: '#64748b', fontSize: 12 }}>{comp.normalRange || '—'}</td>
+                                <td style={{ padding: '10px 16px', color: '#64748b', fontSize: 12 }}>{displayRange}</td>
                                 <td style={{ padding: '10px 16px', color: '#64748b', fontSize: 12 }}>{comp.unit || '—'}</td>
                                 <td style={{ padding: '10px 16px', color: '#64748b', fontSize: 12 }}>{comp.method || resultMethod || '—'}</td>
                               </tr>
@@ -939,7 +954,15 @@ export default function InProcessPage() {
                       {testTemplate.components?.[0]?.normalRange && (
                         <div style={{ flex: 1 }}>
                           <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Reference Range</label>
-                          <div style={{ padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, fontWeight: 600, color: '#475569', textAlign: 'center' }}>{testTemplate.components[0].normalRange}</div>
+                          <div style={{ padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, fontWeight: 600, color: '#475569', textAlign: 'center' }}>
+                            {(() => {
+                               const comp = testTemplate.components[0];
+                               const gender = selectedBill?.patientObj?.gender;
+                               if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
+                               if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
+                               return comp.normalRange;
+                            })()}
+                          </div>
                         </div>
                       )}
                     </div>

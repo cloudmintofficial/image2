@@ -147,7 +147,7 @@ model TestMaster {
   recurring             Boolean         @default(false)
   serviceDoctorRequired Boolean         @default(false)
   resultTemplate        String?         // JSON template for radiology/rich text
-  uiType                String          @default("richtext") // richtext, panel, single, microbiology
+  uiType                String          @default("richtext") // richtext, panel, single, microbiology, immunology
   status                String          @default("Active") // Active, InActive
   lab                   Lab             @relation(fields: [labId], references: [id])
   labId                 Int
@@ -160,7 +160,11 @@ model TestComponent {
   testId       Int
   componentName String
   unit         String?
-  normalRange  String?    // e.g. "13.0 - 17.0" or "M: 13-17 | F: 12-16"
+  normalRange  String?    // Legacy string format
+  minMale      Float?
+  maxMale      Float?
+  minFemale    Float?
+  maxFemale    Float?
   method       String?
   sortOrder    Int        @default(0)
   fieldType    String     @default("number") // number, text, select
