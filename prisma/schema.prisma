@@ -126,12 +126,12 @@ model Payment {
 }
 
 model TestMaster {
-  id                    Int      @id @default(autoincrement())
-  testName              String   @unique
-  hasComponents         Boolean  @default(false)
+  id                    Int             @id @default(autoincrement())
+  testName              String          @unique
+  hasComponents         Boolean         @default(false)
   testCode              String?
   displayOrderName      String?
-  category              String   @default("General")
+  category              String          @default("General")
   price                 Float
   department            String?
   processTime           String?
@@ -142,14 +142,29 @@ model TestMaster {
   advice                String?
   workSheet             String?
   purpose               String?
-  orderType             String   @default("Internal")
+  orderType             String          @default("Internal")
   ipBillingCategoryType String?
-  recurring             Boolean  @default(false)
-  serviceDoctorRequired Boolean  @default(false)
-  resultTemplate        String?
-  status                String   @default("Active") // Active, InActive
-  lab                   Lab      @relation(fields: [labId], references: [id])
+  recurring             Boolean         @default(false)
+  serviceDoctorRequired Boolean         @default(false)
+  resultTemplate        String?         // JSON template for radiology/rich text
+  uiType                String          @default("richtext") // richtext, panel, single, microbiology
+  status                String          @default("Active") // Active, InActive
+  lab                   Lab             @relation(fields: [labId], references: [id])
   labId                 Int
+  components            TestComponent[]
+}
+
+model TestComponent {
+  id           Int        @id @default(autoincrement())
+  test         TestMaster @relation(fields: [testId], references: [id])
+  testId       Int
+  componentName String
+  unit         String?
+  normalRange  String?    // e.g. "13.0 - 17.0" or "M: 13-17 | F: 12-16"
+  method       String?
+  sortOrder    Int        @default(0)
+  fieldType    String     @default("number") // number, text, select
+  options      String?    // comma-separated options for select type
 }
 
 model Expense {
