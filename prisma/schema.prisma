@@ -108,6 +108,7 @@ model OrderItem {
   resultMethod  String?
   resultDoctor  String?
   resultAdvice  String?
+  signatureId   String?
   verifiedBy    String?
   verifiedAt    DateTime?
   createdAt     DateTime     @default(now())
@@ -199,5 +200,16 @@ model Source {
   id        Int      @id @default(autoincrement())
   name      String   @unique
   status    String   @default("Active") // Active, InActive
+  createdAt DateTime @default(now())
+}
+
+model DoctorSignature {
+  id        String   @id
+  label     String
+  name      String
+  title     String
+  signText  String?
+  imageData String?  // Base64 string for the image
+  status    String   @default("Active")
   createdAt DateTime @default(now())
 }

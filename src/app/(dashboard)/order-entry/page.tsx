@@ -70,7 +70,7 @@ export default function OrderEntryPage() {
     department: 'NONE', amount: '', processTime: '', machineName: '',
     sampleType: 'Select Sample', method: '', advice: '',
     workSheet: '', purpose: '', orderType: 'Internal', ipBillingCategoryType: 'Select Category',
-    recurring: false, serviceDoctorRequired: false, inactive: false
+    recurring: false, serviceDoctorRequired: false, inactive: false, uiType: 'richtext'
   });
   const [resultNotesTab, setResultNotesTab] = useState<'Page 1' | 'Page 2'>('Page 1');
   const [resultNotesPage1, setResultNotesPage1] = useState('');
@@ -471,7 +471,7 @@ export default function OrderEntryPage() {
           department: 'NONE', amount: '', processTime: '', machineName: '',
           sampleType: 'Select Sample', method: '', advice: '',
           workSheet: '', purpose: '', orderType: 'Internal', ipBillingCategoryType: 'Select Category',
-          recurring: false, serviceDoctorRequired: false, inactive: false
+          recurring: false, serviceDoctorRequired: false, inactive: false, uiType: 'richtext'
         });
       } else {
         showToast('Failed to add order', 'error');
@@ -1060,6 +1060,15 @@ export default function OrderEntryPage() {
                 <input type="checkbox" checked={orderForm.hasComponents} onChange={e => setOrderForm({ ...orderForm, hasComponents: e.target.checked })} />
               </div>
 
+              <label className="form-label" style={{ textAlign: 'right', marginTop: 8 }}>UI Type:</label>
+              <select className="form-input form-select" value={orderForm.uiType} onChange={e => setOrderForm({ ...orderForm, uiType: e.target.value })}>
+                <option value="richtext">Rich Text (Radiology/General)</option>
+                <option value="panel">Panel (Numeric Results)</option>
+                <option value="single">Single Value</option>
+                <option value="microbiology">Microbiology / Culture</option>
+                <option value="immunology">Immunology / Serology</option>
+              </select>
+
               <label className="form-label" style={{ textAlign: 'right', marginTop: 8 }}>Test Code:</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <input className="form-input" value={orderForm.testCode} onChange={e => setOrderForm({ ...orderForm, testCode: e.target.value })} />
@@ -1252,7 +1261,7 @@ export default function OrderEntryPage() {
               <button className="btn btn-ghost" onClick={() => setShowAddOrderModal(false)}>Cancel</button>
               <button className="btn btn-outline" onClick={() => {
                 setOrderForm({
-                  orderName: '', hasComponents: false, testCode: '', displayOrderName: '', department: 'NONE', amount: '', processTime: '', machineName: '', sampleType: 'Select Sample', method: '', advice: '', workSheet: '', purpose: '', orderType: 'Internal', ipBillingCategoryType: 'Select Category', recurring: false, serviceDoctorRequired: false, inactive: false
+                  orderName: '', hasComponents: false, testCode: '', displayOrderName: '', department: 'NONE', amount: '', processTime: '', machineName: '', sampleType: 'Select Sample', method: '', advice: '', workSheet: '', purpose: '', orderType: 'Internal', ipBillingCategoryType: 'Select Category', recurring: false, serviceDoctorRequired: false, inactive: false, uiType: 'richtext'
                 });
                 setResultNotesPage1('');
                 setResultNotesPage2('');

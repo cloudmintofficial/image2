@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Loader2, ArrowLeft, RefreshCw, Edit, Send } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { useReactToPrint } from 'react-to-print';
 import 'react-quill-new/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
@@ -46,14 +47,42 @@ export default function InProcessPage() {
   const [isEditingPatient, setIsEditingPatient] = useState(false);
   const [editPatientForm, setEditPatientForm] = useState<any>({});
 
+  const [richTextTab, setRichTextTab] = useState<'report' | 'templates'>('report');
+  const [signatureId, setSignatureId] = useState('default');
+
   const [doctorSearchText, setDoctorSearchText] = useState('');
   const [doctorSuggestions, setDoctorSuggestions] = useState<any[]>([]);
   const [isSearchingDoctor, setIsSearchingDoctor] = useState(false);
   const [doctorsList, setDoctorsList] = useState<any[]>([]);
+  const [signaturesList, setSignaturesList] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/doctors').then(res => res.json()).then(setDoctorsList).catch(console.error);
+    fetch('/api/doctors')
+      .then(res => res.json())
+      .then(data => Array.isArray(data) ? setDoctorsList(data) : setDoctorsList([]))
+      .catch(console.error);
+      
+    fetch('/api/signatures')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setSignaturesList(data);
+        } else {
+          console.error('Signatures API returned non-array:', data);
+          setSignaturesList([{ id: 'default', label: 'Default System Signature', name: 'DR. AUTHORIZED SIGNATORY', title: 'CONSULTANT RADIOLOGIST', signText: 'Signature' }]);
+        }
+      })
+      .catch(e => {
+        console.error(e);
+        setSignaturesList([{ id: 'default', label: 'Default System Signature', name: 'DR. AUTHORIZED SIGNATORY', title: 'CONSULTANT RADIOLOGIST', signText: 'Signature' }]);
+      });
   }, []);
+
+  const printRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: 'Diagnostic_Report'
+  });
 
   // Fetch test template when order is selected for result entry
   useEffect(() => {
@@ -224,7 +253,8 @@ export default function InProcessPage() {
           resultStatus: newStatus,
           resultMethod,
           resultDoctor,
-          resultAdvice
+          resultAdvice,
+          signatureId
         })
       });
       if (res.ok) {
@@ -516,6 +546,7 @@ export default function InProcessPage() {
                               setResultMethod(o.resultMethod || '');
                               setResultDoctor(o.resultDoctor || 'Select Service Doctor');
                               setResultAdvice(o.resultAdvice || '');
+                              setSignatureId(o.signatureId || 'default');
                               setViewMode('result');
                             }}
                           >
@@ -1081,35 +1112,90 @@ export default function InProcessPage() {
                 )}
 
                 {/* === RICH TEXT (RADIOLOGY / GENERAL) UI === */}
+                {/* === RICH TEXT (RADIOLOGY / GENERAL) UI === */}
                 {(!testTemplate || testTemplate?.uiType === 'richtext') && (
                   <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
                     <div style={{ display: 'flex', background: '#f8fafc', padding: '0 16px', borderBottom: '1px solid #e2e8f0' }}>
-                      <div style={{ padding: '12px 24px', color: '#f97316', fontSize: 13, fontWeight: 700, borderBottom: '2px solid #f97316', cursor: 'pointer' }}>Diagnostic Report</div>
-                      <div style={{ padding: '12px 24px', color: '#94a3b8', fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'color 0.2s' }}>Templates</div>
+                      <div 
+                        onClick={() => setRichTextTab('report')}
+                        style={{ padding: '12px 24px', color: richTextTab === 'report' ? '#f97316' : '#94a3b8', fontSize: 13, fontWeight: richTextTab === 'report' ? 700 : 600, borderBottom: richTextTab === 'report' ? '2px solid #f97316' : 'none', cursor: 'pointer', transition: 'color 0.2s' }}>
+                        Diagnostic Report
+                      </div>
+                      <div 
+                        onClick={() => setRichTextTab('templates')}
+                        style={{ padding: '12px 24px', color: richTextTab === 'templates' ? '#f97316' : '#94a3b8', fontSize: 13, fontWeight: richTextTab === 'templates' ? 700 : 600, borderBottom: richTextTab === 'templates' ? '2px solid #f97316' : 'none', cursor: 'pointer', transition: 'color 0.2s' }}>
+                        Templates
+                      </div>
                     </div>
-                    <div style={{ padding: '24px' }}>
-                      <style>{`
-                        .ql-container { height: 450px; font-family: "Inter", system-ui, sans-serif; font-size: 15px; border: none !important; }
-                        .ql-toolbar { background: #fff; border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid #f1f5f9 !important; padding: 12px !important; margin: -24px -24px 24px -24px; }
-                        .ql-editor { padding: 0; line-height: 1.6; }
-                        .ql-editor.ql-blank::before { left: 0; font-style: normal; color: #94a3b8; }
-                      `}</style>
-                      <ReactQuill
-                        theme="snow"
-                        value={resultInput}
-                        onChange={setResultInput}
-                        placeholder="Start typing diagnostic observations..."
-                        modules={{
-                          toolbar: [
-                            [{ 'header': [1, 2, 3, false] }],
-                            ['bold', 'italic', 'underline', 'strike'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'align': [] }],
-                            ['clean']
-                          ],
-                        }}
-                      />
+                    <div style={{ padding: '24px', minHeight: 450 }}>
+                      {richTextTab === 'report' ? (
+                        <>
+                          <style>{`
+                            .ql-container { height: 450px; font-family: "Inter", system-ui, sans-serif; font-size: 15px; border: none !important; }
+                            .ql-toolbar { background: #fff; border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid #f1f5f9 !important; padding: 12px !important; margin: -24px -24px 24px -24px; }
+                            .ql-editor { padding: 0; line-height: 1.6; }
+                            .ql-editor.ql-blank::before { left: 0; font-style: normal; color: #94a3b8; }
+                          `}</style>
+                          <ReactQuill
+                            theme="snow"
+                            value={resultInput}
+                            onChange={setResultInput}
+                            placeholder="Start typing diagnostic observations..."
+                            modules={{
+                              toolbar: [
+                                [{ 'header': [1, 2, 3, false] }],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                                [{ 'color': [] }, { 'background': [] }],
+                                [{ 'align': [] }],
+                                ['clean']
+                              ],
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                          <h4 style={{ margin: 0, fontSize: 14, color: '#475569' }}>Available Templates</h4>
+                          
+                          {testTemplate?.resultTemplate ? (
+                            <div 
+                              style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}
+                              onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
+                              onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
+                              onClick={() => {
+                                if (confirm('Applying this template will overwrite your current report. Continue?')) {
+                                  setResultInput(testTemplate.resultTemplate);
+                                  setRichTextTab('report');
+                                }
+                              }}
+                            >
+                              <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: 4 }}>Default Master Template</div>
+                              <div style={{ fontSize: 12, color: '#64748b' }}>Standard template defined for {testTemplate.testName}</div>
+                            </div>
+                          ) : null}
+
+                          <div 
+                            style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}
+                            onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
+                            onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
+                            onClick={() => {
+                              if (confirm('Applying this template will overwrite your current report. Continue?')) {
+                                setResultInput('<h3>NORMAL STUDY</h3><p>The study reveals no significant abnormality.</p><p><b>IMPRESSION:</b> Normal Study.</p>');
+                                setRichTextTab('report');
+                              }
+                            }}
+                          >
+                            <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: 4 }}>Normal Study (Generic)</div>
+                            <div style={{ fontSize: 12, color: '#64748b' }}>A simple "Normal Study" layout.</div>
+                          </div>
+                          
+                          {!testTemplate?.resultTemplate && (
+                            <div style={{ padding: '16px', textAlign: 'center', color: '#94a3b8', fontSize: 13, fontStyle: 'italic' }}>
+                              No specific template is assigned to this test in the master database.
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1162,14 +1248,23 @@ export default function InProcessPage() {
 
                     <div>
                       <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Authorized Signature</label>
-                      <select style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}>
-                        <option>Default System Signature</option>
+                      <select 
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}
+                        value={signatureId}
+                        onChange={e => setSignatureId(e.target.value)}
+                      >
+                        {signaturesList.map(sig => (
+                          <option key={sig.id} value={sig.id}>{sig.label}</option>
+                        ))}
                       </select>
                     </div>
 
                     <div style={{ marginTop: 8 }}>
                       <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Attachments</label>
-                      <button style={{ width: '100%', padding: '10px', background: '#f8fafc', color: '#475569', border: '1px dashed #cbd5e1', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+                      <button 
+                        onClick={() => alert('Attachments feature coming soon!')}
+                        style={{ width: '100%', padding: '10px', background: '#f8fafc', color: '#475569', border: '1px dashed #cbd5e1', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                      >
                         + Add Result Files
                       </button>
                     </div>
@@ -1197,7 +1292,12 @@ export default function InProcessPage() {
                     >
                       Save Draft
                     </button>
-                    <button style={{ padding: '12px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+                    <button 
+                      onClick={handlePrint}
+                      style={{ padding: '12px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
+                      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                      onMouseLeave={e => e.currentTarget.style.background = '#fff'}
+                    >
                       Print
                     </button>
                   </div>
@@ -1215,6 +1315,154 @@ export default function InProcessPage() {
         </div>
       )}
 
+        {/* Hidden Printable Area */}
+        <div style={{ display: 'none' }}>
+          <div ref={printRef} style={{ padding: '60px 40px', fontFamily: '"Arial", sans-serif', color: '#000', backgroundColor: '#fff', minHeight: '100vh', boxSizing: 'border-box' }}>
+            {/* Top Thick Line */}
+            <div style={{ borderTop: '4px solid #000', marginBottom: '24px', width: '100%' }}></div>
+            
+            {/* Header section */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+              
+              {/* Left Column */}
+              <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: 100 }}>Name</div>
+                  <div style={{ padding: '0 8px' }}>:</div>
+                  <div><strong>{selectedBill?.patientObj?.name?.toUpperCase() || ''}</strong></div>
+                </div>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: 100 }}>Age/Gender</div>
+                  <div style={{ padding: '0 8px' }}>:</div>
+                  <div><strong>{selectedBill?.patientObj?.age || ''}YEARS/{selectedBill?.patientObj?.gender === 'M' ? 'MALE' : 'FEMALE'}</strong></div>
+                </div>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: 100 }}>Reff By</div>
+                  <div style={{ padding: '0 8px' }}>:</div>
+                  <div><strong>{selectedBill?.doctor?.name?.toUpperCase() || 'SELF'}</strong></div>
+                </div>
+              </div>
+
+              {/* Right Column */}
+              <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '8px', marginLeft: '124px' }}>
+                  {/* Barcode representation */}
+                  <div style={{ fontFamily: 'monospace', fontSize: 26, letterSpacing: '-1.5px', transform: 'scaleY(1.5)', fontWeight: 'bold' }}>
+                    || ||||| |||| || | ||| ||
+                  </div>
+                </div>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: 100 }}>Bill Number</div>
+                  <div style={{ padding: '0 8px' }}>:</div>
+                  <div><strong>{selectedBill?.billNo || ''}</strong></div>
+                </div>
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: 100 }}>Reporting Date</div>
+                  <div style={{ padding: '0 8px' }}>:</div>
+                  <div>{new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</div>
+                </div>
+              </div>
+
+            </div>
+            
+            {/* Test Title */}
+            <h2 style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, margin: '0 0 32px 0', textTransform: 'uppercase' }}>
+              {selectedOrder?.orderName}
+            </h2>
+
+            {/* Test Content */}
+            <div style={{ fontSize: 14, lineHeight: 1.6 }}>
+              {testTemplate?.uiType === 'richtext' || !testTemplate ? (
+                <div dangerouslySetInnerHTML={{ __html: resultInput }} />
+              ) : testTemplate?.uiType === 'single' ? (
+                <div style={{ display: 'flex', gap: 20 }}>
+                  <div><strong>Result:</strong> {singleResult}</div>
+                  <div><strong>Units:</strong> {testTemplate.components?.[0]?.unit || ''}</div>
+                  <div><strong>Reference Range:</strong> {testTemplate.components?.[0]?.normalRange || ''}</div>
+                </div>
+              ) : testTemplate?.uiType === 'panel' ? (
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+                   <thead>
+                      <tr style={{ borderBottom: '1px solid #000' }}>
+                         <th style={{ textAlign: 'left', padding: '8px 0' }}>Component</th>
+                         <th style={{ textAlign: 'center', padding: '8px 0' }}>Result</th>
+                         <th style={{ textAlign: 'center', padding: '8px 0' }}>Range</th>
+                         <th style={{ textAlign: 'center', padding: '8px 0' }}>Units</th>
+                      </tr>
+                   </thead>
+                   <tbody>
+                      {testTemplate.components?.map((c: any) => (
+                         <tr key={c.id}>
+                           <td style={{ padding: '8px 0' }}>{c.name}</td>
+                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{panelResults[c.name] || ''}</td>
+                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.normalRange || ''}</td>
+                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.unit || ''}</td>
+                         </tr>
+                      ))}
+                   </tbody>
+                </table>
+              ) : testTemplate?.uiType === 'microbiology' ? (
+                <div>
+                  <p><strong>Organism Isolated:</strong> {microOrganism}</p>
+                  <p><strong>Growth:</strong> {microGrowth}</p>
+                  <p><strong>Colony Count:</strong> {microColonyCount}</p>
+                  <h4 style={{ marginTop: 20 }}>Antibiotic Sensitivity:</h4>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <tbody>
+                      {Object.entries(microSensitivity).map(([drug, result]) => (
+                        <tr key={drug}>
+                          <td style={{ padding: '4px 0' }}>{drug}</td>
+                          <td style={{ padding: '4px 0' }}>{result as string}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : testTemplate?.uiType === 'immunology' ? (
+                <div>
+                  <p><strong>Result:</strong> {immunoResult}</p>
+                  <p><strong>Method:</strong> {immunoMethod}</p>
+                  <p><strong>Value:</strong> {immunoTiter}</p>
+                </div>
+              ) : null}
+            </div>
+
+            {/* Footer Signature Block */}
+            <div style={{ marginTop: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '80px' }}>
+              {/* QR Code Placeholder */}
+              <div>
+                <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="100" height="100" fill="#fff" />
+                  <path d="M10,10 h30 v30 h-30 z M15,15 h20 v20 h-20 z" fill="#000" />
+                  <path d="M60,10 h30 v30 h-30 z M65,15 h20 v20 h-20 z" fill="#000" />
+                  <path d="M10,60 h30 v30 h-30 z M15,65 h20 v20 h-20 z" fill="#000" />
+                  <path d="M45,45 h10 v10 h-10 z M60,45 h10 v10 h-10 z M75,45 h15 v15 h-15 z M45,60 h15 v15 h-15 z M65,65 h10 v10 h-10 z M80,65 h10 v10 h-10 z M45,80 h10 v10 h-10 z M60,80 h15 v15 h-15 z M80,80 h10 v10 h-10 z" fill="#000" />
+                </svg>
+              </div>
+
+              {/* Signature */}
+              {(() => {
+                const sig = signaturesList.find(s => s.id === signatureId) || signaturesList[0];
+                if (!sig) return null;
+                return (
+                  <div style={{ textAlign: 'center', fontSize: 13, lineHeight: 1.4 }}>
+                    {sig.imageData ? (
+                      <div style={{ marginBottom: 8, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+                        <img src={sig.imageData} alt="Signature" style={{ maxHeight: 60, maxWidth: 200, objectFit: 'contain' }} />
+                      </div>
+                    ) : (
+                      <div style={{ fontFamily: '"Brush Script MT", cursive', fontSize: 32, marginBottom: 8, color: '#1e3a8a', transform: 'rotate(-5deg)' }}>
+                        {sig.signText}
+                      </div>
+                    )}
+                    <strong>{sig.name}</strong><br/>
+                    <span style={{ fontWeight: 800, whiteSpace: 'pre-line' }}>{sig.title}</span>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
     </div>
   );
 }

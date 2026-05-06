@@ -13,6 +13,7 @@ interface CompletedBill {
   phone: string;
   orders: string;
   balance: number;
+  rawBill: any;
 }
 
 export default function CompletedBillsPage() {

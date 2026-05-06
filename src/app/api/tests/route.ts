@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       orderName, hasComponents, testCode, displayOrderName, department, amount, 
       processTime, machineName, sampleType, method, resultNotes, advice, 
       workSheet, purpose, orderType, ipBillingCategoryType, recurring, 
-      serviceDoctorRequired, status, labId
+      serviceDoctorRequired, status, labId, uiType
     } = body;
 
     const test = await prisma.testMaster.create({
@@ -69,6 +69,7 @@ export async function POST(request: Request) {
         recurring: recurring || false,
         serviceDoctorRequired: serviceDoctorRequired || false,
         status: status || 'Active',
+        uiType: uiType || 'richtext',
         labId: labId || 1
       }
     });
