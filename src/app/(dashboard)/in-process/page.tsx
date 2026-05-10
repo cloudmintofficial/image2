@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Loader2, ArrowLeft, RefreshCw, Edit, Send } from 'lucide-react';
+import { Loader2, ArrowLeft, RefreshCw, Edit, Send, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useReactToPrint } from 'react-to-print';
@@ -12,6 +12,7 @@ const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 export default function InProcessPage() {
   const router = useRouter();
   const [data, setData] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
   const [viewMode, setViewMode] = useState<'list' | 'bill' | 'result' | 'edit'>('list');
@@ -355,10 +356,32 @@ export default function InProcessPage() {
 
       {viewMode === 'list' && (
         <>
-          <div className="page-header">
-            <h1 className="page-title">In Process</h1>
-            <p className="page-subtitle">Track active lab orders being processed</p>
+          <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h1 className="page-title">In Process</h1>
+              <p className="page-subtitle">Track active lab orders being processed</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-card)', padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', width: '300px' }}>
+              <Search size={18} className="text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search Patient, Bill No, Orders..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%', fontSize: '14px', color: 'var(--text-primary)' }}
+              />
+            </div>
           </div>
+          
+          {(() => {
+            const filteredData = data.filter(row => 
+              (row.patient && row.patient.toLowerCase().includes(searchQuery.toLowerCase())) ||
+              (row.orders && row.orders.toLowerCase().includes(searchQuery.toLowerCase())) ||
+              (row.billNo && row.billNo.toString().includes(searchQuery)) ||
+              (row.phone && row.phone.includes(searchQuery))
+            );
+
+            return (
           <div className="card">
             <div className="card-header" style={{ padding: 12 }}>
               <span style={{ fontWeight: 600 }}>Active Orders</span>
@@ -378,7 +401,7 @@ export default function InProcessPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map(row => {
+                  {filteredData.map(row => {
                     const allVerified = row.rawOrders?.every((o: any) => o.resultStatus === 'Verified');
                     const allCompleted = row.isCompleted;
                     const statusLabel = allVerified ? 'AUTHORIZED' : allCompleted ? 'COMPLETED' : 'IN PROCESS';
@@ -409,9 +432,11 @@ export default function InProcessPage() {
                     </tr>
                     );
                   })}
-                  {data.length === 0 && !loading && (
+                  {filteredData.length === 0 && !loading && (
                     <tr>
-                      <td colSpan={8} style={{ textAlign: 'center', padding: '32px' }}>No orders found</td>
+                      <td colSpan={8} style={{ textAlign: 'center', padding: '32px' }}>
+                        {searchQuery ? `No orders found for "${searchQuery}"` : 'No active orders'}
+                      </td>
                     </tr>
                   )}
                   {loading && data.length === 0 && (
@@ -423,6 +448,8 @@ export default function InProcessPage() {
               </table>
             </div>
           </div>
+          );
+        })()}
         </>
       )}
 
