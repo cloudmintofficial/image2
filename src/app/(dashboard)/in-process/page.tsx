@@ -333,6 +333,10 @@ export default function InProcessPage() {
 
   const handleUpdateDates = async () => {
     if (!selectedBill) return;
+    if (!editDate) {
+      alert('Please enter a valid date');
+      return;
+    }
     try {
       const res = await fetch(`/api/bills/${selectedBill.id}/edit-dates`, {
         method: 'PUT',
@@ -611,13 +615,17 @@ export default function InProcessPage() {
                             onMouseEnter={e => e.currentTarget.style.background = '#cbd5e1'} 
                             onMouseLeave={e => e.currentTarget.style.background = '#e2e8f0'}
                             onClick={() => {
-                              const now = new Date();
-                              setEditDate(now.toISOString().split('T')[0]);
-                              let hours = now.getHours();
+                              const orderDate = new Date(o.createdAt);
+                              const year = orderDate.getFullYear();
+                              const month = (orderDate.getMonth() + 1).toString().padStart(2, '0');
+                              const day = orderDate.getDate().toString().padStart(2, '0');
+                              setEditDate(`${year}-${month}-${day}`);
+                              
+                              let hours = orderDate.getHours();
                               const ampm = hours >= 12 ? 'pm' : 'am';
                               hours = hours % 12;
                               hours = hours ? hours : 12;
-                              setEditTime(`${hours}:${now.getMinutes().toString().padStart(2, '0')}${ampm}`);
+                              setEditTime(`${hours}:${orderDate.getMinutes().toString().padStart(2, '0')}${ampm}`);
                               setShowEditDatesModal(true);
                             }}
                           >
