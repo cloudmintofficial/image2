@@ -8,12 +8,13 @@ export async function GET(request: Request) {
   try {
     let tests: any[] = [];
     if (search) {
-      tests = await prisma.$queryRaw`
-        SELECT * FROM TestMaster 
-        WHERE status = 'Active' 
-        AND testName LIKE ${'%' + search + '%'} 
-        LIMIT 20
-      `;
+      tests = await prisma.testMaster.findMany({
+        where: { 
+          status: 'Active',
+          testName: { contains: search, mode: 'insensitive' }
+        },
+        take: 20
+      });
     } else {
       tests = await prisma.testMaster.findMany({
         where: { status: 'Active' },
