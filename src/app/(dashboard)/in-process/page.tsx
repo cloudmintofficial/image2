@@ -20,8 +20,11 @@ export default function InProcessPage() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   const [showDispatchModal, setShowDispatchModal] = useState(false);
+  const [showEditDatesModal, setShowEditDatesModal] = useState(false);
   const [dispatchDate, setDispatchDate] = useState('');
   const [dispatchTime, setDispatchTime] = useState('');
+  const [editDate, setEditDate] = useState('');
+  const [editTime, setEditTime] = useState('');
 
   const [resultInput, setResultInput] = useState('');
   const [resultMethod, setResultMethod] = useState('');
@@ -328,6 +331,25 @@ export default function InProcessPage() {
     }
   };
 
+  const handleUpdateDates = async () => {
+    if (!selectedBill) return;
+    try {
+      const res = await fetch(`/api/bills/${selectedBill.id}/edit-dates`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editDate, editTime })
+      });
+      if (res.ok) {
+        setShowEditDatesModal(false);
+        fetchBills();
+      } else {
+        alert('Failed to update dates');
+      }
+    } catch (e) {
+      alert('Network error while updating dates');
+    }
+  };
+
   const handleUpdatePatientDetails = async () => {
     if (!selectedBill) return;
     setIsSaving(true);
@@ -584,7 +606,23 @@ export default function InProcessPage() {
                         <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px', fontWeight: 500, color: 'var(--text-primary)' }}>{o.orderName}</td>
                         <td style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '1px solid #f1f5f9', padding: '12px 16px', color: 'var(--text-secondary)' }}>
                           {new Date(o.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
-                          <button style={{ padding: '4px 10px', background: '#e2e8f0', color: '#475569', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#cbd5e1'} onMouseLeave={e => e.currentTarget.style.background = '#e2e8f0'}>Edit Dates</button>
+                          <button 
+                            style={{ padding: '4px 10px', background: '#e2e8f0', color: '#475569', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }} 
+                            onMouseEnter={e => e.currentTarget.style.background = '#cbd5e1'} 
+                            onMouseLeave={e => e.currentTarget.style.background = '#e2e8f0'}
+                            onClick={() => {
+                              const now = new Date();
+                              setEditDate(now.toISOString().split('T')[0]);
+                              let hours = now.getHours();
+                              const ampm = hours >= 12 ? 'pm' : 'am';
+                              hours = hours % 12;
+                              hours = hours ? hours : 12;
+                              setEditTime(`${hours}:${now.getMinutes().toString().padStart(2, '0')}${ampm}`);
+                              setShowEditDatesModal(true);
+                            }}
+                          >
+                            Edit Dates
+                          </button>
                         </td>
                         <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px', color: 'var(--text-secondary)' }}>--</td>
                         <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px' }}>
@@ -620,6 +658,26 @@ export default function InProcessPage() {
                 <div className="modal-footer" style={{ justifyContent: 'center' }}>
                   <button className="btn" style={{ background: '#d35400', color: '#fff' }} onClick={handleDispatch}>Submit</button>
                   <button className="btn btn-outline" onClick={() => setShowDispatchModal(false)}>Close</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showEditDatesModal && (
+            <div className="modal-overlay">
+              <div className="modal" style={{ maxWidth: 400 }}>
+                <div className="modal-header" style={{ background: '#d35400', color: '#fff' }}>
+                  <h3 style={{ color: '#fff', margin: 0, fontSize: 16 }}>Bill Payment</h3>
+                  <button className="modal-close" style={{ color: '#fff' }} onClick={() => setShowEditDatesModal(false)}>✕</button>
+                </div>
+                <div className="modal-body" style={{ padding: 32, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
+                  <strong style={{ color: 'var(--text-primary)' }}>Bill Date:</strong>
+                  <input type="date" className="form-input" style={{ width: 140 }} value={editDate} onChange={e => setEditDate(e.target.value)} />
+                  <input type="text" className="form-input" style={{ width: 100 }} value={editTime} onChange={e => setEditTime(e.target.value)} />
+                </div>
+                <div className="modal-footer" style={{ justifyContent: 'center' }}>
+                  <button className="btn" style={{ background: '#d35400', color: '#fff' }} onClick={handleUpdateDates}>Submit</button>
+                  <button className="btn btn-outline" onClick={() => setShowEditDatesModal(false)}>Close</button>
                 </div>
               </div>
             </div>
