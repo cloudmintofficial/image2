@@ -8,11 +8,11 @@ export async function POST(request: Request) {
 
     const whereClause: any = {};
 
-    if (name) whereClause.name = { contains: name };
-    if (umr) whereClause.umr = { contains: umr };
-    if (phone) whereClause.phone = { contains: phone };
+    if (name) whereClause.name = { contains: name, mode: 'insensitive' };
+    if (umr) whereClause.umr = { contains: umr, mode: 'insensitive' };
+    if (phone) whereClause.phone = { contains: phone, mode: 'insensitive' };
     if (gender) whereClause.gender = gender;
-    if (source) whereClause.source = { contains: source };
+    if (source) whereClause.source = { contains: source, mode: 'insensitive' };
     
     // Note: ageRange and doctor would need to be handled according to schema structure
     // Since doctor is handled as additionalDetails string or specific relation, we'll keep it simple

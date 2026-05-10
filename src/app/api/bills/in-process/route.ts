@@ -32,16 +32,16 @@ export async function GET(request: Request) {
 
     if (patientName || primaryPhone || umrCard || externalId) {
       whereClause.patient = {};
-      if (patientName) whereClause.patient.name = { contains: patientName };
-      if (primaryPhone) whereClause.patient.phone = { contains: primaryPhone };
-      if (umrCard) whereClause.patient.umr = { contains: umrCard };
-      if (externalId) whereClause.patient.externalId = { contains: externalId };
+      if (patientName) whereClause.patient.name = { contains: patientName, mode: 'insensitive' };
+      if (primaryPhone) whereClause.patient.phone = { contains: primaryPhone, mode: 'insensitive' };
+      if (umrCard) whereClause.patient.umr = { contains: umrCard, mode: 'insensitive' };
+      if (externalId) whereClause.patient.externalId = { contains: externalId, mode: 'insensitive' };
     }
 
     if (orderName) {
       whereClause.orders = {
         some: {
-          orderName: { contains: orderName }
+          orderName: { contains: orderName, mode: 'insensitive' }
         }
       };
     }

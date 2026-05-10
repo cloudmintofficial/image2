@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       where: {
         OR: [
           { testName: orderName },
-          { testName: { contains: orderName } },
+          { testName: { contains: orderName, mode: 'insensitive' } },
         ]
       },
       include: {

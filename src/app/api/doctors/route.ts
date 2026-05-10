@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     const doctors = await prisma.doctor.findMany({
       where: {
         status: 'Active',
-        name: { contains: search }
+        name: { contains: search, mode: 'insensitive' }
       },
       take: 10
     });

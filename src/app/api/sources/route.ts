@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   try {
     const sources = await prisma.source.findMany({
       where: search ? {
-        name: { contains: search },
+        name: { contains: search, mode: 'insensitive' },
         status: 'Active'
       } : undefined,
       orderBy: { name: 'asc' }

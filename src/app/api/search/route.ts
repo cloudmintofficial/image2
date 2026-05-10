@@ -12,13 +12,13 @@ export async function GET(request: Request) {
     const where: any = {};
 
     if (patientName) {
-      where.name = { contains: patientName };
+      where.name = { contains: patientName, mode: 'insensitive' };
     }
     if (umr) {
-      where.umr = { contains: umr };
+      where.umr = { contains: umr, mode: 'insensitive' };
     }
     if (phone) {
-      where.phone = { contains: phone };
+      where.phone = { contains: phone, mode: 'insensitive' };
     }
 
     if (billNo) {

@@ -9,9 +9,9 @@ export async function GET(request: Request) {
     const patients = await prisma.patient.findMany({
       where: {
         OR: [
-          { name: { contains: search } },
-          { phone: { contains: search } },
-          { umr: { contains: search } }
+          { name: { contains: search, mode: 'insensitive' } },
+          { phone: { contains: search, mode: 'insensitive' } },
+          { umr: { contains: search, mode: 'insensitive' } }
         ]
       },
       take: 10
