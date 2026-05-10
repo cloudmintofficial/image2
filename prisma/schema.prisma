@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -49,7 +49,7 @@ model Patient {
   externalId        String?
   email             String?
   photoUrl          String?
-  additionalDetails String?  // Changed from Json to String for SQLite compatibility
+  additionalDetails Json?    // Native JSON in PostgreSQL
   bills             Bill[]
   createdAt         DateTime @default(now())
 }
@@ -191,8 +191,8 @@ model AuditLog {
   action    String
   entity    String
   entityId  Int?
-  oldData   String?  // Changed from Json to String for SQLite compatibility
-  newData   String?  // Changed from Json to String for SQLite compatibility
+  oldData   Json?    // Native JSON in PostgreSQL
+  newData   Json?    // Native JSON in PostgreSQL
   createdAt DateTime @default(now())
 }
 
