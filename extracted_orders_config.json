@@ -1,0 +1,2172 @@
+{
+  "extraction_metadata": {
+    "source": "https://medfileshared2.bharathcloud.com/lab",
+    "extracted_at": "2026-05-09",
+    "version": "1.0",
+    "total_orders": 100,
+    "departments": [
+      "BIO CHEMISTRY",
+      "HEMATOLOGY",
+      "CLINICAL PATHOLOGY",
+      "SEROLOGY",
+      "IMMUNOLOGY",
+      "MICROBIOLOGY",
+      "RADIOLOGY"
+    ],
+    "lab_profiles": [
+      {
+        "profile_name": "MASTER HEALTH CHECKUP",
+        "amount": 3999,
+        "status": "Active"
+      },
+      {
+        "profile_name": "DIABETIC PROFILE",
+        "amount": 1999,
+        "status": "Active"
+      },
+      {
+        "profile_name": "CARDIAC PROFILE",
+        "amount": 4999,
+        "status": "Active"
+      },
+      {
+        "profile_name": "SENIOR CITIZEN HEALTH PLAN-MALE",
+        "amount": 2500,
+        "status": "Active"
+      },
+      {
+        "profile_name": "SENIOR CITIZENS HEALTH PLAN - FEMALE",
+        "amount": 1900,
+        "status": "Active"
+      },
+      {
+        "profile_name": "HEALTH PLAN FOR WOMEN",
+        "amount": 2600,
+        "status": "Active"
+      },
+      {
+        "profile_name": "ANA PROFILE",
+        "amount": 4000,
+        "status": "Active"
+      },
+      {
+        "profile_name": "ARCA WHOLE BODY CHECKUP (SPECIAL)",
+        "amount": 7500,
+        "status": "InActive"
+      },
+      {
+        "profile_name": "ARCA EXCECUTIVE HEALTH CHECKUP(REGULAR)",
+        "amount": 9510,
+        "status": "InActive"
+      },
+      {
+        "profile_name": "ARCA EXECUTIVE HEALTH CHECKUP(SPECIAL)",
+        "amount": 6000,
+        "status": "InActive"
+      }
+    ]
+  },
+  "orders": [
+    {
+      "order_name": "ANTI CCP",
+      "amount": 1500,
+      "order_type": "Internal",
+      "department": "IMMUNOLOGY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "X-Ray LEFT ANKLE LAT",
+      "amount": 400,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Findings",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "125-Di HYDROXYCHOLECALCIFEROL(VITAMIN D3)",
+      "amount": 3200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "17 - HYDROXY OH PROGESTERONE",
+      "amount": 1400,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "17 - HYDROXY OH PROGESTERONE",
+          "field_type": "NUMBER",
+          "unit": "ng/ml",
+          "reference_range": "0.2 - 2.3",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "17 - KETOSTEROIDS",
+      "amount": 4500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "17 - KETOSTEROIDS",
+          "field_type": "NUMBER",
+          "unit": "mg/24hrs",
+          "reference_range": "6 - 18",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "17-alphavhydroxy progesterone(17-OHP)",
+      "amount": 1400,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "17-KETOSTEROIDS, 24 HOUR URINE",
+      "amount": 6000,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 HOURS - VANILLYL MANDELIC ACID",
+      "amount": 1600,
+      "order_type": "Internal",
+      "department": "SEROLOGY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 HOURS URINE 5 HIAA",
+      "amount": 3000,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 HOURS URINE ALDOSTERONE",
+      "amount": 2500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "24 HOURS URINE ALDOSTERONE",
+          "field_type": "NUMBER",
+          "unit": "µg/24hrs",
+          "reference_range": "2.3 - 21.0",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "24 HOURS URINE COPPER",
+      "amount": 2000,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 HOURS URINE CORTISOL",
+      "amount": 1500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "24 HOURS URINE CORTISOL",
+          "field_type": "NUMBER",
+          "unit": "µg/24hrs",
+          "reference_range": "28.5 - 213.7",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "24 HOURS URINE FOR ALBUMIN",
+      "amount": 300,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 HRS URINE FOR METANEPHRINES",
+      "amount": 3500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 hrs urine protein",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 hrs urine Urea",
+      "amount": 300,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24 hrs urine Uric Acid",
+      "amount": 300,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "24hrs protein / creatnine ratio",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "Protein",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "--",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "Creatinine",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "--",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "Ratio",
+          "field_type": "NUMBER",
+          "unit": "",
+          "reference_range": "--",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "24hrs urinary cortisol/creatinine ratio",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "25 -Hydroxy vitamin D",
+      "amount": 1500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "25 -Hydroxy vitamin D",
+          "field_type": "NUMBER",
+          "unit": "ng/ml",
+          "reference_range": "30 - 100",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "25 OFF VITAMIN D3",
+      "amount": 1200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Actiated Partial Thromboplastin Time",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "ADA ANY FLUID",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "ADA ANY FLUID ANALASIS",
+      "amount": 1000,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "ADA Levels1",
+      "amount": 350,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "ADA Levels",
+          "field_type": "NUMBER",
+          "unit": "U/L",
+          "reference_range": "0 - 40",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "ADENOSINE DEAMINASE (ADA)",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Adreno Corticotrophic Hormone(ACTH)",
+      "amount": 1800,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "AEC",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "AEC",
+          "field_type": "NUMBER",
+          "unit": "cells/cumm",
+          "reference_range": "40 - 440",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "AFB CULTURE",
+      "amount": 1200,
+      "order_type": "Internal",
+      "department": "MICROBIOLOGY",
+      "category": "MICROBIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Culture Result",
+          "Sensitivity"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "AFB STAIN",
+      "amount": 350,
+      "order_type": "Internal",
+      "department": "MICROBIOLOGY",
+      "category": "MICROBIOLOGY",
+      "entry_type": "TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "AFB-GRAM STAIN",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "MICROBIOLOGY",
+      "category": "MICROBIOLOGY",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "AFB STAIN",
+          "field_type": "TEXT",
+          "unit": "--",
+          "reference_range": "--",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "GRAM STAIN",
+          "field_type": "TEXT",
+          "unit": "--",
+          "reference_range": "--",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "AG RATIO",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "AG RATIO",
+          "field_type": "NUMBER",
+          "unit": "",
+          "reference_range": "1.0 - 2.0",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "ALANINE TRANSAMINASE( ALT/ SGPT)",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Albert stain( Diptheria Bacilli)",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "MICROBIOLOGY",
+      "category": "MICROBIOLOGY",
+      "entry_type": "TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "ALBUMIN & GLOBULIN RATIO",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "Albumin",
+          "field_type": "NUMBER",
+          "unit": "g/dl",
+          "reference_range": "3.5 - 5.0",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "Globulin",
+          "field_type": "NUMBER",
+          "unit": "g/dl",
+          "reference_range": "2.0 - 3.5",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "A/G Ratio",
+          "field_type": "NUMBER",
+          "unit": "",
+          "reference_range": "1.0 - 2.0",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "Alcohol serum",
+      "amount": 1500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Alcohol urine",
+      "amount": 1500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Aldolase",
+      "amount": 800,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Aldosterone",
+      "amount": 3000,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Alkaline phosphatase(ALP)",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "Alkaline phosphatase(ALP)",
+          "field_type": "NUMBER",
+          "unit": "U/L",
+          "reference_range": "44 - 147",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "ALL LIMBS - ARTERIAL",
+      "amount": 6000,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Findings",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "COMPLETE BLOOD PICTURE(CBP)",
+      "amount": 300,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "PROFILE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "HAEMOGLOBIN (Hb)",
+          "field_type": "NUMBER",
+          "unit": "Gm/dl",
+          "reference_range": "12 - 16",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "TOTAL LEUCOCYTE COUNT(WBC)",
+          "field_type": "NUMBER",
+          "unit": "Cells/cumm",
+          "reference_range": "4000 - 11000",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "DIFFERENTIAL COUNT",
+          "field_name": "NEUTROPHILS",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "40 - 70",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "DIFFERENTIAL COUNT",
+          "field_name": "LYMPHOCYTES",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "20 - 45",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "DIFFERENTIAL COUNT",
+          "field_name": "EOSINOPHILS",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "01 - 06",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "DIFFERENTIAL COUNT",
+          "field_name": "MONOCYTES",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "02 - 10",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "DIFFERENTIAL COUNT",
+          "field_name": "BASOPHILS",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "00 - 01",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "R.B.C COUNT",
+          "field_type": "NUMBER",
+          "unit": "Millions/cumm",
+          "reference_range": "3.8 - 5.8",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "PLATELET COUNT",
+          "field_type": "NUMBER",
+          "unit": "Lakhs/cumm",
+          "reference_range": "1.5 - 4.5",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "PACKED CELL VOLUME(PCV)",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "36 - 46",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "M.C.V.",
+          "field_type": "NUMBER",
+          "unit": "fl",
+          "reference_range": "78 - 100",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "M.C.H.",
+          "field_type": "NUMBER",
+          "unit": "pg",
+          "reference_range": "27 - 32",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "M.C.H.C.",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "32 - 38",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "LIVER FUNCTION TEST (LFT)",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "PROFILE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "TOTAL BILIRUBIN",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "0.2 - 1.0",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "DIRECT BILIRUBIN",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "0.0 - 0.2",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "INDIRECT BILIRUBIN",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "0.2 - 0.8",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "SGOT (AST)",
+          "field_type": "NUMBER",
+          "unit": "U/L",
+          "reference_range": "05 - 40",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "SGPT (ALT)",
+          "field_type": "NUMBER",
+          "unit": "U/L",
+          "reference_range": "05 - 35",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "ALKALINE PHOSPHATASE",
+          "field_type": "NUMBER",
+          "unit": "U/L",
+          "reference_range": "44 - 147",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "TOTAL PROTEINS",
+          "field_type": "NUMBER",
+          "unit": "g/dl",
+          "reference_range": "6.0 - 8.0",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "ALBUMIN",
+          "field_type": "NUMBER",
+          "unit": "g/dl",
+          "reference_range": "3.5 - 5.0",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "GLOBULIN",
+          "field_type": "NUMBER",
+          "unit": "g/dl",
+          "reference_range": "2.0 - 3.5",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "A/G RATIO",
+          "field_type": "NUMBER",
+          "unit": "",
+          "reference_range": "1.0 - 2.0",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "GGT",
+          "field_type": "NUMBER",
+          "unit": "U/L",
+          "reference_range": "0 - 55",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "RFT(Renal function test)",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "PROFILE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "BLOOD UREA",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "15 - 40",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "SERUM CREATININE",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "0.6 - 1.4",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "SERUM URIC ACID",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "Male: 3.4 - 7.0 Female: 2.4 - 5.7",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "BUN",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "7 - 18",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "ELECTROLYTES",
+          "field_name": "SODIUM",
+          "field_type": "NUMBER",
+          "unit": "mEq/L",
+          "reference_range": "136 - 145",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "ELECTROLYTES",
+          "field_name": "POTASSIUM",
+          "field_type": "NUMBER",
+          "unit": "mEq/L",
+          "reference_range": "3.5 - 5.1",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "ELECTROLYTES",
+          "field_name": "CHLORIDES",
+          "field_type": "NUMBER",
+          "unit": "mEq/L",
+          "reference_range": "98 - 106",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "ELECTROLYTES",
+          "field_name": "BICARBONATES",
+          "field_type": "NUMBER",
+          "unit": "mEq/L",
+          "reference_range": "22 - 29",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "CALCIUM",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "8.5 - 10.5",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "PHOSPHOROUS",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "2.5 - 4.5",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "LIPID PROFILE",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "PROFILE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "FASTING BLOOD SUGAR",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "70 - 110",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "TOTAL CHOLESTROL",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "Desirable: Upto <200 Borderline: 200-239 High: >250",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "H D L CHOLESTROL",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "Male: 30-63 Female: 34-80",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "TRIGLYCERIDES",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "--",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "V L D L CHOLESTROL",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "6.0 - 38.0",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "L D L CHOLESTROL",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "Optimal: Below 100 Near optimal: 100-129 Borderline: 130-159 High: 160-189 Very High: >190",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "L.D.L. / H.D.L. Ratio",
+          "field_type": "NUMBER",
+          "unit": "--",
+          "reference_range": "--",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "T.CHOL/HDL Ratio",
+          "field_type": "NUMBER",
+          "unit": "--",
+          "reference_range": "--",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "THYROID PROFILE",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "T3 (Total Triiodothyronine)",
+          "field_type": "NUMBER",
+          "unit": "ng/ml",
+          "reference_range": "0.60 - 1.81",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "T4 (Total Thyroxine)",
+          "field_type": "NUMBER",
+          "unit": "µg/dl",
+          "reference_range": "4.5 - 12.6",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "TSH (Ultrasensitive)",
+          "field_type": "NUMBER",
+          "unit": "µIU/ml",
+          "reference_range": "0.35 - 5.5",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "T3 T4 TSH",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "T3",
+          "field_type": "NUMBER",
+          "unit": "ng/ml",
+          "reference_range": "0.60 - 1.81",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "T4",
+          "field_type": "NUMBER",
+          "unit": "µg/dl",
+          "reference_range": "4.5 - 12.6",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "TSH",
+          "field_type": "NUMBER",
+          "unit": "µIU/ml",
+          "reference_range": "0.35 - 5.5",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "TSH",
+      "amount": 300,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "TSH (Ultrasensitive)",
+          "field_type": "NUMBER",
+          "unit": "µIU/ml",
+          "reference_range": "0.35 - 5.5",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "WIDAL",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "SEROLOGY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "SALMONELLA TYPHI' O '",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "1:80 & Above Significant",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "SALMONELLA TYPI ' H '",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "1:80 & Above Significant",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "SALMONELLA PARA TYPHI' AH'",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "1:80 & Above Significant",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "SALMONELLA PARA TYPHI' BH'",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "1:80 & Above Significant",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "impression",
+          "field_type": "TEXT",
+          "unit": "--",
+          "reference_range": "--",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "E.S.R",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "E.S.R (Westergren method)",
+          "field_type": "NUMBER",
+          "unit": "mm at the end of 1st Hr",
+          "reference_range": "00 - 15",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "HbA1c(Glycosylated Haemoglobin)",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "HbA1c",
+          "field_type": "NUMBER",
+          "unit": "%",
+          "reference_range": "4.5 - 6.3",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "MEAN BLOOD GLUCOSE",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "--",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "HAEMOGLOBIN (Hb)",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "HAEMOGLOBIN (Hb)",
+          "field_type": "NUMBER",
+          "unit": "Gm/dl",
+          "reference_range": "12 - 16",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "FBS(FASTING BLOOD SUGAR)",
+      "amount": 80,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "FASTING BLOOD SUGAR (FBS)",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "70 - 110",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "PpBs(POST PRANDIAL BLOOD SUGAR)",
+      "amount": 80,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "POST PRANDIAL BLOOD SUGAR (PPBS)",
+          "field_type": "NUMBER",
+          "unit": "mg/dL",
+          "reference_range": "90 - 170",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "BLOOD GROUP & Rh TYPING",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "BLOOD GROUP",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "--",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "Rh TYPING",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "--",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "WIDAL - MP",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "SEROLOGY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "FASTING LIPID PROFILE",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "PROFILE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "FT TSH thyroxine Free",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "TSH RECEPTOR ANTIBODY",
+      "amount": 2500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "ANTI THYROID ANTIBODIES",
+      "amount": 2400,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "Intact Parathyroid Hormone(IPTH)",
+      "amount": 1500,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "PARA THYROID",
+      "amount": 600,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "USG THYROID",
+      "amount": 1200,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "InActive",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Findings",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "USG THYROID.",
+      "amount": 1500,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Findings",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "COMPLETE BLOOD PICTURE (CBP).",
+      "amount": 400,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "PROFILE",
+      "entry_type": "MULTI_FIELD",
+      "status": "InActive",
+      "has_components": true,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "LIVER ABSCES",
+      "amount": 5000,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Findings",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "Liver kidney Microsome(LKM) 1 Antibody",
+      "amount": 1200,
+      "order_type": "Internal",
+      "department": "IMMUNOLOGY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "LIVER PICTALE",
+      "amount": 12000,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Findings",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "MRI TRIPHASIC LIVER (CONTRAST)",
+      "amount": 10000,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Findings",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "PARA THYROID HARMONE(IPTH)",
+      "amount": 1200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "ENDOCRINE",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "CUE(COMPLETE URINE EXAMINATION)",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "CLINICAL PATHOLOGY",
+      "category": "PROFILE",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "PHYSICAL EXAMINATION",
+          "field_name": "COLOUR",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "Pale Yellow",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "PHYSICAL EXAMINATION",
+          "field_name": "APPEARANCE",
+          "field_type": "SELECT",
+          "unit": "--",
+          "reference_range": "Clear",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "PHYSICAL EXAMINATION",
+          "field_name": "REACTION(pH)",
+          "field_type": "NUMBER",
+          "unit": "",
+          "reference_range": "5.0 - 8.0",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "PHYSICAL EXAMINATION",
+          "field_name": "SPECIFIC GRAVITY",
+          "field_type": "NUMBER",
+          "unit": "",
+          "reference_range": "1.005 - 1.030",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "CHEMICAL EXAMINATION",
+          "field_name": "ALBUMIN(PROTEIN)",
+          "field_type": "SELECT",
+          "unit": "",
+          "reference_range": "Nil",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "CHEMICAL EXAMINATION",
+          "field_name": "SUGAR(GLUCOSE)",
+          "field_type": "SELECT",
+          "unit": "",
+          "reference_range": "Nil",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "CHEMICAL EXAMINATION",
+          "field_name": "BILE SALTS",
+          "field_type": "SELECT",
+          "unit": "",
+          "reference_range": "Absent",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "CHEMICAL EXAMINATION",
+          "field_name": "BILE PIGMENTS",
+          "field_type": "SELECT",
+          "unit": "",
+          "reference_range": "Absent",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "CHEMICAL EXAMINATION",
+          "field_name": "KETONE BODIES",
+          "field_type": "SELECT",
+          "unit": "",
+          "reference_range": "Absent",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "CHEMICAL EXAMINATION",
+          "field_name": "UROBILINOGEN",
+          "field_type": "SELECT",
+          "unit": "",
+          "reference_range": "Normal",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "MICROSCOPIC EXAMINATION",
+          "field_name": "PUS CELLS",
+          "field_type": "NUMBER",
+          "unit": "/HPF",
+          "reference_range": "0 - 5",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "MICROSCOPIC EXAMINATION",
+          "field_name": "EPITHELIAL CELLS",
+          "field_type": "TEXT",
+          "unit": "/HPF",
+          "reference_range": "Few",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "MICROSCOPIC EXAMINATION",
+          "field_name": "RED BLOOD CELLS",
+          "field_type": "TEXT",
+          "unit": "/HPF",
+          "reference_range": "Nil",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "MICROSCOPIC EXAMINATION",
+          "field_name": "CASTS",
+          "field_type": "TEXT",
+          "unit": "",
+          "reference_range": "Nil",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "MICROSCOPIC EXAMINATION",
+          "field_name": "CRYSTALS",
+          "field_type": "TEXT",
+          "unit": "",
+          "reference_range": "Nil",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "BLOOD SUGAR - RBS",
+      "amount": 80,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "RANDOM BLOOD SUGAR",
+          "field_type": "NUMBER",
+          "unit": "mg/dl",
+          "reference_range": "70 - 140",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "HIV I & II",
+      "amount": 500,
+      "order_type": "Internal",
+      "department": "SEROLOGY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "SELECT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "HBsAg",
+      "amount": 300,
+      "order_type": "Internal",
+      "department": "SEROLOGY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "SELECT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SERUM CREATININE",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "BLOOD UREA",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SERUM URIC ACID",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "TOTAL BILIRUBIN",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SGOT (AST)",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SGPT (ALT)",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "PLATELET COUNT",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "TOTAL LEUCOCYTE COUNT (TLC)",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "BLEEDING TIME & CLOTTING TIME",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "BLEEDING TIME",
+          "field_type": "NUMBER",
+          "unit": "mins",
+          "reference_range": "1 - 5",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "CLOTTING TIME",
+          "field_type": "NUMBER",
+          "unit": "mins",
+          "reference_range": "3 - 8",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "PT INR",
+      "amount": 350,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "Prothrombin Time",
+          "field_type": "NUMBER",
+          "unit": "seconds",
+          "reference_range": "11 - 16",
+          "status": "Active"
+        },
+        {
+          "sub_heading": "",
+          "field_name": "INR",
+          "field_type": "NUMBER",
+          "unit": "",
+          "reference_range": "0.8 - 1.2",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    },
+    {
+      "order_name": "TOTAL PROTEIN",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SERUM ALBUMIN",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SERUM GLOBULIN",
+      "amount": 100,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "GGT(Gamma Glutamyl Transferase)",
+      "amount": 300,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SERUM CALCIUM",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SERUM PHOSPHOROUS",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "SODIUM",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "POTASSIUM",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "CHLORIDES",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "TOTAL CHOLESTEROL",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "HDL CHOLESTEROL",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "LDL CHOLESTEROL",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "TRIGLYCERIDES",
+      "amount": 150,
+      "order_type": "Internal",
+      "department": "BIO CHEMISTRY",
+      "category": "NUMERIC",
+      "entry_type": "NUMBER",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": null
+    },
+    {
+      "order_name": "USG ABDOMEN",
+      "amount": 1200,
+      "order_type": "Internal",
+      "department": "RADIOLOGY",
+      "category": "RADIOLOGY",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "Liver",
+          "Gall Bladder",
+          "CBD",
+          "Pancreas",
+          "Spleen",
+          "Right Kidney",
+          "Left Kidney",
+          "Urinary Bladder",
+          "Uterus",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "PERIPHERAL SMEAR",
+      "amount": 200,
+      "order_type": "Internal",
+      "department": "HEMATOLOGY",
+      "category": "NUMERIC",
+      "entry_type": "RICH_TEXT",
+      "status": "Active",
+      "has_components": false,
+      "fields": [],
+      "template": {
+        "sections": [
+          "RBC Morphology",
+          "WBC",
+          "Platelets",
+          "Impression"
+        ],
+        "raw_template": ""
+      }
+    },
+    {
+      "order_name": "ANA PROFILE",
+      "amount": 4000,
+      "order_type": "Internal",
+      "department": "IMMUNOLOGY",
+      "category": "IMMUNOLOGY",
+      "entry_type": "MULTI_FIELD",
+      "status": "Active",
+      "has_components": true,
+      "fields": [
+        {
+          "sub_heading": "",
+          "field_name": "ANA (IFA)",
+          "field_type": "SELECT",
+          "unit": "",
+          "reference_range": "Negative",
+          "status": "Active"
+        }
+      ],
+      "template": null
+    }
+  ]
+}
