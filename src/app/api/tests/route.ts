@@ -16,11 +16,13 @@ export async function GET(request: Request) {
           ...baseWhere,
           testName: { contains: search, mode: 'insensitive' }
         },
+        orderBy: { testName: 'asc' },
         take: all ? undefined : 20
       });
     } else {
       tests = await prisma.testMaster.findMany({
         where: baseWhere,
+        orderBy: { testName: 'asc' },
         take: all ? undefined : 20
       });
     }

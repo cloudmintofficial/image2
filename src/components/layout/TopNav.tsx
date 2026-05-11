@@ -15,7 +15,6 @@ const moduleActions: Record<string, string[]> = {
   '/non-financial-status': ['Get Report', 'Clear'],
   '/online-request-sample-status': ['Get Report', 'Clear'],
   '/order-maintenance': ['Add Order', 'Service Group', 'Lab Profiles', 'Lab Default Font', 'Print Price List', 'Price List Excel'],
-  '/add-order': ['Save Order', 'Clear', 'Cancel', 'Order Templates'],
 };
 
 interface TopNavProps {

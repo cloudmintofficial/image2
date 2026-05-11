@@ -3,1284 +3,1398 @@ SERVICES
 Order Name
 Order
 Amount
-X-Ray LEFT ANKLE LAT 400
-ANTI CCP 1500
-125-Di HYDROXYCHOLECALCIFEROL(VITAMIN D3) 3200
-17 - HYDROXY OH PROGESTERONE 1400
-17 - KETOSTEROIDS 4500
-17-alphavhydroxy progesterone(17-OHP) 1400
-17-KETOSTEROIDS, 24 HOUR URINE 6000
-24 HOURS - VANILLYL MANDELIC ACID 1600
-24 HOURS URINE 5 HIAA 3000
-24 HOURS URINE ALDOSTERONE 2500
-24 HOURS URINE COPPER 2000
-24 HOURS URINE CORTISOL 1500
-24 HOURS URINE FOR ALBUMIN 300
-24 HRS URINE FOR METANEPHRINES 3500
-24 hrs urine protein 500
-24 hrs urine Urea 300
-24 hrs urine Uric Acid 300
-24hrs protein / creatnine ratio 500
-24hrs urinary cortisol/creatinine ratio 600
-25 -Hydroxy vitamin D 1500
-25 OFF VITAMIN D3 1200
-3D CT ELBOW JOINT 4500
-3D CT RIGHT SHOULDER 4000
-3D FACE 5000
-5-DIHYDROTESTOSTERONE 2600
-5-hydroxy indole acetic acid(5-HIAA) 2800
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 1/48
+X-Ray LEFT ANKLE LAT 	400
+ANTI CCP 	1500
+125-Di HYDROXYCHOLECALCIFEROL(VITAMIN D3) 	3200
+17 - HYDROXY OH PROGESTERONE 	1400
+17 - KETOSTEROIDS 	4500
+17-alphavhydroxy progesterone(17-OHP) 	1400
+17-KETOSTEROIDS, 24 HOUR URINE 	6000
+24 HOURS - VANILLYL MANDELIC ACID 	1600
+24 HOURS URINE 5 HIAA 	3000
+24 HOURS URINE ALDOSTERONE 	2500
+24 HOURS URINE COPPER 	2000
+24 HOURS URINE CORTISOL 	1500
+24 HOURS URINE FOR ALBUMIN 	300
+24 HRS URINE FOR METANEPHRINES 	3500
+24 hrs urine protein 	500
+24 hrs urine Urea 	300
+24 hrs urine Uric Acid 	300
+24hrs protein / creatnine ratio 	500
+24hrs urinary cortisol/creatinine ratio 	600
+25 -Hydroxy vitamin D 	1500
+25 OFF VITAMIN D3 	1200
+3D CT ELBOW JOINT 	4500
+3D CT RIGHT SHOULDER 	4000
+3D FACE 	5000
+5-DIHYDROTESTOSTERONE 	2600
+5-hydroxy indole acetic acid(5-HIAA) 	2800
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	1/48
+
+-- 1 of 48 --
+
 Order Name
 Order
 Amount
-A F B Culture- Automated 2000
-A.F.B STAIN FLUID 800
-A.F.B STAIN PUS 500
-ABSOLUTE ESONOPHIL COUNT(AEC) 500
-ABSOLUTE LYMPHOCYTE COUNT 200
-Acetyl Cloine Receptor Antibody 4200
-ACID FAST SUSPECTIBILITY-10 DRUGS 7400
-Acid Phosphatase- Total 250
-Acid Phosphatase-Prostatic(PAP) 750
-ACTH 1800
-ACTIATED PARTIAL THROMBOPLASTIN TIME (APTT) 600
-Actiated Partial Thromboplastin Time 500
-ADA ANY FLUID 500
-ADA ANY FLUID ANALASIS 1000
-ADA Levels1 350
-ADENOSINE DEAMINASE (ADA) 500
-Adreno Corticotrophic Hormone(ACTH) 1800
-AEC 500
-AFB CULTURE 1200
-AFB STAIN 350
-AFB-GRAM STAIN 200
-AG RATIO 100
-ALANINE TRANSAMINASE( ALT/ SGPT) 150
-Albert stain( Diptheria Bacilli) 200
-ALBUMIN & GLOBULIN RATIO 100
-Alcohol serum 1500
-Alcohol urine 1500
-Aldolase 800
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 2/48
+A F B Culture- Automated 	2000
+A.F.B STAIN FLUID 	800
+A.F.B STAIN PUS 	500
+ABSOLUTE ESONOPHIL COUNT(AEC) 	500
+ABSOLUTE LYMPHOCYTE COUNT 	200
+Acetyl Cloine Receptor Antibody 	4200
+ACID FAST SUSPECTIBILITY-10 DRUGS 	7400
+Acid Phosphatase- Total 	250
+Acid Phosphatase-Prostatic(PAP) 	750
+ACTH 	1800
+ACTIATED PARTIAL THROMBOPLASTIN TIME (APTT) 	600
+Actiated Partial Thromboplastin Time 	500
+ADA ANY FLUID 	500
+ADA ANY FLUID ANALASIS 	1000
+ADA Levels1 	350
+ADENOSINE DEAMINASE (ADA) 	500
+Adreno Corticotrophic Hormone(ACTH) 	1800
+AEC 	500
+AFB CULTURE 	1200
+AFB STAIN 	350
+AFB-GRAM STAIN 	200
+AG RATIO 	100
+ALANINE TRANSAMINASE( ALT/ SGPT) 	150
+Albert stain( Diptheria Bacilli) 	200
+ALBUMIN & GLOBULIN RATIO 	100
+Alcohol serum 	1500
+Alcohol urine 	1500
+Aldolase 	800
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	2/48
+
+-- 2 of 48 --
+
 Order Name
 Order
 Amount
-Aldosterone 3000
-Alkaline phosphatase(ALP) 200
-ALL LIMBS - ARTERIAL 6000
-Allergy - Inhalants 2000
-ALLERGY DRUG 1800
-ALLERGY FOOD NONVEG 1800
-ALLERGY FOOD VEGETARIAN 1800
-ALLERGY PROFILE - INHALANTS 6000
-Allergy profile-Food(veg+non vegetarian) 5000
-Allergy profile-Food(vegetarian) 3500
-alpha feto protein (AFP) serum 600
-alpha feto protein amniotic fluid 450
-Alpha-1 antitrypsin(AAT) 2000
-Aluminium 1500
-AMA 1500
-AMBULANCE 1000
-AMBULANCE CHARGE 1000
-AMBULANCE CHARGES 500
-AMBULANCE SERVICES TO DBR 15000
-Aminivulinic acid(ALA) 2000
-Ammonia 1500
-AMPHETAMINE 700
-Amylase fluid 350
-Amylase urine 350
-ANA IF 2000
-ANA PROFILE 4800
-ANA TITER 1400
-ANA(ELISA) 650
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 3/48
+Aldosterone 	3000
+Alkaline phosphatase(ALP) 	200
+ALL LIMBS - ARTERIAL 	6000
+Allergy - Inhalants 	2000
+ALLERGY DRUG 	1800
+ALLERGY FOOD NONVEG 	1800
+ALLERGY FOOD VEGETARIAN 	1800
+ALLERGY PROFILE - INHALANTS 	6000
+Allergy profile-Food(veg+non vegetarian) 	5000
+Allergy profile-Food(vegetarian) 	3500
+alpha feto protein (AFP) serum 	600
+alpha feto protein amniotic fluid 	450
+Alpha-1 antitrypsin(AAT) 	2000
+Aluminium 	1500
+AMA 	1500
+AMBULANCE 	1000
+AMBULANCE CHARGE 	1000
+AMBULANCE CHARGES 	500
+AMBULANCE SERVICES TO DBR 	15000
+Aminivulinic acid(ALA) 	2000
+Ammonia 	1500
+AMPHETAMINE 	700
+Amylase fluid 	350
+Amylase urine 	350
+ANA IF 	2000
+ANA PROFILE 	4800
+ANA TITER 	1400
+ANA(ELISA) 	650
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	3/48
+
+-- 3 of 48 --
+
 Order Name
 Order
 Amount
-ANA-IFA 2000
-Anaerobic Blood Culture 1200
-Anaerobic Pus / Body Fluids Culture 1200
-Anaerobic Stool Culture 1200
-ANCA- Myeloperoxidase( p-ANCA) 1500
-ANCA- serine proteinase 3( c-ANCA) 1500
-Androstenedione (A4) 1750
-ANEMIA PROFILE 2500
-Angiotensin Converting enzyme(ACE) 950
-ANTENANTAL WITH FETAL DOPPLER 2000
-ANTENATAL 1000
-ANTENATAL GROWTH+ DOPPLER (TWINS) 4000
-ANTENATAL GROWTH+DOPPLER SCAN 2000
-ANTENATAL SCAN 1000
-ANTENATAL WITH BIOPHYSICAL PROFILE 1800
+ANA-IFA 	2000
+Anaerobic Blood Culture 	1200
+Anaerobic Pus / Body Fluids Culture 	1200
+Anaerobic Stool Culture 	1200
+ANCA- Myeloperoxidase( p-ANCA) 	1500
+ANCA- serine proteinase 3( c-ANCA) 	1500
+Androstenedione (A4) 	1750
+ANEMIA PROFILE 	2500
+Angiotensin Converting enzyme(ACE) 	950
+ANTENANTAL WITH FETAL DOPPLER 	2000
+ANTENATAL 	1000
+ANTENATAL GROWTH+ DOPPLER (TWINS) 	4000
+ANTENATAL GROWTH+DOPPLER SCAN 	2000
+ANTENATAL SCAN 	1000
+ANTENATAL WITH BIOPHYSICAL PROFILE 	1800
 ANTENATAL- GROWTH SCAN INCLUDING BIOPHYSICAL
 PROFILE (BPP)
 1800
-ANTENENTAL GROWTH SCAN ( TWINS) 2000
-ANTENENTAL WITH FETAL DOPPLER ( TWINS ) 4000
-ANTI TPO AB 1000
-ANTI CCP 1250
-ANTI CORDIOLIPIN SCREEN-IgA+IgG+IgM 2100
-Anti Cysticercosis(IgG) 1200
-ANTI ds D.N.A antibody 1500
-ANTI ds D.N.A antibody Titre 500
-Anti Gangliside Antibodiies- IgG 7000
-Anti Gangliside Antibodiies- IgM 7000
-Anti HBe 600
-ANTI HCV 1000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 4/48
+ANTENENTAL GROWTH SCAN ( TWINS) 	2000
+ANTENENTAL WITH FETAL DOPPLER ( TWINS ) 	4000
+ANTI TPO AB 	1000
+ANTI CCP 	1250
+ANTI CORDIOLIPIN SCREEN-IgA+IgG+IgM 	2100
+Anti Cysticercosis(IgG) 	1200
+ANTI ds D.N.A antibody 	1500
+ANTI ds D.N.A antibody Titre 	500
+Anti Gangliside Antibodiies- IgG 	7000
+Anti Gangliside Antibodiies- IgM 	7000
+Anti HBe 	600
+ANTI HCV 	1000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	4/48
+
+-- 4 of 48 --
+
 Order Name
 Order
 Amount
-Anti Jo l antibody 1800
-Anti Mitchondrial antibody 2500
-Anti Mitchondrial antibody (IFA) 3000
-Anti Mitochondrial AntiBody 1000
-ANTI MULLARIAN HARMONE (AMH) ANTIBODY 3200
-ANTI NEURONAL ANTIBODIES 8000
-ANTI NEUTROPHILIC CYTOPLASMIC ANTIBODY (ANCA) 1200
-ANTI NEUTROPHILIC CYTOPLASMIC ANTIBODY (ANCA) TITER 3500
-ANTI NUCLEAR ANTIBODY 1000
-ANTI NUCLEAR ANTIBODY(IFA) 1500
-ANTI NUCLEAR ANTIBODY-Titres 2900
-ANTI NUECLEAR ANTI BODY(IFA) 1200
-ANTI PHOSPHOLIPID ANTIBODY IgG & IGM 2000
-ANTI PHOSPHOLIPID ANTIBODY IgM 900
-ANTI Sm-ANTIBODY 1600
-ANTI Smooth muscle antibody(ASMA) 1600
-ANTI Smooth muscle antibody(ASMA)-titre 3500
-Anti Sperm Antibody(ASAB) 1000
-Anti SS-A antibody 1800
-Anti SS-B antibody 1800
-Anti Thrombin III Antigenic 3000
-Anti Thyroglobulin antibody(ATG) 1200
-ANTI THYROID ANTIBODIES 2400
-ANTI-NMO (NEUROMYELITIS OPTICA) ANTIBODY/AQUAPORIN6000
-Anticyclic citrullinated peptide 900
-ANTICYSTIEREOSIS(IgG) 1500
-ANY FLUID CULTURE 800
-ANY SPOT URINE 200
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 5/48
+Anti Jo l antibody 	1800
+Anti Mitchondrial antibody 	2500
+Anti Mitchondrial antibody (IFA) 	3000
+Anti Mitochondrial AntiBody 	1000
+ANTI MULLARIAN HARMONE (AMH) ANTIBODY 	3200
+ANTI NEURONAL ANTIBODIES 	8000
+ANTI NEUTROPHILIC CYTOPLASMIC ANTIBODY (ANCA) 	1200
+ANTI NEUTROPHILIC CYTOPLASMIC ANTIBODY (ANCA) TITER 	3500
+ANTI NUCLEAR ANTIBODY 	1000
+ANTI NUCLEAR ANTIBODY(IFA) 	1500
+ANTI NUCLEAR ANTIBODY-Titres 	2900
+ANTI NUECLEAR ANTI BODY(IFA) 	1200
+ANTI PHOSPHOLIPID ANTIBODY IgG & IGM 	2000
+ANTI PHOSPHOLIPID ANTIBODY IgM 	900
+ANTI Sm-ANTIBODY 	1600
+ANTI Smooth muscle antibody(ASMA) 	1600
+ANTI Smooth muscle antibody(ASMA)-titre 	3500
+Anti Sperm Antibody(ASAB) 	1000
+Anti SS-A antibody 	1800
+Anti SS-B antibody 	1800
+Anti Thrombin III Antigenic 	3000
+Anti Thyroglobulin antibody(ATG) 	1200
+ANTI THYROID ANTIBODIES 	2400
+ANTI-NMO (NEUROMYELITIS OPTICA) ANTIBODY/AQUAPORIN 	6000
+Anticyclic citrullinated peptide 	900
+ANTICYSTIEREOSIS(IgG) 	1500
+ANY FLUID CULTURE 	800
+ANY SPOT URINE 	200
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	5/48
+
+-- 5 of 48 --
+
 Order Name
 Order
 Amount
-AP/LAT 200
-AP/LATER 200
-Apolipoprotein A1 & B 1200
-Apolipoprotein A1 (APO-A1) 650
-Apolipoprotein B (APO-B) 650
-Arsenic 2500
-ARTERIAL/VENOUS SINGLE LIMB 1600
-ARTERIAL/VENOUS TWO LIMBS 3000
-aryl sulphatase A (metachromatic leucodystrophy) 3200
-ASCITIC FLUID TAPPING PROCEDURE 5000
-ASO RA LE Cells CRP 1
-ASO TITRE 1000
-ASO-RA-CRP 900
-AST/SGOT 150
-AUDIOMETRY 900
-AURAMINE RHODAMINE STAIN 600
-AUTO IMMUNE PANEL 4000
-AV FISTULA 1500
-B HCG 1000
-B-Type natrituric peptide (BNP) 1800
-Barbiturates 800
-BCR-ABL(9:22)Qualitative 3600
-BCR-ABL(9:22)Quantitative 6000
-Bence Jones Protein(BJ Protein) 350
-Benzodiazepines 800
-Beta 2 Glycoprotein-1 IgG/IgM 3000
-Beta 2 Micriglobulin 1600
-Beta Human Chorionic Gonodotropin 600
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 6/48
+AP/LAT 	200
+AP/LATER 	200
+Apolipoprotein A1 & B 	1200
+Apolipoprotein A1 (APO-A1) 	650
+Apolipoprotein B (APO-B) 	650
+Arsenic 	2500
+ARTERIAL/VENOUS SINGLE LIMB 	1600
+ARTERIAL/VENOUS TWO LIMBS 	3000
+aryl sulphatase A (metachromatic leucodystrophy) 	3200
+ASCITIC FLUID TAPPING PROCEDURE 	5000
+ASO RA LE Cells CRP 	1
+ASO TITRE 	1000
+ASO-RA-CRP 	900
+AST/SGOT 	150
+AUDIOMETRY 	900
+AURAMINE RHODAMINE STAIN 	600
+AUTO IMMUNE PANEL 	4000
+AV FISTULA 	1500
+B HCG 	1000
+B-Type natrituric peptide (BNP) 	1800
+Barbiturates 	800
+BCR-ABL(9:22)Qualitative 	3600
+BCR-ABL(9:22)Quantitative 	6000
+Bence Jones Protein(BJ Protein) 	350
+Benzodiazepines 	800
+Beta 2 Glycoprotein-1 IgG/IgM 	3000
+Beta 2 Micriglobulin 	1600
+Beta Human Chorionic Gonodotropin 	600
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	6/48
+
+-- 6 of 48 --
+
 Order Name
 Order
 Amount
-Beta Human Chorionic Gonodotropin(urine) 600
-Bicarbonate(Co2) 500
-BILE ACIDS 2000
-BILE PIGMENTS 500
-BILE SALTS 500
-BILIRUBIN(Bil) 200
-BIO CHEMICAL ANALASIS 1000
-BIOPSPY (LARGE) 2500
-BIOPSY 500
-Biopsy HPE 1500
-Biopsy small -1200 1200
-BLANK 700
-Blood Coagulation Profile 630
-BLOOD FOR C/S 1500
-BLOOD GROUPING & RH TYPING 200
-BLOOD UREA 200
-BLOOD UREA , Sr. CREATININE 300
-BLOOD UREA NITROGEN(BUN) 150
-BOTH 4 LIMBS ARTERAL AND VENOUS DOPPLER 7000
-BREAST CANCER SCREEN 1200
-Brucella DNA PCR 3500
-Brucella Antibody 900
-Brucella IgG Antibody 1200
-Brucella IgM Antibody 1200
-BS/BP 50
-BUN / S.CREATININE RATIO 200
-C REACTIVE PROTEINS (CRP) 450
-C T THIGH 4000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 7/48
+Beta Human Chorionic Gonodotropin(urine) 	600
+Bicarbonate(Co2) 	500
+BILE ACIDS 	2000
+BILE PIGMENTS 	500
+BILE SALTS 	500
+BILIRUBIN(Bil) 	200
+BIO CHEMICAL ANALASIS 	1000
+BIOPSPY (LARGE) 	2500
+BIOPSY 	500
+Biopsy HPE 	1500
+Biopsy small -1200 	1200
+BLANK 	700
+Blood Coagulation Profile 	630
+BLOOD FOR C/S 	1500
+BLOOD GROUPING & RH TYPING 	200
+BLOOD UREA 	200
+BLOOD UREA , Sr. CREATININE 	300
+BLOOD UREA NITROGEN(BUN) 	150
+BOTH 4 LIMBS ARTERAL AND VENOUS DOPPLER 	7000
+BREAST CANCER SCREEN 	1200
+Brucella DNA PCR 	3500
+Brucella Antibody 	900
+Brucella IgG Antibody 	1200
+Brucella IgM Antibody 	1200
+BS/BP 	50
+BUN / S.CREATININE RATIO 	200
+C REACTIVE PROTEINS (CRP) 	450
+C T THIGH 	4000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	7/48
+
+-- 7 of 48 --
+
 Order Name
 Order
 Amount
-C-Peptide 1000
-C.Peptide 900
-CA 125 Ovarian Cancer Marker 1000
-CA 15.3 Breast Cancer Marker 1100
-CA 19.9-Pancreatic Cancer Marker 1500
-Cadmium 3000
-Cadmium urine 3000
-Calcitonine 2500
-calcium 24hrs urine 200
-Calcium Phosphorus Electrolytes 800
-calcium urine 200
-CALPROTECTIN 4500
-Carbamazepine (tegretol) 800
-Carcino Embryonic Antigen (CEA) 800
-Cardiolipin IgA antibody 750
-Cardiolipin IgA IgG IgM antibody 2000
-Cardiolipin IgG antibody 750
-Cardiolipin IgM antibody 750
-CARDIOLOGIST CONSULATION 600
-CARDIOLOGIST CONSULTATION FEES 500
-Catecholamines 3500
-CBNAAT GENEXPERT 3500
-CD 250
-CD3/CD4/CD8 2000
-CD4 Absolute Count 1500
-CD4 Absolute Count.. 2000
-CECT ABDOMEN (ORAL & IV CONTRAST) 7500
-CECT ABDOMEN TRIPHASIC 8000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 8/48
+C-Peptide 	1000
+C.Peptide 	900
+CA 125 Ovarian Cancer Marker 	1000
+CA 15.3 Breast Cancer Marker 	1100
+CA 19.9-Pancreatic Cancer Marker 	1500
+Cadmium 	3000
+Cadmium urine 	3000
+Calcitonine 	2500
+calcium 24hrs urine 	200
+Calcium Phosphorus Electrolytes 	800
+calcium urine 	200
+CALPROTECTIN 	4500
+Carbamazepine (tegretol) 	800
+Carcino Embryonic Antigen (CEA) 	800
+Cardiolipin IgA antibody 	750
+Cardiolipin IgA IgG IgM antibody 	2000
+Cardiolipin IgG antibody 	750
+Cardiolipin IgM antibody 	750
+CARDIOLOGIST CONSULATION 	600
+CARDIOLOGIST CONSULTATION FEES 	500
+Catecholamines 	3500
+CBNAAT GENEXPERT 	3500
+CD 	250
+CD3/CD4/CD8 	2000
+CD4 Absolute Count 	1500
+CD4 Absolute Count.. 	2000
+CECT ABDOMEN (ORAL & IV CONTRAST) 	7500
+CECT ABDOMEN TRIPHASIC 	8000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	8/48
+
+-- 8 of 48 --
+
 Order Name
 Order
 Amount
-CECT ABDOMEN. 7500
-CECT BRAIN 7500
-CECT CHEST. 7500
-CECT KUB 7500
-CECT NECK 7500
-CECT TEMPORAL BONE 7500
-CELL COUNT 500
-CELL COUNT FLUIED 1000
-Ceruloplasmin 1800
-CHARGES 300
-CHEST MARKS 300
-Chikungunya IgG 1000
-Chikungunya IgM 1000
-Chikungunya RNA PCR 3500
-CHIKUNGUNYA IgG & IgM 1500
-Chloride Serum 180
-CHLORIDES,POTASSIUM 300
-CHOLESTEROL - HDL 200
-CHOLESTEROL - LDL (DIRECT) 400
-Cholinesterase 500
-chromium serum 3000
-chromium urine 3000
-chromium WB EDTA 3000
-Chromosomal Analysis(amnoitic fluid) FISH 9000
-CLORIDE 200
-Cloride urine 150
-Cloride CSF 150
-CMV IGG 1000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 9/48
+CECT ABDOMEN. 	7500
+CECT BRAIN 	7500
+CECT CHEST. 	7500
+CECT KUB 	7500
+CECT NECK 	7500
+CECT TEMPORAL BONE 	7500
+CELL COUNT 	500
+CELL COUNT FLUIED 	1000
+Ceruloplasmin 	1800
+CHARGES 	300
+CHEST MARKS 	300
+Chikungunya IgG 	1000
+Chikungunya IgM 	1000
+Chikungunya RNA PCR 	3500
+CHIKUNGUNYA IgG & IgM 	1500
+Chloride Serum 	180
+CHLORIDES,POTASSIUM 	300
+CHOLESTEROL - HDL 	200
+CHOLESTEROL - LDL (DIRECT) 	400
+Cholinesterase 	500
+chromium serum 	3000
+chromium urine 	3000
+chromium WB EDTA 	3000
+Chromosomal Analysis(amnoitic fluid) FISH 	9000
+CLORIDE 	200
+Cloride urine 	150
+Cloride CSF 	150
+CMV IGG 	1000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	9/48
+
+-- 9 of 48 --
+
 Order Name
 Order
 Amount
-CMV IGM 1000
-Cocaine 500
-COLONOSCOPY 5000
-Combs Direct 350
-Combs Indirect 350
-Complement 3 (C3) 1000
-Complement 4 (C4) 1000
-COMPLETE BLOOD PICTURE(CBP) 300
-CONTRAST 1000
-Coombs test - Direct 700
-Coombs test - Indirect 700
-Copper 450
-Cortisol Serum 4 pm 500
-Cortisol Serum 8 am 700
-Cortisol urine total 500
-COVID 19 1200
-COVID IgG ANTIBODIES 1500
-COVID IgM ANTIBODIES 1500
-COVID RAT 300
-COVID TOTAL 1500
-CPK-MB 800
-Creatine Kinase MB(CK MB) 350
-CREATININE 180
-Creatinine Clearence Test(CCT) 300
-CREATININE PHOSPHOKINASE (CPK) 400
-CREATININE URINE 150
-Cryptococcus Antigen 2500
-CT ORBITS 2500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 10/48
+CMV IGM 	1000
+Cocaine 	500
+COLONOSCOPY 	5000
+Combs Direct 	350
+Combs Indirect 	350
+Complement 3 (C3) 	1000
+Complement 4 (C4) 	1000
+COMPLETE BLOOD PICTURE(CBP) 	300
+CONTRAST 	1000
+Coombs test - Direct 	700
+Coombs test - Indirect 	700
+Copper 	450
+Cortisol Serum 4 pm 	500
+Cortisol Serum 8 am 	700
+Cortisol urine total 	500
+COVID 19 	1200
+COVID IgG ANTIBODIES 	1500
+COVID IgM ANTIBODIES 	1500
+COVID RAT 	300
+COVID TOTAL 	1500
+CPK-MB 	800
+Creatine Kinase MB(CK MB) 	350
+CREATININE 	180
+Creatinine Clearence Test(CCT) 	300
+CREATININE PHOSPHOKINASE (CPK) 	400
+CREATININE URINE 	150
+Cryptococcus Antigen 	2500
+CT ORBITS 	2500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	10/48
+
+-- 10 of 48 --
+
 Order Name
 Order
 Amount
-CT SCREENING 2000
-CT (ORAL & CONTRAST) 2000
-CT (ORAL & IV CONTRAST) 2000
-CT - BRAIN. 4400
-CT 3D SHOULDER 4500
-CT 3D WRIST 4500
-CT 3D ANKLE 4500
-CT 3D ANKLE LEFT LEG 4500
-CT 3D BOTH KNEE JOINTS 9000
-CT 3D CERVICAL SPINE 4500
-CT 3D CHEST 5000
-CT 3D ELBOW 4500
-CT 3D ELBOW JOINTS 4500
-CT 3D ELBOW. 4500
-CT 3D FACIAL BONES 4500
-CT 3D FOOT 4500
-CT 3D KNEE 4500
-CT 3D PELVIS 4500
-CT 3D SHOULDER. 4500
-CT 3D SKULL BONES 4500
-CT 3D WRIST 4500
-CT 3DPELVIS 6000
-CT ABDOMEN ANGIO 10000
-CT ABDOMEN PLAIN 5500
-CT ABDOMEN PLAIN SCREENING 2500
-CT ABDOMEN.. 6000
-CT ANGIO BRAIN 10000
-CT ANGIO NECK 10000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 11/48
+CT SCREENING 	2000
+CT (ORAL & CONTRAST) 	2000
+CT (ORAL & IV CONTRAST) 	2000
+CT - BRAIN. 	4400
+CT 3D SHOULDER 	4500
+CT 3D WRIST 	4500
+CT 3D ANKLE 	4500
+CT 3D ANKLE LEFT LEG 	4500
+CT 3D BOTH KNEE JOINTS 	9000
+CT 3D CERVICAL SPINE 	4500
+CT 3D CHEST 	5000
+CT 3D ELBOW 	4500
+CT 3D ELBOW JOINTS 	4500
+CT 3D ELBOW. 	4500
+CT 3D FACIAL BONES 	4500
+CT 3D FOOT 	4500
+CT 3D KNEE 	4500
+CT 3D PELVIS 	4500
+CT 3D SHOULDER. 	4500
+CT 3D SKULL BONES 	4500
+CT 3D WRIST 	4500
+CT 3DPELVIS 	6000
+CT ABDOMEN ANGIO 	10000
+CT ABDOMEN PLAIN 	5500
+CT ABDOMEN PLAIN SCREENING 	2500
+CT ABDOMEN.. 	6000
+CT ANGIO BRAIN 	10000
+CT ANGIO NECK 	10000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	11/48
+
+-- 11 of 48 --
+
 Order Name
 Order
 Amount
-CT ANJIO RIGHT UPPER LIMB 10000
-CT AORTOGRAM 10000
-CT BRAIN (PLAIN) 2400
-CT BRAIN AND ORBITS. 5500
-CT BRAIN ANGIO 10000
-CT BRAIN PLAIN...... 3000
-CT BRAIN WITH CONTRAST 5000
-CT BRAIN WITH NECK ANGIO(IC+EC) 15000
-CT BRAIN. 4400
-CT BT 100
-CT CAROTID ANGIOGRAM 10000
-CT CEREBRAL ANGIO. 10000
-CT CERVICAL SPINE 4500
-CT CHEST 3D 5000
-CT CHEST SCREENING 2000
-CT CONTRAST 2000
-CT CONTRAST (DOUBLE DOSE) 3000
-CT CONTRAST. 3000
-CT CONTRAST... 2500
-CT CYSTOGRAM 10000
-CT D L SPINE (DORSAL LUMBAR) 5000
-CT DORSAL SPINE 4500
-CT ELBOW 4500
-CT ENTEROCLYSIS 10500
-CT ENTEROGRAPHY . 9000
-CT FACE 4000
-CT FOOT 3000
-CT FOREARM 3000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 12/48
+CT ANJIO RIGHT UPPER LIMB 	10000
+CT AORTOGRAM 	10000
+CT BRAIN (PLAIN) 	2400
+CT BRAIN AND ORBITS. 	5500
+CT BRAIN ANGIO 	10000
+CT BRAIN PLAIN...... 	3000
+CT BRAIN WITH CONTRAST 	5000
+CT BRAIN WITH NECK ANGIO(IC+EC) 	15000
+CT BRAIN. 	4400
+CT BT 	100
+CT CAROTID ANGIOGRAM 	10000
+CT CEREBRAL ANGIO. 	10000
+CT CERVICAL SPINE 	4500
+CT CHEST 3D 	5000
+CT CHEST SCREENING 	2000
+CT CONTRAST 	2000
+CT CONTRAST (DOUBLE DOSE) 	3000
+CT CONTRAST. 	3000
+CT CONTRAST... 	2500
+CT CYSTOGRAM 	10000
+CT D L SPINE (DORSAL LUMBAR) 	5000
+CT DORSAL SPINE 	4500
+CT ELBOW 	4500
+CT ENTEROCLYSIS 	10500
+CT ENTEROGRAPHY . 	9000
+CT FACE 	4000
+CT FOOT 	3000
+CT FOREARM 	3000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	12/48
+
+-- 12 of 48 --
+
 Order Name
 Order
 Amount
-CT GUIDED BIOSPY 8000
-CT GUIDED LUNG BIOPSY 15000
-CT HEAD AND NECK ANGIO 15000
-CT KNEE SINGLE 4000
-CT KUB 4500
-CT KUB SCREEENING 2500
-CT KUB... 6500
-CT LEFT HIP JOINT 4000
-CT LEFT TMJ 4000
-CT LEG .. 4500
-CT LOWER LIMB ANGIO 10000
-CT LUMBAR SPINE (PLAIN) 4500
-CT MASTOIIDS 4500
-CT NECK (PLAIN) 4500
-CT NECK ANGIO.. 10000
-CT ORBIT 2800
-CT ORRBIT 2800
-CT PERIPHERAL ANGIO LOWER LIMB 10000
-CT PERIPHERAL ANGIO UPPER LIMB 10000
-CT PNA (AXIAL & CORONAL.) 4500
-CT PNS (AXIAL & CORONAL) 2800
-CT PNS,,, 4800
-CT PULMONARY ANGIO 10000
-CT RENAL ANGIO. 10000
-CT RIGHT HIP 4500
-CT SCAN OF COCCYX LUMBAR SPINE 4000
-CT SYNOGRAM 10000
-CT THIGH.. 4000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 13/48
+CT GUIDED BIOSPY 	8000
+CT GUIDED LUNG BIOPSY 	15000
+CT HEAD AND NECK ANGIO 	15000
+CT KNEE SINGLE 	4000
+CT KUB 	4500
+CT KUB SCREEENING 	2500
+CT KUB... 	6500
+CT LEFT HIP JOINT 	4000
+CT LEFT TMJ 	4000
+CT LEG .. 	4500
+CT LOWER LIMB ANGIO 	10000
+CT LUMBAR SPINE (PLAIN) 	4500
+CT MASTOIIDS 	4500
+CT NECK (PLAIN) 	4500
+CT NECK ANGIO.. 	10000
+CT ORBIT 	2800
+CT ORRBIT 	2800
+CT PERIPHERAL ANGIO LOWER LIMB 	10000
+CT PERIPHERAL ANGIO UPPER LIMB 	10000
+CT PNA (AXIAL & CORONAL.) 	4500
+CT PNS (AXIAL & CORONAL) 	2800
+CT PNS,,, 	4800
+CT PULMONARY ANGIO 	10000
+CT RENAL ANGIO. 	10000
+CT RIGHT HIP 	4500
+CT SCAN OF COCCYX LUMBAR SPINE 	4000
+CT SYNOGRAM 	10000
+CT THIGH.. 	4000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	13/48
+
+-- 13 of 48 --
+
 Order Name
 Order
 Amount
-CT UROGRAM 8500
-CT VENOGRAM. 10000
-CT WHOLE SPINE 9000
-CT WHOLE SPINE SCREENING 4500
-CT WRIST 4000
-CT-BRAIN (HEAD) 3000
-CT-CERVICAL SPINE 4500
-CT-KUB.. 6500
-CT-PNS. 3000
-CT-PNS.. 5000
-CTBT 150
-CTBT. 150
-CUE(COMPLETE URINE EXAMINATION) 200
-CULTURE & SENSITIVITY(any sample) 400
-CULTURE & SENSITIVITY (STOOL) 800
-CULTURE & SENSITIVITY (URINE) 1000
-CULTURE & SENSITIVITY(any sample) 800
-CULTURE AROBIC MIC SPECIFIED 800
-CYTOLOGY FLUID 1000
-CYTOLOGY FNAC 400
-CYTOLOGY(MALIGNANT CELLS) 1000
-Cytomegalo Viirus 3500
-Cytomegalo Viirus DNA PCR 3500
-Cytomegalo Viirus IgG 250
-Cytomegalo Viirus IgM 250
-D-DIMER 1500
-Dengue NS1 antigen 1000
-Dengue NS1 antigen + IgG + IgM 3000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 14/48
+CT UROGRAM 	8500
+CT VENOGRAM. 	10000
+CT WHOLE SPINE 	9000
+CT WHOLE SPINE SCREENING 	4500
+CT WRIST 	4000
+CT-BRAIN (HEAD) 	3000
+CT-CERVICAL SPINE 	4500
+CT-KUB.. 	6500
+CT-PNS. 	3000
+CT-PNS.. 	5000
+CTBT 	150
+CTBT. 	150
+CUE(COMPLETE URINE EXAMINATION) 	200
+CULTURE & SENSITIVITY(any sample) 	400
+CULTURE & SENSITIVITY (STOOL) 	800
+CULTURE & SENSITIVITY (URINE) 	1000
+CULTURE & SENSITIVITY(any sample) 	800
+CULTURE AROBIC MIC SPECIFIED 	800
+CYTOLOGY FLUID 	1000
+CYTOLOGY FNAC 	400
+CYTOLOGY(MALIGNANT CELLS) 	1000
+Cytomegalo Viirus 	3500
+Cytomegalo Viirus DNA PCR 	3500
+Cytomegalo Viirus IgG 	250
+Cytomegalo Viirus IgM 	250
+D-DIMER 	1500
+Dengue NS1 antigen 	1000
+Dengue NS1 antigen + IgG + IgM 	3000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	14/48
+
+-- 14 of 48 --
+
 Order Name
 Order
 Amount
-DENGUE IGM. 1300
-Dengue NS1, IgG ,IgM (ELISA) 3500
-Dental 100
-Digoxin 1000
-DOCTOR FEES 200
-DOPPLER - ABDOMENAL AORTA 2000
-DOPPLER - BIO PHYSICAL (BPP) 2800
-DOPPLER - BIO PHYSICAL( BPP -TWINS) 3800
-DOPPLER - PENILE 4000
-DOPPLER - PORTAL 1800
-DOPPLER - TRANSPLANT KIDNEY 2000
-DOUBLE MARKER 2800
-DR CONSULTATION 200
-Dr. Ankit Thakral 300
-Dr. Bala, consultation 200
-Ds DNA 2000
-ECG 300
-ECG HOME SERVICE 1000
-ECG... 400
-Echinococcus Antibody IgG(Hydatid serology) 1700
-EEG 2000
-EEG. 2500
-EGFR 350
-ELISA FOR RETROVIRUS 800
-Endomysial IgA 2000
-Endomysial IgG 2000
-Endomysial IgM 2000
-ENDOSCOPY 2500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 15/48
+DENGUE IGM. 	1300
+Dengue NS1, IgG ,IgM (ELISA) 	3500
+Dental 	100
+Digoxin 	1000
+DOCTOR FEES 	200
+DOPPLER - ABDOMENAL AORTA 	2000
+DOPPLER - BIO PHYSICAL (BPP) 	2800
+DOPPLER - BIO PHYSICAL( BPP -TWINS) 	3800
+DOPPLER - PENILE 	4000
+DOPPLER - PORTAL 	1800
+DOPPLER - TRANSPLANT KIDNEY 	2000
+DOUBLE MARKER 	2800
+DR CONSULTATION 	200
+Dr. Ankit Thakral 	300
+Dr. Bala, consultation 	200
+Ds DNA 	2000
+ECG 	300
+ECG HOME SERVICE 	1000
+ECG... 	400
+Echinococcus Antibody IgG(Hydatid serology) 	1700
+EEG 	2000
+EEG. 	2500
+EGFR 	350
+ELISA FOR RETROVIRUS 	800
+Endomysial IgA 	2000
+Endomysial IgG 	2000
+Endomysial IgM 	2000
+ENDOSCOPY 	2500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	15/48
+
+-- 15 of 48 --
+
 Order Name
 Order
 Amount
-ENMG 3200
-ENMG.. 4000
-Entamoeba Histolitica antibody IgG (Amebiasis) 1500
-Entamoeba Histolitica Detection 300
-EPITHELIAL CELLS 80
-Epstein Barr Virus IgG 2000
-Epstein Barr Virus IgM 2000
-ERYTHROCYTE SEDIMENTATION RATE(ESR) 200
-Erythrotoietin (EPO) 1500
-Estradiol (E2) 800
-Estradiol (E2) TEST 800
-ESTRADIOL(E2) 1000
-Estrogen/Progesterone Receptor 3000
-EXTRA CHARGE 300
-EXTRA CHARGES 200
-EXTRA FILM 500
-EXTRA MRI PELVIS 3500
-EXTRA REPORT 40
-EXTRA VECHIEL CHARGES 500
-Factor IX 1300
-Factor V 1500
-Factor V Leiden Mutation 5000
-Factor VIII 1400
-FACTOR XIII 1500
-FASTING INSULIN 700
-FASTING LIPID PROFILE 600
-FbplBunCreat 200
-FbplChol 120
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 16/48
+ENMG 	3200
+ENMG.. 	4000
+Entamoeba Histolitica antibody IgG (Amebiasis) 	1500
+Entamoeba Histolitica Detection 	300
+EPITHELIAL CELLS 	80
+Epstein Barr Virus IgG 	2000
+Epstein Barr Virus IgM 	2000
+ERYTHROCYTE SEDIMENTATION RATE(ESR) 	200
+Erythrotoietin (EPO) 	1500
+Estradiol (E2) 	800
+Estradiol (E2) TEST 	800
+ESTRADIOL(E2) 	1000
+Estrogen/Progesterone Receptor 	3000
+EXTRA CHARGE 	300
+EXTRA CHARGES 	200
+EXTRA FILM 	500
+EXTRA MRI PELVIS 	3500
+EXTRA REPORT 	40
+EXTRA VECHIEL CHARGES 	500
+Factor IX 	1300
+Factor V 	1500
+Factor V Leiden Mutation 	5000
+Factor VIII 	1400
+FACTOR XIII 	1500
+FASTING INSULIN 	700
+FASTING LIPID PROFILE 	600
+FbplBunCreat 	200
+FbplChol 	120
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	16/48
+
+-- 16 of 48 --
+
 Order Name
 Order
 Amount
-FBPLCRE 120
-FBPLtgCR 240
-FbplUA 120
-FBPLURCR 120
-FBS (FASTING BLOOD SUGAR) 80
-FBS , PLBS ,BL.UREA , SR.CREATININE , SR. URIC ACID 580
-FBS - PLBS 200
-Fbs-Plbs-Rbs 240
-FbsPpBs 40
-Ferritin 700
-FERTILITY PROFILE - I 700
-FERTILITY PROFILE - V 4100
-FH 250
-Fibrinogen 700
-Fibrinogen Degradation product(FDP) 800
-FLEURAL TAPPING 3000
-FLEURAL TAPPING.. 4000
-FLUID ANALYSIS 1500
-Fluid analysis any 400
-FLUID ASPIRATION 4500
-Fluid Cell Count 100
-Fluid Examination Routine 750
-FLUID FOR CYTOLOGY 750
-FOLATE (VITAMIN B9) 1000
-folate serum(folic acid) 1500
-FOLLICLE STIMULATING HORMONE(FSH) 600
-FOLLICULAR STUDY (1) SHIFT 1200
-Free Androgen Index 3300
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 17/48
+FBPLCRE 	120
+FBPLtgCR 	240
+FbplUA 	120
+FBPLURCR 	120
+FBS (FASTING BLOOD SUGAR) 	80
+FBS , PLBS ,BL.UREA , SR.CREATININE , SR. URIC ACID 	580
+FBS - PLBS 	200
+Fbs-Plbs-Rbs 	240
+FbsPpBs 	40
+Ferritin 	700
+FERTILITY PROFILE - I 	700
+FERTILITY PROFILE - V 	4100
+FH 	250
+Fibrinogen 	700
+Fibrinogen Degradation product(FDP) 	800
+FLEURAL TAPPING 	3000
+FLEURAL TAPPING.. 	4000
+FLUID ANALYSIS 	1500
+Fluid analysis any 	400
+FLUID ASPIRATION 	4500
+Fluid Cell Count 	100
+Fluid Examination Routine 	750
+FLUID FOR CYTOLOGY 	750
+FOLATE (VITAMIN B9) 	1000
+folate serum(folic acid) 	1500
+FOLLICLE STIMULATING HORMONE(FSH) 	600
+FOLLICULAR STUDY (1) SHIFT 	1200
+Free Androgen Index 	3300
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	17/48
+
+-- 17 of 48 --
+
 Order Name
 Order
 Amount
-FSH LH PROLACTIN 1200
-FT TSH thyroxine Free 600
-FT3 Trilodothyrinine Free 600
-FT4 thyroxine Free 600
-Fungal stain 250
-FUNGAL STAINS 500
-Fungus Culture 1500
-G F R 600
-G6-PD 600
-GAMMA GLUTAMYLTRANSPEPTIDASE(GGT) 200
-Gastrin 2500
-GASTRO DR CONSULATATION 800
-GENE EXPERT FOR SPUTUM 3500
-GENE EXPERT MTB 3000
-GENE EXPERT MTB URINE 3000
-GENE EXPERT(SPUTUM) 4000
-GENE EXPERT... 500
-GENEXPERT 2500
-Geno Expert (Pus) 4000
-GHB/HbA1c 600
-Gliadin Antibody IgG 1000
-Globulin 100
-GLOMERULAR FILTRATION RATE(GFR) 200
-Glucode 6 phosphate Dehydrogenase 500
-Gonococcus for Uretral 250
-Gram stain 300
-GRAM STAIN FOR GONOCOCCUI 150
-GRAMSTAIN PUS CELLS 100
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 18/48
+FSH LH PROLACTIN 	1200
+FT TSH thyroxine Free 	600
+FT3 Trilodothyrinine Free 	600
+FT4 thyroxine Free 	600
+Fungal stain 	250
+FUNGAL STAINS 	500
+Fungus Culture 	1500
+G F R 	600
+G6-PD 	600
+GAMMA GLUTAMYLTRANSPEPTIDASE(GGT) 	200
+Gastrin 	2500
+GASTRO DR CONSULATATION 	800
+GENE EXPERT FOR SPUTUM 	3500
+GENE EXPERT MTB 	3000
+GENE EXPERT MTB URINE 	3000
+GENE EXPERT(SPUTUM) 	4000
+GENE EXPERT... 	500
+GENEXPERT 	2500
+Geno Expert (Pus) 	4000
+GHB/HbA1c 	600
+Gliadin Antibody IgG 	1000
+Globulin 	100
+GLOMERULAR FILTRATION RATE(GFR) 	200
+Glucode 6 phosphate Dehydrogenase 	500
+Gonococcus for Uretral 	250
+Gram stain 	300
+GRAM STAIN FOR GONOCOCCUI 	150
+GRAMSTAIN PUS CELLS 	100
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	18/48
+
+-- 18 of 48 --
+
 Order Name
 Order
 Amount
-Growth hormone 800
-GTT(glucose tolerance test) 400
-GTT-6 300
-GUDDIDE PROCECER 2500
-GUIDED FNAC 9000
-H B s Ag 250
-H C V 500
-H I V 400
-HAEMOGLOBIN 100
-HAEMOGRAM 500
-Hb Electrophoresis 1000
-HB % 100
-HBeAg 1000
-HBSAG 500
-HBSAG (ELISA) 800
-HBV DNA QUANTITATIVE 5000
-HCV 550
-HCV (ELISA) 1200
-HCV RNA-QUALITATIVE 6000
-HCV RNA-QUANTITATIVE 6000
-HEAMOGRAM 600
-Helicobacter Pylorii IgG 1200
-Helicobacter Pylorii IgM 1200
-Helicobacter Pylorii PCR 3000
-HEMOGLOBINOPATHY BY HPLC (Hb Electrophoresis) 1200
-Hepatitis A Virus IgG(HAV-IgG) 500
-Hepatitis A Virus IgM (HAV-IgM) 500
-Hepatitis AVirus IgM (HAV-IgM) 1000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 19/48
+Growth hormone 	800
+GTT(glucose tolerance test) 	400
+GTT-6 	300
+GUDDIDE PROCECER 	2500
+GUIDED FNAC 	9000
+H B s Ag 	250
+H C V 	500
+H I V 	400
+HAEMOGLOBIN 	100
+HAEMOGRAM 	500
+Hb Electrophoresis 	1000
+HB % 	100
+HBeAg 	1000
+HBSAG 	500
+HBSAG (ELISA) 	800
+HBV DNA QUANTITATIVE 	5000
+HCV 	550
+HCV (ELISA) 	1200
+HCV RNA-QUALITATIVE 	6000
+HCV RNA-QUANTITATIVE 	6000
+HEAMOGRAM 	600
+Helicobacter Pylorii IgG 	1200
+Helicobacter Pylorii IgM 	1200
+Helicobacter Pylorii PCR 	3000
+HEMOGLOBINOPATHY BY HPLC (Hb Electrophoresis) 	1200
+Hepatitis A Virus IgG(HAV-IgG) 	500
+Hepatitis A Virus IgM (HAV-IgM) 	500
+Hepatitis AVirus IgM (HAV-IgM) 	1000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	19/48
+
+-- 19 of 48 --
+
 Order Name
 Order
 Amount
-Hepatitis B Envelope Antigen 500
-Hepatitis B virus - Genotyping 6000
-Hepatitis B virus - Genotyping+Durg 8000
-Hepatitis B virus - Genotyping+Viral Lode 7000
-Hepatitis B virus - Qualitative 2400
-Hepatitis B virus - Viral Load 4500
-Hepatitis B Core Antibody IgM 500
-Hepatitis B Envelope Antibody 500
-HEPATITIS B MARKER PROFILE 5000
-Hepatitis B surface Antibody Total 500
-Hepatitis B surface Antibody Total(Anti HBs Titers) 800
-Hepatitis B Surface antigen (Alisa) 500
-Hepatitis B Surface antigen (HBsAg) 250
-Hepatitis C virus - Genotyping 6000
-Hepatitis C virus - Genotyping+Viral Lode 7000
-Hepatitis C virus viral Load 4000
-Hepatitis C virus Qualitative 2500
-Hepatitis Core Antibody Total(HBcAb Total) 600
-Hepatitis Delta antibody (Anti HDV IgM) 2200
-Hepatitis E virus IgG (HEV IgG) 600
-Hepatitis E virus IgM (HEV IgM) 600
-Hepatitis Evirus IgM (HEV IgM) 1000
-HER-2/NEU 2200
-Herpes simplex virus (HSV) 2 IgG & IgM 600
-Herpes simplex virus 1 IgG 250
-Herpes simplex virus 1 IgM 250
-Herpes simplex virus 1&2 DNA 3000
-Herpes simplex virus 1&2 DNA PCR 3000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 20/48
+Hepatitis B Envelope Antigen 	500
+Hepatitis B virus - Genotyping 	6000
+Hepatitis B virus - Genotyping+Durg 	8000
+Hepatitis B virus - Genotyping+Viral Lode 	7000
+Hepatitis B virus - Qualitative 	2400
+Hepatitis B virus - Viral Load 	4500
+Hepatitis B Core Antibody IgM 	500
+Hepatitis B Envelope Antibody 	500
+HEPATITIS B MARKER PROFILE 	5000
+Hepatitis B surface Antibody Total 	500
+Hepatitis B surface Antibody Total(Anti HBs Titers) 	800
+Hepatitis B Surface antigen (Alisa) 	500
+Hepatitis B Surface antigen (HBsAg) 	250
+Hepatitis C virus - Genotyping 	6000
+Hepatitis C virus - Genotyping+Viral Lode 	7000
+Hepatitis C virus viral Load 	4000
+Hepatitis C virus Qualitative 	2500
+Hepatitis Core Antibody Total(HBcAb Total) 	600
+Hepatitis Delta antibody (Anti HDV IgM) 	2200
+Hepatitis E virus IgG (HEV IgG) 	600
+Hepatitis E virus IgM (HEV IgM) 	600
+Hepatitis Evirus IgM (HEV IgM) 	1000
+HER-2/NEU 	2200
+Herpes simplex virus (HSV) 2 IgG & IgM 	600
+Herpes simplex virus 1 IgG 	250
+Herpes simplex virus 1 IgM 	250
+Herpes simplex virus 1&2 DNA 	3000
+Herpes simplex virus 1&2 DNA PCR 	3000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	20/48
+
+-- 20 of 48 --
+
 Order Name
 Order
 Amount
-Herpes simplex virus 1&2 IgG 800
-Herpes simplex virus 1&2 IgM 800
-Herpes simplex virus 2 IgG 250
-High sensitive CRP (hsCRP) 800
-Histones 400
-HISTOPATHOLOGY 1000
-HIV 1 & 2 ANTIBODY SPOT TEST 200
-HIV 1 & 2 RAPID 350
-HIV 1 &2 ELISA 800
-HIV 1&2 450
-HIV 1&2 Western Blot 1500
-HIV 1&2 ANTIBODY 1000
-HIV DNA PCR Qualitative 2500
-HIV HBSAG VDRL 900
-HIV P24 900
-HIV Quantitative (Viral Load) 4000
-HIV RNA PCR Qualitative 2500
-HIV-HBS-VDRL-HCV 1400
-HIV-HBsAg 700
-HLA B 27 4500
-HOME SAMPLE COLLECTION 300
-Homocysteine 1600
-HRCT CHEST 4500
-HRCT CHEST... 6500
-HRCT Temporal Bone 3500
-HRCT TEMPORAL BONESS 5000
-HRUS SHOULDER 1500
-HRUS FOOT 1500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 21/48
+Herpes simplex virus 1&2 IgG 	800
+Herpes simplex virus 1&2 IgM 	800
+Herpes simplex virus 2 IgG 	250
+High sensitive CRP (hsCRP) 	800
+Histones 	400
+HISTOPATHOLOGY 	1000
+HIV 1 & 2 ANTIBODY SPOT TEST 	200
+HIV 1 & 2 RAPID 	350
+HIV 1 &2 ELISA 	800
+HIV 1&2 	450
+HIV 1&2 Western Blot 	1500
+HIV 1&2 ANTIBODY 	1000
+HIV DNA PCR Qualitative 	2500
+HIV HBSAG VDRL 	900
+HIV P24 	900
+HIV Quantitative (Viral Load) 	4000
+HIV RNA PCR Qualitative 	2500
+HIV-HBS-VDRL-HCV 	1400
+HIV-HBsAg 	700
+HLA B 27 	4500
+HOME SAMPLE COLLECTION 	300
+Homocysteine 	1600
+HRCT CHEST 	4500
+HRCT CHEST... 	6500
+HRCT Temporal Bone 	3500
+HRCT TEMPORAL BONESS 	5000
+HRUS SHOULDER 	1500
+HRUS FOOT 	1500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	21/48
+
+-- 21 of 48 --
+
 Order Name
 Order
 Amount
-HRUS LEFT KNEE 1500
-HRUS POPLITEAL FOSSA 1500
-HRUS SCAN 2000
-HRUSG 1500
-HSV I & II IgG & IgM 1500
-Human Papilloma Virus PCR (HPV) 3000
-Hydatid serology 2000
-IGG ANTI BODIES 2550
-IGM ANTI BODY - RHEUMATIC FACTOR 1200
-IGM DENGUE 1300
-IGM TYPHOID 1300
-IHC MARKER 12000
-Immunoflxation Electphoresis 5500
-IMMUNOGLOBIN IGG 700
-Immunoglobulin A (IgA) 500
-Immunoglobulin G (IgG) 450
-Immunoglobulin M (IgM) 450
-Infectious Mononucleosis 700
-Inhibin- A 1800
-INR 150
-Insulin 500
-INSULIN LIKE GROWTH FACTOR-1(IGF-1) 5000
-Insulin-Like Growth Factor(GF-I) 5000
-Intact Parathyroid Hormone(IPTH) 1500
-INTERLEUKIN 4500
-Ionized Calcium 800
-IPTH 1000
-IRON 500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 22/48
+HRUS LEFT KNEE 	1500
+HRUS POPLITEAL FOSSA 	1500
+HRUS SCAN 	2000
+HRUSG 	1500
+HSV I & II IgG & IgM 	1500
+Human Papilloma Virus PCR (HPV) 	3000
+Hydatid serology 	2000
+IGG ANTI BODIES 	2550
+IGM ANTI BODY - RHEUMATIC FACTOR 	1200
+IGM DENGUE 	1300
+IGM TYPHOID 	1300
+IHC MARKER 	12000
+Immunoflxation Electphoresis 	5500
+IMMUNOGLOBIN IGG 	700
+Immunoglobulin A (IgA) 	500
+Immunoglobulin G (IgG) 	450
+Immunoglobulin M (IgM) 	450
+Infectious Mononucleosis 	700
+Inhibin- A 	1800
+INR 	150
+Insulin 	500
+INSULIN LIKE GROWTH FACTOR-1(IGF-1) 	5000
+Insulin-Like Growth Factor(GF-I) 	5000
+Intact Parathyroid Hormone(IPTH) 	1500
+INTERLEUKIN 	4500
+Ionized Calcium 	800
+IPTH 	1000
+IRON 	500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	22/48
+
+-- 22 of 48 --
+
 Order Name
 Order
 Amount
-IRON DEFICIENCY PROFILE 1200
-IRON&TIBC 450
-IRON-PRO 900
-JO1 100
-KARYOTYPING 3500
-KFT (KIDNEY FUNCTION TEST) 700
-KID-PRO 340
-KOH PREPARATION 1000
-Lactate 600
-LDH 400
-LDH ANY FLUID 800
-Le Cells 200
-Lead 1800
-Lead urine 1500
-Leptospira Antibody IgG 900
-Leptospira Antibody IgM 900
-Leptospira Detection 800
-Leptospira DNA PCR 3500
-LH 550
-LIPASE 800
-LIPID PROFILE 600
-LIPID PROTEIN G 800
-LIPIO PROTEIN Lp-a 1000
-Lipoprotein- a(lp-a) 600
-LiTHIUM 400
-LIVER ABSCES 5000
-LIVER FUNCTION TEST (LFT) 600
-Liver kidney Microsome(LKM) 1 Antibody 1200
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 23/48
+IRON DEFICIENCY PROFILE 	1200
+IRON&TIBC 	450
+IRON-PRO 	900
+JO1 	100
+KARYOTYPING 	3500
+KFT (KIDNEY FUNCTION TEST) 	700
+KID-PRO 	340
+KOH PREPARATION 	1000
+Lactate 	600
+LDH 	400
+LDH ANY FLUID 	800
+Le Cells 	200
+Lead 	1800
+Lead urine 	1500
+Leptospira Antibody IgG 	900
+Leptospira Antibody IgM 	900
+Leptospira Detection 	800
+Leptospira DNA PCR 	3500
+LH 	550
+LIPASE 	800
+LIPID PROFILE 	600
+LIPID PROTEIN G 	800
+LIPIO PROTEIN Lp-a 	1000
+Lipoprotein- a(lp-a) 	600
+LiTHIUM 	400
+LIVER ABSCES 	5000
+LIVER FUNCTION TEST (LFT) 	600
+Liver kidney Microsome(LKM) 1 Antibody 	1200
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	23/48
+
+-- 23 of 48 --
+
 Order Name
 Order
 Amount
-LIVER PICTALE 12000
-LOWER LIMBS LEFT ARTERIAL /VENOUS SYSTEM 2800
-Lupus Anticoagulat 1000
-M P 500
-Magnesium 450
-Magnesium urine 250
-MAJOR PROFILE (I) 4000
-MALARIAL PARASITE- P.f & P.v (Ag). 350
-MALARIAL PARASITE -QBC 400
-MAMMOGRAPHY BOTH BREAST 4500
-MAMMOGRAPHY BOTH BREASTS 4000
-Manganese 1700
-MANTOUX 300
-MANTOUX 1 500
-MASK 10
-Measles PCR 3500
-Mercury 3000
-Metabolic Basic Screen 600
-Metanephrines 1500
-MICRAL1 100
-MICROALBUMIN 500
-Microfilaria Antigen 750
-MILD TO MODERATE FULID TAPING 6000
-MP 300
-MR ANGIOGRAM OF BOTH LOWER LIMBS (TOF) 13000
-MR RENAL ANGIO WITHOUT CONTRAST 10000
-MRA 10000
-MRA VISUAL FIUD EVALUATION 10000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 24/48
+LIVER PICTALE 	12000
+LOWER LIMBS LEFT ARTERIAL /VENOUS SYSTEM 	2800
+Lupus Anticoagulat 	1000
+M P 	500
+Magnesium 	450
+Magnesium urine 	250
+MAJOR PROFILE (I) 	4000
+MALARIAL PARASITE- P.f & P.v (Ag). 	350
+MALARIAL PARASITE -QBC 	400
+MAMMOGRAPHY BOTH BREAST 	4500
+MAMMOGRAPHY BOTH BREASTS 	4000
+Manganese 	1700
+MANTOUX 	300
+MANTOUX 1 	500
+MASK 	10
+Measles PCR 	3500
+Mercury 	3000
+Metabolic Basic Screen 	600
+Metanephrines 	1500
+MICRAL1 	100
+MICROALBUMIN 	500
+Microfilaria Antigen 	750
+MILD TO MODERATE FULID TAPING 	6000
+MP 	300
+MR ANGIOGRAM OF BOTH LOWER LIMBS (TOF) 	13000
+MR RENAL ANGIO WITHOUT CONTRAST 	10000
+MRA 	10000
+MRA VISUAL FIUD EVALUATION 	10000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	24/48
+
+-- 24 of 48 --
+
 Order Name
 Order
 Amount
-MRA. 3000
-MRI - KNEE. 7500
-MRI ANKLE 7500
-MRI INTRA AND EXTRA CRENAIL ANGIO 10000
-MRI LEG 7500
-MRI SHOULDER 7500
-MRI - ANASTHESIA 3000
-MRI - FISTULOGRAM 10500
-MRI ABDOMEN .. 10000
-MRI ABDOMEN AND PELVIS.. 12500
-MRI ANGIO 3000
-MRI ANKLE 7500
-MRI BOTH ANKLE 14000
-MRI BOTH BREASTS 11000
-MRI BOTH HIP JOINT 14000
-MRI BOTH KNEE 14000
-MRI BOTH KNEES 15000
-MRI BOTH SHOULDERS 15000
-MRI BRACHIAL PLEXUS 7000
-MRI BRAIN 7500
-MRI BRAIN (VERTIGO PROTOCOL) 10000
-MRI BRAIN -PL SCREEING OF CVJN 9000
-MRI BRAIN 1 6500
-MRI BRAIN AND ORBITS 15000
-MRI BRAIN DEMENTIA PROTOCAL 7500
-MRI BRAIN EPILEPSY PROTOCAL 10500
-MRI BRAIN PLAIN 7500
-MRI BRAIN SCREENING 5000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 25/48
+MRA. 	3000
+MRI - KNEE. 	7500
+MRI ANKLE 	7500
+MRI INTRA AND EXTRA CRENAIL ANGIO 	10000
+MRI LEG 	7500
+MRI SHOULDER 	7500
+MRI - ANASTHESIA 	3000
+MRI - FISTULOGRAM 	10500
+MRI ABDOMEN .. 	10000
+MRI ABDOMEN AND PELVIS.. 	12500
+MRI ANGIO 	3000
+MRI ANKLE 	7500
+MRI BOTH ANKLE 	14000
+MRI BOTH BREASTS 	11000
+MRI BOTH HIP JOINT 	14000
+MRI BOTH KNEE 	14000
+MRI BOTH KNEES 	15000
+MRI BOTH SHOULDERS 	15000
+MRI BRACHIAL PLEXUS 	7000
+MRI BRAIN 	7500
+MRI BRAIN (VERTIGO PROTOCOL) 	10000
+MRI BRAIN -PL SCREEING OF CVJN 	9000
+MRI BRAIN 1 	6500
+MRI BRAIN AND ORBITS 	15000
+MRI BRAIN DEMENTIA PROTOCAL 	7500
+MRI BRAIN EPILEPSY PROTOCAL 	10500
+MRI BRAIN PLAIN 	7500
+MRI BRAIN SCREENING 	5000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	25/48
+
+-- 25 of 48 --
+
 Order Name
 Order
 Amount
-MRI BRAIN STROKE PROTOCAL 11000
-MRI BRAIN STROKE PROTOCOL 10500
-MRI BRAIN WITH ANGIO 10500
-MRI BRAIN With IAC 10000
-MRI BRAIN WITH MRV 10500
-MRI BRAIN WITH ORBITS 11000
-MRI BRAIN WITH STROKE PROTOCOL 10500
-MRI BRAIN WITH VENOGRAM 10000
-MRI BRAIN,, 7500
-MRI BRAIN. 8000
-MRI BRAIN.. 10000
-MRI BRAIN.... 10000
-MRI BREAST 8500
-MRI CERVICAL DORSAL SPINE 10000
-MRI CERVICAL SPIN 8000
-MRI CERVICAL SPINE 7500
-MRI CERVIVAL SPINE 7500
-MRI CHEEK 7000
-MRI CHEST 7000
-MRI CISTERNOGRAPHY 9000
-MRI COCCYX 7500
+MRI BRAIN STROKE PROTOCAL 	11000
+MRI BRAIN STROKE PROTOCOL 	10500
+MRI BRAIN WITH ANGIO 	10500
+MRI BRAIN With IAC 	10000
+MRI BRAIN WITH MRV 	10500
+MRI BRAIN WITH ORBITS 	11000
+MRI BRAIN WITH STROKE PROTOCOL 	10500
+MRI BRAIN WITH VENOGRAM 	10000
+MRI BRAIN,, 	7500
+MRI BRAIN. 	8000
+MRI BRAIN.. 	10000
+MRI BRAIN.... 	10000
+MRI BREAST 	8500
+MRI CERVICAL DORSAL SPINE 	10000
+MRI CERVICAL SPIN 	8000
+MRI CERVICAL SPINE 	7500
+MRI CERVIVAL SPINE 	7500
+MRI CHEEK 	7000
+MRI CHEST 	7000
+MRI CISTERNOGRAPHY 	9000
+MRI COCCYX 	7500
 MRI COMPREHENSIVE TUMOR PROTOCOL
 (MRI+MRA+CONTRAST)
 13000
-MRI CONTRAST 3000
-MRI CSF STUDY 10000
-MRI DEMENTIA PROTOCOL (MRI+MRA+SWI+DTI) 10000
-MRI DORSAL SPINE 7500
-MRI DORSO LUMBAR SPINE 10000
-MRI DTI CERVICAL SPINE 6000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 26/48
+MRI CONTRAST 	3000
+MRI CSF STUDY 	10000
+MRI DEMENTIA PROTOCOL (MRI+MRA+SWI+DTI) 	10000
+MRI DORSAL SPINE 	7500
+MRI DORSO LUMBAR SPINE 	10000
+MRI DTI CERVICAL SPINE 	6000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	26/48
+
+-- 26 of 48 --
+
 Order Name
 Order
 Amount
-MRI DYNAMIC PITUITARY PROTOCAL 8000
-MRI ELBOW 7000
-MRI EPILEPSY PROTOCOL 10000
-MRI EXTRA FILM 500
-MRI EXTRA FILMS WITH NAME CHANGE 1500
-MRI EXTRA REGION 5000
-MRI EXTRA REGION.. 3500
-MRI FACE 7000
-MRI FETAL 10000
-MRI FISTULOGRAM 8500
-MRI FOOT 7500
-MRI FOREARM 7000
-MRI HAND 7000
-MRI HAND.. 7500
-MRI HAND.... 75000
-MRI HEADACHE PROTOCOL (MRI +MRA+MRV) 11000
-MRI HIP WITH THAI 12000
-MRI JOINT WRIST 7000
-MRI KNEE 7500
-MRI KNEE. 7500
-MRI L S SPINE 7500
-MRI LEFT LEG 7500
-MRI LEFT LEG. 7000
-MRI LEFT SHOULDER 7500
-MRI LEFT SHOULDER. 7500
-MRI LEG / THIGH/ARM 7000
-MRI LUMBAR SPINE 7500
-MRI LUMBAR SPINE. 10000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 27/48
+MRI DYNAMIC PITUITARY PROTOCAL 	8000
+MRI ELBOW 	7000
+MRI EPILEPSY PROTOCOL 	10000
+MRI EXTRA FILM 	500
+MRI EXTRA FILMS WITH NAME CHANGE 	1500
+MRI EXTRA REGION 	5000
+MRI EXTRA REGION.. 	3500
+MRI FACE 	7000
+MRI FETAL 	10000
+MRI FISTULOGRAM 	8500
+MRI FOOT 	7500
+MRI FOREARM 	7000
+MRI HAND 	7000
+MRI HAND.. 	7500
+MRI HAND.... 	75000
+MRI HEADACHE PROTOCOL (MRI +MRA+MRV) 	11000
+MRI HIP WITH THAI 	12000
+MRI JOINT WRIST 	7000
+MRI KNEE 	7500
+MRI KNEE. 	7500
+MRI L S SPINE 	7500
+MRI LEFT LEG 	7500
+MRI LEFT LEG. 	7000
+MRI LEFT SHOULDER 	7500
+MRI LEFT SHOULDER. 	7500
+MRI LEG / THIGH/ARM 	7000
+MRI LUMBAR SPINE 	7500
+MRI LUMBAR SPINE. 	10000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	27/48
+
+-- 27 of 48 --
+
 Order Name
 Order
 Amount
-MRI LUMBAR SPINE..... 8000
-MRI LUMBER SPINE 10000
-MRI LUMBER SPINE WITH CONTRAST 10000
-MRI MAXILLA / MANDIBLE/TEMPORAL BLONE/TM JOINT 7000
-MRI MOVEMENT DISORDER (PARKINSON - MRI+MRA+SWI+DTI)9000
-MRI MRA - BOTH LIMBS (PERIPHERAL) WITH CONTRAST12000
-MRI MRA - UPPER LIMB 10000
-MRI MRA AORTA 9000
-MRI MRA LOWER LIMB 10000
-MRI MRA RENAL + CONTRAST 10000
-MRI MRCP 9000
-MRI NECK 7000
-MRI NECK. 7500
-MRI NON CONTRAST ANGIOGRAPHY ANY REGION 10000
-MRI ORBIT 7000
-MRI PAROTIDS 7000
-MRI PELVIS WITH BOTH HIPS 9000
-MRI PELVIS. 8500
-MRI PERFUSION (CONTRAST) 3000
-MRI PERINIUM 8500
-MRI PITUITARY WITH CONTRAST 10000
-MRI PNS 8000
-MRI PROSTATE 7000
-MRI RENAL ANGIO 10000
-MRI RIGHT KNEE 7000
-MRI S.I JOINTS 8500
-MRI SCAPULA 7000
-MRI SCREENING EXTRA REGION 3000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 28/48
+MRI LUMBAR SPINE..... 	8000
+MRI LUMBER SPINE 	10000
+MRI LUMBER SPINE WITH CONTRAST 	10000
+MRI MAXILLA / MANDIBLE/TEMPORAL BLONE/TM JOINT 	7000
+MRI MOVEMENT DISORDER (PARKINSON - MRI+MRA+SWI+DTI) 	9000
+MRI MRA - BOTH LIMBS (PERIPHERAL) WITH CONTRAST 	12000
+MRI MRA - UPPER LIMB 	10000
+MRI MRA AORTA 	9000
+MRI MRA LOWER LIMB 	10000
+MRI MRA RENAL + CONTRAST 	10000
+MRI MRCP 	9000
+MRI NECK 	7000
+MRI NECK. 	7500
+MRI NON CONTRAST ANGIOGRAPHY ANY REGION 	10000
+MRI ORBIT 	7000
+MRI PAROTIDS 	7000
+MRI PELVIS WITH BOTH HIPS 	9000
+MRI PELVIS. 	8500
+MRI PERFUSION (CONTRAST) 	3000
+MRI PERINIUM 	8500
+MRI PITUITARY WITH CONTRAST 	10000
+MRI PNS 	8000
+MRI PROSTATE 	7000
+MRI RENAL ANGIO 	10000
+MRI RIGHT KNEE 	7000
+MRI S.I JOINTS 	8500
+MRI SCAPULA 	7000
+MRI SCREENING EXTRA REGION 	3000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	28/48
+
+-- 28 of 48 --
+
 Order Name
 Order
 Amount
-MRI SHOULDER 7500
-MRI SIALOGRAM 7000
-MRI SLEEP APNEA STUDY 9000
-MRI SPECTOROSCOPY 3000
-MRI STERNOCLAVICULAR JOINT 7000
-MRI TEMPORAL BONE 7000
-MRI THIGH. 7000
-MRI TONGUE 7000
-MRI TOTAL ABDOMEN AND PELVIS 16000
-MRI TRIGEINAL NEURALGIA PROTOCAL 11500
-MRI TRIPHASIC LIVER (CONTRAST) 10000
-MRI UROGRAPHY 7000
-MRI VENOGRAM 3000
-MRI VISUAL PATHWAY PROTOCOL 10000
-MRI WHOLE ABDOMEN 11000
-MRI WHOLE BODY DIFFUSION 10000
-MRI WHOLE SPINE 21000
-MRI WHOLE SPINE SCREENING 7500
-MRI WRIST 700
-MRI WRIST. 7500
-MRV 3000
-MTB Complex PCR 1500
-MTB Complex PCR Menstrual blood 1500
-Mumps PCR 3200
-Mumps Virus Antibody IgG 1500
-Mumps Virus Antibody IgM 1500
-MXTN 100
-Myoglobulin 2000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 29/48
+MRI SHOULDER 	7500
+MRI SIALOGRAM 	7000
+MRI SLEEP APNEA STUDY 	9000
+MRI SPECTOROSCOPY 	3000
+MRI STERNOCLAVICULAR JOINT 	7000
+MRI TEMPORAL BONE 	7000
+MRI THIGH. 	7000
+MRI TONGUE 	7000
+MRI TOTAL ABDOMEN AND PELVIS 	16000
+MRI TRIGEINAL NEURALGIA PROTOCAL 	11500
+MRI TRIPHASIC LIVER (CONTRAST) 	10000
+MRI UROGRAPHY 	7000
+MRI VENOGRAM 	3000
+MRI VISUAL PATHWAY PROTOCOL 	10000
+MRI WHOLE ABDOMEN 	11000
+MRI WHOLE BODY DIFFUSION 	10000
+MRI WHOLE SPINE 	21000
+MRI WHOLE SPINE SCREENING 	7500
+MRI WRIST 	700
+MRI WRIST. 	7500
+MRV 	3000
+MTB Complex PCR 	1500
+MTB Complex PCR Menstrual blood 	1500
+Mumps PCR 	3200
+Mumps Virus Antibody IgG 	1500
+Mumps Virus Antibody IgM 	1500
+MXTN 	100
+Myoglobulin 	2000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	29/48
+
+-- 29 of 48 --
+
 Order Name
 Order
 Amount
-N95 MASK 120
-NCS 4 LIMBS 4000
-NCS LOWER 2 LIMBS 3000
-NCS UPPER 2 LIMBS 3000
-Negative Stain (Indian Ink) 300
-NIPT 25000
-Noclaosome 500
-NT PRO BNP 4500
-NT UTRAN ATRIC DOPPLER SCAN 2500
-Nucleosome 400
-OGCT 500
-OGTT 500
-Oligoclonal Bands (Immunotyping) 3500
-OPD CHARGES 300
-OPD FOLLOW UP CHARGES 200
-OPG 500
-Osmatic Fragility Test 350
-Osmolality 400
-Oxalates 40
-p-ANCA&c-ANCA 2000
-PACKED CELLVOLUME ( P.C.V. ) 200
-PAPP-A (Pregnency Associated Plasma Protein-A) 1200
-PAPSMEAR 1000
-PARA THYROID 600
-PARA THYROID HARMONE(IPTH) 1200
-PARANEOPLASTIC ANTIBODIES PROFILE 13000
-Parietal Cell Antibody 1500
-Pediatric charges 600
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 30/48
+N95 MASK 	120
+NCS 4 LIMBS 	4000
+NCS LOWER 2 LIMBS 	3000
+NCS UPPER 2 LIMBS 	3000
+Negative Stain (Indian Ink) 	300
+NIPT 	25000
+Noclaosome 	500
+NT PRO BNP 	4500
+NT UTRAN ATRIC DOPPLER SCAN 	2500
+Nucleosome 	400
+OGCT 	500
+OGTT 	500
+Oligoclonal Bands (Immunotyping) 	3500
+OPD CHARGES 	300
+OPD FOLLOW UP CHARGES 	200
+OPG 	500
+Osmatic Fragility Test 	350
+Osmolality 	400
+Oxalates 	40
+p-ANCA&c-ANCA 	2000
+PACKED CELLVOLUME ( P.C.V. ) 	200
+PAPP-A (Pregnency Associated Plasma Protein-A) 	1200
+PAPSMEAR 	1000
+PARA THYROID 	600
+PARA THYROID HARMONE(IPTH) 	1200
+PARANEOPLASTIC ANTIBODIES PROFILE 	13000
+Parietal Cell Antibody 	1500
+Pediatric charges 	600
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	30/48
+
+-- 30 of 48 --
+
 Order Name
 Order
 Amount
-PERIPHERAL SMEAR 250
-PFT 1500
-Phenobarbital(Gardinal) 800
-Phenytoin(Eptoin) 700
-phosphorous 24urine 200
-phosphorous urine 150
-PIGTAIL CATHETOR 15000
-PLASMA FIBRINOGEN 400
-PLATELET COUNT 200
-PLBS (POST LUNCH BLOOD SUGAR) 80
-PLBS-Tc 100
-PLBSCRE 100
-Porphobilinogen(PBG) 2000
-Porphobilinogen(Qualitative) 600
-POST LUNCH INSULIN 700
-POTASSIUM 24hrs urine 300
-POTASSIUM urine 180
-PpBs 20
-PPE Gown 250
-Pre-BS 20
-PREGNANCY SCAN 1600
-PRL 200
-Procalcitonin 3000
-Progesterone 800
-Prolactin 800
-Prostarate Specific Antigen(PSA) Free 600
-Prostarate Specific Antigen(PSA) Total 700
-Protein C 3000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 31/48
+PERIPHERAL SMEAR 	250
+PFT 	1500
+Phenobarbital(Gardinal) 	800
+Phenytoin(Eptoin) 	700
+phosphorous 24urine 	200
+phosphorous urine 	150
+PIGTAIL CATHETOR 	15000
+PLASMA FIBRINOGEN 	400
+PLATELET COUNT 	200
+PLBS (POST LUNCH BLOOD SUGAR) 	80
+PLBS-Tc 	100
+PLBSCRE 	100
+Porphobilinogen(PBG) 	2000
+Porphobilinogen(Qualitative) 	600
+POST LUNCH INSULIN 	700
+POTASSIUM 24hrs urine 	300
+POTASSIUM urine 	180
+PpBs 	20
+PPE Gown 	250
+Pre-BS 	20
+PREGNANCY SCAN 	1600
+PRL 	200
+Procalcitonin 	3000
+Progesterone 	800
+Prolactin 	800
+Prostarate Specific Antigen(PSA) Free 	600
+Prostarate Specific Antigen(PSA) Total 	700
+Protein C 	3000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	31/48
+
+-- 31 of 48 --
+
 Order Name
 Order
 Amount
-Protein Electrophoresis serum 1000
-protein Fluid 500
-protein random urine 200
-Protein S 3000
-PROTHROMBIN TIME 450
-Prothrombin Time(PT) With INR 300
-PROTIEN CREATIN RATIO(URIN) 200
-PROTIN ,SUGAR 1250
-PS FOR ABNORMAL CELLS 100
-PT 500
-PT & APTT 600
-PT & APTT WITH INR 800
-PT WITH INR 700
-PUS FOR CULTURE & SENSITIVITY 1000
-QUADRABLE MARKER 3200
-RA CRP 600
-RA FACTOR 300
-RA FACTOR IGM 1500
-RA IGM 800
-RADIOLOGY PROFESSIONAL CHARGES-3(BIOPSY) 15000
-RbBunCreat 180
-RBC Folate 1500
-RBS (RANDOM BLOOD SUGAR) 200
-RBS , Sr. CREATININE 200
-RBS , UREA , CREATININE , URIC ACID 550
-RBS , UREA , CREATININE,URIC ACID, CALCIUM 750
-RBS ,BLOOD UREA , SERUM CREATININE 350
-RBURCRE1 180
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 32/48
+Protein Electrophoresis serum 	1000
+protein Fluid 	500
+protein random urine 	200
+Protein S 	3000
+PROTHROMBIN TIME 	450
+Prothrombin Time(PT) With INR 	300
+PROTIEN CREATIN RATIO(URIN) 	200
+PROTIN ,SUGAR 	1250
+PS FOR ABNORMAL CELLS 	100
+PT 	500
+PT & APTT 	600
+PT & APTT WITH INR 	800
+PT WITH INR 	700
+PUS FOR CULTURE & SENSITIVITY 	1000
+QUADRABLE MARKER 	3200
+RA CRP 	600
+RA FACTOR 	300
+RA FACTOR IGM 	1500
+RA IGM 	800
+RADIOLOGY PROFESSIONAL CHARGES-3(BIOPSY) 	15000
+RbBunCreat 	180
+RBC Folate 	1500
+RBS (RANDOM BLOOD SUGAR) 	200
+RBS , Sr. CREATININE 	200
+RBS , UREA , CREATININE , URIC ACID 	550
+RBS , UREA , CREATININE,URIC ACID, CALCIUM 	750
+RBS ,BLOOD UREA , SERUM CREATININE 	350
+RBURCRE1 	180
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	32/48
+
+-- 32 of 48 --
+
 Order Name
 Order
 Amount
-Renin Activity 2500
-Reticulocyte Count 200
-RFT(Renal function test) 600
-Rh Antibody titres 600
-RHEUMATIC FACTOR (RA FACTOR) 450
-Rheumatic Factor IgG Antibody 600
-Rheumatic Factor IgM Antibody 1200
-Ribosomes 400
-RNP-G 100
-Rota virus Antigen 1000
-RPR 200
-RT PCR 1500
-RT PCR . 800
-Rubella IgG 400
-Rubeola Antibody IgG 500
-Rubeola Antibody IgM 500
-RUT 800
-S L E PROFILE 4000
-S.G.O.T 150
-S.G.P.T 150
-S.TESTOSTERON 700
-SALMONELLA IGG 1000
-SALMONELLA IGM 1000
-SAMPLE COLLECTION CHARGE 200
-SCAN TESTES 400
-SCL-70 Antibody 1500
-SCRUB TYPHUS IGM 1500
-SEMAN ANALYSIS 1000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 33/48
+Renin Activity 	2500
+Reticulocyte Count 	200
+RFT(Renal function test) 	600
+Rh Antibody titres 	600
+RHEUMATIC FACTOR (RA FACTOR) 	450
+Rheumatic Factor IgG Antibody 	600
+Rheumatic Factor IgM Antibody 	1200
+Ribosomes 	400
+RNP-G 	100
+Rota virus Antigen 	1000
+RPR 	200
+RT PCR 	1500
+RT PCR . 	800
+Rubella IgG 	400
+Rubeola Antibody IgG 	500
+Rubeola Antibody IgM 	500
+RUT 	800
+S L E PROFILE 	4000
+S.G.O.T 	150
+S.G.P.T 	150
+S.TESTOSTERON 	700
+SALMONELLA IGG 	1000
+SALMONELLA IGM 	1000
+SAMPLE COLLECTION CHARGE 	200
+SCAN TESTES 	400
+SCL-70 Antibody 	1500
+SCRUB TYPHUS IGM 	1500
+SEMAN ANALYSIS 	1000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	33/48
+
+-- 33 of 48 --
+
 Order Name
 Order
 Amount
-SEMEN ANALYSIS. 750
-SEMEN ANALYSIS.. 1000
-SEMEN C/S 1200
-SERUM L.D.H 300
-SERUM ABSOLUTE EOSINOPHIL COUNT 500
-SERUM AFP 1500
-SERUM ALBUMIN 200
-Serum Ammonia 1500
-SERUM AMYLASE 600
-SERUM BETA HCG 1000
-SERUM CALCIUM 250
-SERUM CALCIUM- PHOSPHORUS 300
-SERUM CHOLESTEROL 200
-SERUM CREATININE 200
-SERUM DHEAS 850
-SERUM ELECTROLYTES 500
-SERUM IgE 900
-SERUM IGE . 900
-SERUM LACTATE 1500
-SERUM LIPASE 600
-SERUM LITHIUM 400
-SERUM MAGNESIUM 450
-SERUM MEGNESIUM 350
-SERUM MICRO ALBUMINUN 450
-SERUM PHOSPHORUS 300
-SERUM PLA2R 10000
-SERUM POTASSIUM 250
-SERUM PROTEIN 250
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 34/48
+SEMEN ANALYSIS. 	750
+SEMEN ANALYSIS.. 	1000
+SEMEN C/S 	1200
+SERUM L.D.H 	300
+SERUM ABSOLUTE EOSINOPHIL COUNT 	500
+SERUM AFP 	1500
+SERUM ALBUMIN 	200
+Serum Ammonia 	1500
+SERUM AMYLASE 	600
+SERUM BETA HCG 	1000
+SERUM CALCIUM 	250
+SERUM CALCIUM- PHOSPHORUS 	300
+SERUM CHOLESTEROL 	200
+SERUM CREATININE 	200
+SERUM DHEAS 	850
+SERUM ELECTROLYTES 	500
+SERUM IgE 	900
+SERUM IGE . 	900
+SERUM LACTATE 	1500
+SERUM LIPASE 	600
+SERUM LITHIUM 	400
+SERUM MAGNESIUM 	450
+SERUM MEGNESIUM 	350
+SERUM MICRO ALBUMINUN 	450
+SERUM PHOSPHORUS 	300
+SERUM PLA2R 	10000
+SERUM POTASSIUM 	250
+SERUM PROTEIN 	250
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	34/48
+
+-- 34 of 48 --
+
 Order Name
 Order
 Amount
-SERUM PSA 1000
-SERUM SODIUM 200
-SERUM TESTOSTERON 700
-SERUM TRIGLYCERIDES(TG) 250
-SERUM URIC ACID 200
-Sex Hormone Binding Globulin 1700
-SGOT 200
-SGPT 200
-Sickling Test 300
-SIGMONDOSCOPY 5500
-SKIN BIOPSY 3500
-SKIN CLIPING FOR A F B. 100
-skin Scrapping 300
-SLE PROFILE 4500
-sm/RNP Antibody 1600
-SMALL HPE 350
-SMEAR FOR Fungal Element 200
-SMEAR FOR MICROFILARIA 500
-SMEAR FOR MP 200
-SODIUM 200
-SPECIAL PACKAGE - 001 450
+SERUM PSA 	1000
+SERUM SODIUM 	200
+SERUM TESTOSTERON 	700
+SERUM TRIGLYCERIDES(TG) 	250
+SERUM URIC ACID 	200
+Sex Hormone Binding Globulin 	1700
+SGOT 	200
+SGPT 	200
+Sickling Test 	300
+SIGMONDOSCOPY 	5500
+SKIN BIOPSY 	3500
+SKIN CLIPING FOR A F B. 	100
+skin Scrapping 	300
+SLE PROFILE 	4500
+sm/RNP Antibody 	1600
+SMALL HPE 	350
+SMEAR FOR Fungal Element 	200
+SMEAR FOR MICROFILARIA 	500
+SMEAR FOR MP 	200
+SODIUM 	200
+SPECIAL PACKAGE - 001 	450
 SPERM DNA FRAGMENTATION FLUORESCENT MICROSCOPY,
 Y-CHROMOSOME MICRODELETION DETECTION PCR
 15500
-SPIKE PROTEIN IGG COVID 2500
-SPOT URINE FOR CREATININE RATIO 400
-SPOT VMA(VANILLYL MANDELIC ACID 400
-SPUTUM FOR AFB 350
-SPUTUM FOR CULTURE 1000
-SPUTUM FOR GRAM STAIN 500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 35/48
+SPIKE PROTEIN IGG COVID 	2500
+SPOT URINE FOR CREATININE RATIO 	400
+SPOT VMA(VANILLYL MANDELIC ACID 	400
+SPUTUM FOR AFB 	350
+SPUTUM FOR CULTURE 	1000
+SPUTUM FOR GRAM STAIN 	500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	35/48
+
+-- 35 of 48 --
+
 Order Name
 Order
 Amount
-Sputum for Malignant Cells 300
-SPUTUM FUNGAL STAIN 600
-SPUTUMGRAINSTONE 200
-Stone Analysis 900
-STOOL EXAMINATION 250
-STOOL FOR OCCULT BLOOD 250
-STOOL FOR OVA AND CYST 250
-STOOL FOR pH 50
-STOOL FOR REDUCING SUBSTANCES 100
-STOOL FOR REDUCING SUBSTANCES. 400
-T.P.H.A 400
-T3 T4 TSH 600
-TB PCR 2000
-TB QUANTIFERON GOLD 3500
-Testosterone TOTAL 800
-Testosterone-Free 1500
-Therapeutic Range 100
-THROAT SWAB FOR CULTURE AND SENSITIVITY 600
-Thrombin Time 300
-THROMBOPHILIA PROFILE 9800
-Throperoxidase Antibody (aTPO) 600
-THYPOID IGM 1300
-Thyroglobulin 1600
-THYROID PROFILE 600
-Thyroperoxidase antibody(anti TPo) 1200
-Thyroxine Binding Globulin 6500
-Thyroxine-total (TT4) 250
-TIGTAIL CATHETER INFERTION 12000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 36/48
+Sputum for Malignant Cells 	300
+SPUTUM FUNGAL STAIN 	600
+SPUTUMGRAINSTONE 	200
+Stone Analysis 	900
+STOOL EXAMINATION 	250
+STOOL FOR OCCULT BLOOD 	250
+STOOL FOR OVA AND CYST 	250
+STOOL FOR pH 	50
+STOOL FOR REDUCING SUBSTANCES 	100
+STOOL FOR REDUCING SUBSTANCES. 	400
+T.P.H.A 	400
+T3 T4 TSH 	600
+TB PCR 	2000
+TB QUANTIFERON GOLD 	3500
+Testosterone TOTAL 	800
+Testosterone-Free 	1500
+Therapeutic Range 	100
+THROAT SWAB FOR CULTURE AND SENSITIVITY 	600
+Thrombin Time 	300
+THROMBOPHILIA PROFILE 	9800
+Throperoxidase Antibody (aTPO) 	600
+THYPOID IGM 	1300
+Thyroglobulin 	1600
+THYROID PROFILE 	600
+Thyroperoxidase antibody(anti TPo) 	1200
+Thyroxine Binding Globulin 	6500
+Thyroxine-total (TT4) 	250
+TIGTAIL CATHETER INFERTION 	12000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	36/48
+
+-- 36 of 48 --
+
 Order Name
 Order
 Amount
-Tissue Culture & Sensitivity 800
-Tissue Transglutaminase Antibody IgA 1500
-Tissue Transglutaminase Antibody IgG 1500
-Tissue Transglutaminase Antibody IgM 1500
-TLC. DLC. 200
-TMT 2000
-TMT (CARDIAC STRESS TEST) 1500
-TORCH PROFILE(10 ) 2500
-TORCH PROFILE(8) 1800
-Total IgE 800
-Total Proteins 250
-Toxoplasma DNA PCR 3000
-Toxoplasma IgG 400
-toxoplasma IgM 400
-Tranferin 600
-TRANS RECTAL ULTRA SONOGRAPHY 1800
-TREPONEMA PALLIDUM HAEMAGGLUTINATION TEST ( TPHA ) 600
-Trilodothyronine Total (TT3) 250
-TRIPLE MARKER 3200
-Troponin - T 2000
-Troponin -I 1500
-TSH 300
-TSH RECEPTOR ANTIBODY 2500
-TVS EXTRA CHARGE 200
-TVS SCAN 400
-TVS- SCAN 400
-Typhoid IgG 1300
-Typhoid IgM 1300
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 37/48
+Tissue Culture & Sensitivity 	800
+Tissue Transglutaminase Antibody IgA 	1500
+Tissue Transglutaminase Antibody IgG 	1500
+Tissue Transglutaminase Antibody IgM 	1500
+TLC. DLC. 	200
+TMT 	2000
+TMT (CARDIAC STRESS TEST) 	1500
+TORCH PROFILE(10 ) 	2500
+TORCH PROFILE(8) 	1800
+Total IgE 	800
+Total Proteins 	250
+Toxoplasma DNA PCR 	3000
+Toxoplasma IgG 	400
+toxoplasma IgM 	400
+Tranferin 	600
+TRANS RECTAL ULTRA SONOGRAPHY 	1800
+TREPONEMA PALLIDUM HAEMAGGLUTINATION TEST ( TPHA ) 	600
+Trilodothyronine Total (TT3) 	250
+TRIPLE MARKER 	3200
+Troponin - T 	2000
+Troponin -I 	1500
+TSH 	300
+TSH RECEPTOR ANTIBODY 	2500
+TVS EXTRA CHARGE 	200
+TVS SCAN 	400
+TVS- SCAN 	400
+Typhoid IgG 	1300
+Typhoid IgM 	1300
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	37/48
+
+-- 37 of 48 --
+
 Order Name
 Order
 Amount
-Unconjugated Estriol (E3) 450
-Unsaturated iron Binding Capacity 450
-Uppal Industrial Employees Health Care 100
-URINARY CREATININE 200
-URINE ALBUMIN CREATININE RATIO 300
-URINE ANALYSIS 400
-URINE CULTURE 1000
-urine for AFB 200
-Urine for Aldumin 150
-URINE FOR AMIONO ACID 1000
-URINE FOR BSBP 50
-URINE FOR C/S 500
-URINE FOR CHYLE 300
-URINE FOR FUNGAL ELEMENT 500
-URINE FOR HCG 100
-URINE FOR KETONE BODIES 100
-URINE FOR MICRO ALBUMIN 450
-URINE FOR NICOTINE 1500
-Urine for PCR Tuberculosis 1900
-URINE FOR PREGNANCY TEST(UPT) 200
-URINE FOR PROTEIN AND CREATINE RATIO 450
-URINE FOR SUGAR 50
-URINE KETONES 200
-Urine protein creatinine ratio 500
-URINE ROUTINE 200
-URINE SPOT PROTEIN/CREATININE RATIO 500
-USG BOTH BREAST MALE 2000
-USG EARLY PREGNANCY 1200
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 38/48
+Unconjugated Estriol (E3) 	450
+Unsaturated iron Binding Capacity 	450
+Uppal Industrial Employees Health Care 	100
+URINARY CREATININE 	200
+URINE ALBUMIN CREATININE RATIO 	300
+URINE ANALYSIS 	400
+URINE CULTURE 	1000
+urine for AFB 	200
+Urine for Aldumin 	150
+URINE FOR AMIONO ACID 	1000
+URINE FOR BSBP 	50
+URINE FOR C/S 	500
+URINE FOR CHYLE 	300
+URINE FOR FUNGAL ELEMENT 	500
+URINE FOR HCG 	100
+URINE FOR KETONE BODIES 	100
+URINE FOR MICRO ALBUMIN 	450
+URINE FOR NICOTINE 	1500
+Urine for PCR Tuberculosis 	1900
+URINE FOR PREGNANCY TEST(UPT) 	200
+URINE FOR PROTEIN AND CREATINE RATIO 	450
+URINE FOR SUGAR 	50
+URINE KETONES 	200
+Urine protein creatinine ratio 	500
+URINE ROUTINE 	200
+URINE SPOT PROTEIN/CREATININE RATIO 	500
+USG BOTH BREAST MALE 	2000
+USG EARLY PREGNANCY 	1200
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	38/48
+
+-- 38 of 48 --
+
 Order Name
 Order
 Amount
-USG - ANTRAL FOLLICLE COUNT 1200
-USG 2D ECHO 2000
-USG 2D ECHO PEDIATRIC 2500
-USG 2D ECHO. 2500
-USG 3D PELVIS 2000
-USG 3D TIFFA 3000
-USG ABDOMEN 1500
-USG ABDOMEN AND PELVIS 1200
-USG ANTENATAL SCAN 1200
-USG ANUS / RECTUM 1500
-USG BIO PHYSICAL PROFILE AND DOPPLER PREGNANCY 3500
-USG BOTH BREAST FEMALE 2500
-USG BOTH BREAST MALE 2000
-USG BOTH KNEES 3000
-USG BOTH SHOULDERS 2400
-USG BREST ( SINGLE) FEMALE 1800
-USG BREST MALE SINGLE 1500
-USG CAROTID DOPPLER. 2000
-USG CAROTID VERTEBRAL ARTERY 2000
-USG CHEST 1500
+USG - ANTRAL FOLLICLE COUNT 	1200
+USG 2D ECHO 	2000
+USG 2D ECHO PEDIATRIC 	2500
+USG 2D ECHO. 	2500
+USG 3D PELVIS 	2000
+USG 3D TIFFA 	3000
+USG ABDOMEN 	1500
+USG ABDOMEN AND PELVIS 	1200
+USG ANTENATAL SCAN 	1200
+USG ANUS / RECTUM 	1500
+USG BIO PHYSICAL PROFILE AND DOPPLER PREGNANCY 	3500
+USG BOTH BREAST FEMALE 	2500
+USG BOTH BREAST MALE 	2000
+USG BOTH KNEES 	3000
+USG BOTH SHOULDERS 	2400
+USG BREST ( SINGLE) FEMALE 	1800
+USG BREST MALE SINGLE 	1500
+USG CAROTID DOPPLER. 	2000
+USG CAROTID VERTEBRAL ARTERY 	2000
+USG CHEST 	1500
 USG COLOUR DOPPLER OF BOTH ARTERIAL AND VENOUS
 LOWER LIMB(SINGLE)
 3000
@@ -1296,22 +1410,25 @@ ARTERIAL /VINOUS
 USG COLOUR DOPPLER OF BOTH ARTERIAL AND VENOUS
 LOWERLIMBS(BOTH)
 6000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 39/48
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	39/48
+
+-- 39 of 48 --
+
 Order Name
 Order
 Amount
-USG COLOUR DOPPLER OF BOTH LOWER LIMBS (VENOUS)3000
-USG COLOUR DOPPLER OF BOTH LOWER LIMBS(ARTERIAL) 3000
-USG COLOUR DOPPLER OF BOTH UPPER LIMBS (ARTERIAL) 3000
-USG COLOUR DOPPLER OF BOTH UPPER LIMBS (VENOUS)3000
-USG DOPPLEER SCROTUM 1800
-USG DOPPLER OF ARTERIAL SYSTEM LOWER LIMB(SINGLE )1500
-USG DOPPLER OF ARTERIAL SYSTEM UPPER LIMB(SINGLE )1500
-USG DOPPLER OF PENIS 4000
-USG DOPPLER OF VENOUS SYSTEM LOWER LIMB(SINGLE )1500
-USG DOPPLER OF VENOUS SYSTEM UPPER LIMB(SINGLE )1500
-USG DOPPLER SCROTUM 1800
+USG COLOUR DOPPLER OF BOTH LOWER LIMBS (VENOUS) 	3000
+USG COLOUR DOPPLER OF BOTH LOWER LIMBS(ARTERIAL) 	3000
+USG COLOUR DOPPLER OF BOTH UPPER LIMBS (ARTERIAL) 	3000
+USG COLOUR DOPPLER OF BOTH UPPER LIMBS (VENOUS) 	3000
+USG DOPPLEER SCROTUM 	1800
+USG DOPPLER OF ARTERIAL SYSTEM LOWER LIMB(SINGLE ) 	1500
+USG DOPPLER OF ARTERIAL SYSTEM UPPER LIMB(SINGLE ) 	1500
+USG DOPPLER OF PENIS 	4000
+USG DOPPLER OF VENOUS SYSTEM LOWER LIMB(SINGLE ) 	1500
+USG DOPPLER OF VENOUS SYSTEM UPPER LIMB(SINGLE ) 	1500
+USG DOPPLER SCROTUM 	1800
 USG DOPPLER STUDY OF LEFT LOWER LIMB ARTERIAL
 SYSTEM
 1500
@@ -1336,273 +1453,300 @@ SYSTEM
 USG DOPPLER STUDY OF RIGHT UPPER LIMB VENOUS
 SYSTEM
 1500
-USG EARLY PREGNANCY 1200
-USG FETAL 2D ECHO 3000
-USG FETAL DOPPLER 2000
-USG FLUID TYPING 4500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 40/48
+USG EARLY PREGNANCY 	1200
+USG FETAL 2D ECHO 	3000
+USG FETAL DOPPLER 	2000
+USG FLUID TYPING 	4500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	40/48
+
+-- 40 of 48 --
+
 Order Name
 Order
 Amount
-USG FOLLICULAR STUDY 1200
-USG FOLLICULAR STUDY SINGLE 200
-USG FOLLICULAR STUDY WITH 3 VISITS 1500
-USG GROWTH SCAN 1200
-USG GROWTH SCAN TWINS 2400
-USG GROWTH SCAN AND BPP 1500
-USG GROWTH SCAN AND BPP (TWINS) 3000
-USG GROWTH SCAN AND PLACENTAL DOPPLER 2000
-USG GROWTH SCAN AND PLACENTAL DOPPLER (TWINS) 4000
-USG GROWTH WITH DOPPLER WITH BPP 2500
-USG GUDDIED EXTRA CHARGES 1500
-USG GUIDED ASCITIC TAPPING 2500
-USG GUIDED BIOPSY 3500
-USG GUIDED BIOSPY 8000
-USG GUIDED FNAC 2500
-USG GUIDED FOLEYS REPTURE 2500
-USG GUIDED FOLLLIS BULB REMOVE 3000
-USG GUIDED TAPPING [RVD] 5500
-USG HRUS RT TIGH 1500
-USG INGUINAL REGION 1500
-USG INGUINOSCROTAL REGION 1200
-USG JOINTS 1200
-USG KNEE TAPING 1500
-USG KUB, 1200
-USG MARKING CHEST 500
-USG MSK 2000
-USG N T SCAN 1400
-USG NECK DOPPLER 2000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 41/48
+USG FOLLICULAR STUDY 	1200
+USG FOLLICULAR STUDY SINGLE 	200
+USG FOLLICULAR STUDY WITH 3 VISITS 	1500
+USG GROWTH SCAN 	1200
+USG GROWTH SCAN TWINS 	2400
+USG GROWTH SCAN AND BPP 	1500
+USG GROWTH SCAN AND BPP (TWINS) 	3000
+USG GROWTH SCAN AND PLACENTAL DOPPLER 	2000
+USG GROWTH SCAN AND PLACENTAL DOPPLER (TWINS) 	4000
+USG GROWTH WITH DOPPLER WITH BPP 	2500
+USG GUDDIED EXTRA CHARGES 	1500
+USG GUIDED ASCITIC TAPPING 	2500
+USG GUIDED BIOPSY 	3500
+USG GUIDED BIOSPY 	8000
+USG GUIDED FNAC 	2500
+USG GUIDED FOLEYS REPTURE 	2500
+USG GUIDED FOLLLIS BULB REMOVE 	3000
+USG GUIDED TAPPING [RVD] 	5500
+USG HRUS RT TIGH 	1500
+USG INGUINAL REGION 	1500
+USG INGUINOSCROTAL REGION 	1200
+USG JOINTS 	1200
+USG KNEE TAPING 	1500
+USG KUB, 	1200
+USG MARKING CHEST 	500
+USG MSK 	2000
+USG N T SCAN 	1400
+USG NECK DOPPLER 	2000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	41/48
+
+-- 41 of 48 --
+
 Order Name
 Order
 Amount
-USG NECK SCAN 1500
-USG NERVE SCAN 2000
-USG NEURO SONOGRAM 1500
-USG NT SCAN 1500
-USG NT SCAN (TWINS) 2800
-USG NT SCAN WITH DOPPLER 2000
-USG PAROTID 1500
-USG PEDIATRIC HIP 1200
-USG PEDIATRIC SPINE 1200
-USG PELVIS SCAN 1200
-USG PENILE DOPPLER 4000
-USG PENILE SCAN 1500
-USG PERIANAL SCAN 2000
-USG PORTAL VEIN DOPPLER 2000
-USG PORTAL VENOUS DOPPLER 2000
-USG RENAL DOPPLER 2000
-USG SCROTUM 1500
-USG SCROTUM DOPPLER 2000
-USG SCRROTUM.. 3000
-USG SHOULDER 1500
-USG SMALL PARTS 1500
-USG SOFT TISSUE 1500
-USG SOFT TISSUESS 2500
-USG TEMPORAL ARTERY DOPPLER 2000
-USG THIGH SCAN 1200
-USG THORAX 1200
-USG THYROID. 1500
-USG TIFFA SCAN 2000
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 42/48
+USG NECK SCAN 	1500
+USG NERVE SCAN 	2000
+USG NEURO SONOGRAM 	1500
+USG NT SCAN 	1500
+USG NT SCAN (TWINS) 	2800
+USG NT SCAN WITH DOPPLER 	2000
+USG PAROTID 	1500
+USG PEDIATRIC HIP 	1200
+USG PEDIATRIC SPINE 	1200
+USG PELVIS SCAN 	1200
+USG PENILE DOPPLER 	4000
+USG PENILE SCAN 	1500
+USG PERIANAL SCAN 	2000
+USG PORTAL VEIN DOPPLER 	2000
+USG PORTAL VENOUS DOPPLER 	2000
+USG RENAL DOPPLER 	2000
+USG SCROTUM 	1500
+USG SCROTUM DOPPLER 	2000
+USG SCRROTUM.. 	3000
+USG SHOULDER 	1500
+USG SMALL PARTS 	1500
+USG SOFT TISSUE 	1500
+USG SOFT TISSUESS 	2500
+USG TEMPORAL ARTERY DOPPLER 	2000
+USG THIGH SCAN 	1200
+USG THORAX 	1200
+USG THYROID. 	1500
+USG TIFFA SCAN 	2000
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	42/48
+
+-- 42 of 48 --
+
 Order Name
 Order
 Amount
-USG TIFFA SCAN(TWINS) 3600
-USG TIFFA WITH DOPPLER 2500
-USG TIFFAA SCAN.. 2500
-USG TRANSPLANT RENAL DOPPLER 2000
-USG TRUS 2000
-USG TVS PELVIS 1200
-USG WRIST DOPPLER 1500
-Valporic Acid(Sodium Valproate) 600
-VARICELLA ZOSTER - IgG 1600
-VARICELLA ZOSTER - IgM 1600
-VDRL 600
-VERICELLA IGG 1700
-VISIT CHARGE(100) 100
-VISIT CHARGE(120) 120
-VISIT CHARGE(20) 20
-VISIT CHARGE(30) 30
-VISIT CHARGE(40) 40
-VISIT CHARGE(50) 50
-VISIT CHARGE(60) 60
-VISIT CHARGE(70) 70
-VISIT CHARGE(80) 80
-VISIT CHARGE(90) 90
-VITAMIIN D 1500
-VITAMIN A 6000
-VITAMIN B12 1200
-VITAMIN B6 7500
-VITAMIN C 6500
-Vitamin D 1500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 43/48
+USG TIFFA SCAN(TWINS) 	3600
+USG TIFFA WITH DOPPLER 	2500
+USG TIFFAA SCAN.. 	2500
+USG TRANSPLANT RENAL DOPPLER 	2000
+USG TRUS 	2000
+USG TVS PELVIS 	1200
+USG WRIST DOPPLER 	1500
+Valporic Acid(Sodium Valproate) 	600
+VARICELLA ZOSTER - IgG 	1600
+VARICELLA ZOSTER - IgM 	1600
+VDRL 	600
+VERICELLA IGG 	1700
+VISIT CHARGE(100) 	100
+VISIT CHARGE(120) 	120
+VISIT CHARGE(20) 	20
+VISIT CHARGE(30) 	30
+VISIT CHARGE(40) 	40
+VISIT CHARGE(50) 	50
+VISIT CHARGE(60) 	60
+VISIT CHARGE(70) 	70
+VISIT CHARGE(80) 	80
+VISIT CHARGE(90) 	90
+VITAMIIN D 	1500
+VITAMIN A 	6000
+VITAMIN B12 	1200
+VITAMIN B6 	7500
+VITAMIN C 	6500
+Vitamin D 	1500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	43/48
+
+-- 43 of 48 --
+
 Order Name
 Order
 Amount
-VITAMIN D PROFILE ( VD2, VD3) 2800
-VITAMIN E 6000
-VITAMIN- D3 1200
-VST CHARGE 80
-WBC COUNT 50
-WEIL FELIX TEST 1200
-WIDAL 500
-WIDAL - MP 600
-WOUND Swab Culture 400
-X RAY (RT) WRIST AP/LAT 600
-X RAY HAND AP 400
-X RAY HAND AP AND LAT 600
-X RAY SINGLE HAND AP 400
-X RAY SINGLE HAND AP AND LAT 2600
-X RAY WRIST PA 400
-X- RAY ABDOMEN ERECT 400
-X-RAY BOTH KNEE SKY LINE VIWE 400
-X-RAY HSG. 3000
-X-RAY ABDOMEN AP OR ERECT 400
-X-RAY ABDOMEN AP/LAT 600
-X-Ray Abdomen Erect 400
-X-RAY ABDOMEN LAT 200
-X-RAY Adenoid 400
-X-RAY ARM AP AND LAT VIEW(BOTH) 1200
-X-RAY BARIUM ENEMA 2500
-X-RAY BARIUM MEAL 2500
-X-RAY BARIUM MEAL FOLLOW THROUGH 2500
-X-RAY BARIUM SWALLOW 2500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 44/48
+VITAMIN D PROFILE ( VD2, VD3) 	2800
+VITAMIN E 	6000
+VITAMIN- D3 	1200
+VST CHARGE 	80
+WBC COUNT 	50
+WEIL FELIX TEST 	1200
+WIDAL 	500
+WIDAL - MP 	600
+WOUND Swab Culture 	400
+X RAY (RT) WRIST AP/LAT 	600
+X RAY HAND AP 	400
+X RAY HAND AP AND LAT 	600
+X RAY SINGLE HAND AP 	400
+X RAY SINGLE HAND AP AND LAT 	2600
+X RAY WRIST PA 	400
+X- RAY ABDOMEN ERECT 	400
+X-RAY BOTH KNEE SKY LINE VIWE 	400
+X-RAY HSG. 	3000
+X-RAY ABDOMEN AP OR ERECT 	400
+X-RAY ABDOMEN AP/LAT 	600
+X-Ray Abdomen Erect 	400
+X-RAY ABDOMEN LAT 	200
+X-RAY Adenoid 	400
+X-RAY ARM AP AND LAT VIEW(BOTH) 	1200
+X-RAY BARIUM ENEMA 	2500
+X-RAY BARIUM MEAL 	2500
+X-RAY BARIUM MEAL FOLLOW THROUGH 	2500
+X-RAY BARIUM SWALLOW 	2500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	44/48
+
+-- 44 of 48 --
+
 Order Name
 Order
 Amount
-X-RAY BOTH ANKLE AP/LAT 1200
-X-RAY BOTH ANKLE JOINT AP/ LAT 1200
-X-RAY BOTH ANKLE LATERAL 800
-X-RAY BOTH FOOTS AP/LAT 1200
-X-RAY BOTH HANDS AP VIEW 500
-X-RAY BOTH KNEE AP/LAT 1200
-X-RAY BOTH KNEE STADING AP 800
-X-RAY BOTH KNEES AP VIEW 800
-X-RAY BOTH KNEES STADING AP/LAT 1200
-X-RAY BOTH MASTOIDS LAT VIEW 800
-X-RAY BOTH WRIST AP/ LAT 1200
-X-RAY C SPINE AP/LAT 600
-X-RAY C SPINE LAT (SINGLE VIWE) 400
-X-RAY CERVICAL SPINE AP/LAT 600
-X-RAY CERVICAL SPINE FLEXION AND EXTENCTION 600
-X-Ray Chest AP 400
-X-RAY Chest AP/LAT 600
-X-RAY CHEST LAT 400
-X-Ray Chest PA 400
-X-RAY CLAVICAL LEFT SIDE 400
-X-RAY CLAVICAL RIGHT SIDE 400
-X-RAY COCCYX AP AND LAT VIEW 600
-X-RAY CYSTOGRAM 2500
-X-RAY DISTAL LOOP COLOGRAM 2000
-X-RAY DORSAL SPINE AP/LAT 600
-X-RAY EXTRA VIEW 200
-X-RAY FILIMS DR YADAGIRI FEB MONTH 1900
-X-RAY FISTULOGRAM/SINOGRAM 2500
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 45/48
+X-RAY BOTH ANKLE AP/LAT 	1200
+X-RAY BOTH ANKLE JOINT AP/ LAT 	1200
+X-RAY BOTH ANKLE LATERAL 	800
+X-RAY BOTH FOOTS AP/LAT 	1200
+X-RAY BOTH HANDS AP VIEW 	500
+X-RAY BOTH KNEE AP/LAT 	1200
+X-RAY BOTH KNEE STADING AP 	800
+X-RAY BOTH KNEES AP VIEW 	800
+X-RAY BOTH KNEES STADING AP/LAT 	1200
+X-RAY BOTH MASTOIDS LAT VIEW 	800
+X-RAY BOTH WRIST AP/ LAT 	1200
+X-RAY C SPINE AP/LAT 	600
+X-RAY C SPINE LAT (SINGLE VIWE) 	400
+X-RAY CERVICAL SPINE AP/LAT 	600
+X-RAY CERVICAL SPINE FLEXION AND EXTENCTION 	600
+X-Ray Chest AP 	400
+X-RAY Chest AP/LAT 	600
+X-RAY CHEST LAT 	400
+X-Ray Chest PA 	400
+X-RAY CLAVICAL LEFT SIDE 	400
+X-RAY CLAVICAL RIGHT SIDE 	400
+X-RAY COCCYX AP AND LAT VIEW 	600
+X-RAY CYSTOGRAM 	2500
+X-RAY DISTAL LOOP COLOGRAM 	2000
+X-RAY DORSAL SPINE AP/LAT 	600
+X-RAY EXTRA VIEW 	200
+X-RAY FILIMS DR YADAGIRI FEB MONTH 	1900
+X-RAY FISTULOGRAM/SINOGRAM 	2500
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	45/48
+
+-- 45 of 48 --
+
 Order Name
 Order
 Amount
-X-RAY FOOT AP/OBLIQUE 600
-X-RAY HAND AP 400
-X-RAY HSG 2500
-X-RAY IVP 2500
-X-RAY KNEE SKYLINE VIEW 400
-X-RAY KNEE AP 400
-X-RAY KNEE JOINT STANDING AP/LAT 600
-X-RAY KNEESKY LINE VIEW 400
-X-RAY KUB 400
-X-RAY L SPINE LAT(SINGLE VIEW) 400
-X-RAY L-SPINE AP VIEW(SINGLE) 400
-X-Ray LEFT ANKLE AP/LAT 600
-X-RAY LEFT ARM AP/LAT VIEW 600
-X-RAY LEFT ELBOW AP/LAT 600
-X-RAY LEFT FEMUR AP/LAT VIEW 600
-X-RAY LEFT FOOT AP OBL 600
-X-RAY LEFT FOOT AP/LAT 600
-X-RAY LEFT FOREARM AP/LAT VIEW 600
-X-RAY LEFT HAND AP/OBLIQUE 600
-X-RAY LEFT HIP AP 400
-X-RAY LEFT HIP AP LAT 600
-X-RAY LEFT KNEE JOINT AP/LAT 600
-X-RAY LEFT KNEE SKY LINE VIEW 400
-X-RAY LEFT LEG AP/LAT 600
-X-RAY LEFT SHOULDER AP VIEW 400
-X-Ray LEFT SHOULDER AP/LAT 600
-X-RAY LEFT THIGH AP/LAT 600
-X-RAY LEFT WRIST JOINT AP/LAT 600
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 46/48
+X-RAY FOOT AP/OBLIQUE 	600
+X-RAY HAND AP 	400
+X-RAY HSG 	2500
+X-RAY IVP 	2500
+X-RAY KNEE SKYLINE VIEW 	400
+X-RAY KNEE AP 	400
+X-RAY KNEE JOINT STANDING AP/LAT 	600
+X-RAY KNEESKY LINE VIEW 	400
+X-RAY KUB 	400
+X-RAY L SPINE LAT(SINGLE VIEW) 	400
+X-RAY L-SPINE AP VIEW(SINGLE) 	400
+X-Ray LEFT ANKLE AP/LAT 	600
+X-RAY LEFT ARM AP/LAT VIEW 	600
+X-RAY LEFT ELBOW AP/LAT 	600
+X-RAY LEFT FEMUR AP/LAT VIEW 	600
+X-RAY LEFT FOOT AP OBL 	600
+X-RAY LEFT FOOT AP/LAT 	600
+X-RAY LEFT FOREARM AP/LAT VIEW 	600
+X-RAY LEFT HAND AP/OBLIQUE 	600
+X-RAY LEFT HIP AP 	400
+X-RAY LEFT HIP AP LAT 	600
+X-RAY LEFT KNEE JOINT AP/LAT 	600
+X-RAY LEFT KNEE SKY LINE VIEW 	400
+X-RAY LEFT LEG AP/LAT 	600
+X-RAY LEFT SHOULDER AP VIEW 	400
+X-Ray LEFT SHOULDER AP/LAT 	600
+X-RAY LEFT THIGH AP/LAT 	600
+X-RAY LEFT WRIST JOINT AP/LAT 	600
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	46/48
+
+-- 46 of 48 --
+
 Order Name
 Order
 Amount
-X-RAY LT FOOT AP & LAT 600
-X-RAY LT SHOULDER JOINT AP/LAT 600
-X-RAY LUMBAR FLEXTION AND EXTENSION 700
-X-RAY LUMBAR SPINE AP 400
-X-RAY LUMBAR SPINE AP & OBLIQUE 600
-X-RAY LUMBER SPINE AP/LAT 600
-X-RAY MANDIBLE 400
-X-RAY MAXILLARY 400
-X-RAY MCUG 3500
-X-RAY NASAL BONE(LAT) 600
-X-RAY NASOPHARYNX LAT 400
-X-RAY NECK AP/LAT 600
-X-RAY NECK AP/LAT...... 700
-X-RAY NECK LAT 400
-X-RAY OPG 500
-X-RAY ORBIT AP VIEW 400
-X-RAY PELVIS BOTH HIPS AP VIEW 400
-X-RAY PNS 400
-X-RAY RGU 2500
-X-RAY RIGHT HAND AP/LAT 600
-X-RAY RIGHT ANKLE AP & LAT VIEW 600
-X-RAY RIGHT ANKLE AP VIEW 400
-X-RAY RIGHT ARM AP/ LAT VIEW 600
-X-RAY RIGHT ELBOW AP/LAT 600
-X-Ray RIGHT FEMUR AP/LAT VIEWS 600
-X-RAY RIGHT FEMUR AP/LATERAL 600
-X-RAY RIGHT FOOT AP/OBLIQUE 600
-X-RAY RIGHT FOREARM AP/ LAT VIEW 600
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 47/48
+X-RAY LT FOOT AP & LAT 	600
+X-RAY LT SHOULDER JOINT AP/LAT 	600
+X-RAY LUMBAR FLEXTION AND EXTENSION 	700
+X-RAY LUMBAR SPINE AP 	400
+X-RAY LUMBAR SPINE AP & OBLIQUE 	600
+X-RAY LUMBER SPINE AP/LAT 	600
+X-RAY MANDIBLE 	400
+X-RAY MAXILLARY 	400
+X-RAY MCUG 	3500
+X-RAY NASAL BONE(LAT) 	600
+X-RAY NASOPHARYNX LAT 	400
+X-RAY NECK AP/LAT 	600
+X-RAY NECK AP/LAT...... 	700
+X-RAY NECK LAT 	400
+X-RAY OPG 	500
+X-RAY ORBIT AP VIEW 	400
+X-RAY PELVIS BOTH HIPS AP VIEW 	400
+X-RAY PNS 	400
+X-RAY RGU 	2500
+X-RAY RIGHT HAND AP/LAT 	600
+X-RAY RIGHT ANKLE AP & LAT VIEW 	600
+X-RAY RIGHT ANKLE AP VIEW 	400
+X-RAY RIGHT ARM AP/ LAT VIEW 	600
+X-RAY RIGHT ELBOW AP/LAT 	600
+X-Ray RIGHT FEMUR AP/LAT VIEWS 	600
+X-RAY RIGHT FEMUR AP/LATERAL 	600
+X-RAY RIGHT FOOT AP/OBLIQUE 	600
+X-RAY RIGHT FOREARM AP/ LAT VIEW 	600
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	47/48
+
+-- 47 of 48 --
+
 Order Name
 Order
 Amount
-X-RAY RIGHT HAND AP VIEW 400
-X-RAY RIGHT HAND AP&OBLIQUE 600
-X-RAY RIGHT HAND AP/LAT 600
-X-RAY RIGHT HIP JOINT AP 400
-X-RAY RIGHT HIP JOINT AP/LAT 600
-X-RAY RIGHT KNEE JOINT AP/LATERAL 600
-X-RAY RIGHT LEG AP VIEW 400
-X-RAY RIGHT LEG AP& LAT 600
-X-RAY RIGHT SHOULDER AP 400
-X-RAY RIGHT SHOULDER AP/LAT 600
-X-RAY RIGHT T.M JOINT 400
-X-RAY RIGHT WRIST JOINT AP/LAT 600
-X-RAY RT FOOT AP/LAT 600
-X-RAY SACRUM AP AND LATERAL 600
-X-RAY SCANOGRAM LOWER LIMBS 2000
-X-RAY SCREENING 100
-X-RAY SHOULDER AXILLARY VIEW 400
-X-RAY SINOGRAM 2500
-X-RAY SKULL AP 400
-X-RAY SKULL AP AND LAT 600
-X-Ray Skull Lateral View 400
-X-Ray T SPINE AP/LAT 600
-X-RAY THIGH AP AND LAT VIEW 600
-X-RAY THIGH AP VIEW 400
-X-RAY TM BOTH JOINT 1000
-X-RAY WRIST AP&LAT 600
-X-RAY WRIST SCAPHOID AP/LAT 600
-ZINK 1800
-28/04/2026, 11:01 Order Maintenance
-https://medﬁleshared2.bharathcloud.com/lab/Order/OrderMaintenance 48/48
+X-RAY RIGHT HAND AP VIEW 	400
+X-RAY RIGHT HAND AP&OBLIQUE 	600
+X-RAY RIGHT HAND AP/LAT 	600
+X-RAY RIGHT HIP JOINT AP 	400
+X-RAY RIGHT HIP JOINT AP/LAT 	600
+X-RAY RIGHT KNEE JOINT AP/LATERAL 	600
+X-RAY RIGHT LEG AP VIEW 	400
+X-RAY RIGHT LEG AP& LAT 	600
+X-RAY RIGHT SHOULDER AP 	400
+X-RAY RIGHT SHOULDER AP/LAT 	600
+X-RAY RIGHT T.M JOINT 	400
+X-RAY RIGHT WRIST JOINT AP/LAT 	600
+X-RAY RT FOOT AP/LAT 	600
+X-RAY SACRUM AP AND LATERAL 	600
+X-RAY SCANOGRAM LOWER LIMBS 	2000
+X-RAY SCREENING 	100
+X-RAY SHOULDER AXILLARY VIEW 	400
+X-RAY SINOGRAM 	2500
+X-RAY SKULL AP 	400
+X-RAY SKULL AP AND LAT 	600
+X-Ray Skull Lateral View 	400
+X-Ray T SPINE AP/LAT 	600
+X-RAY THIGH AP AND LAT VIEW 	600
+X-RAY THIGH AP VIEW 	400
+X-RAY TM BOTH JOINT 	1000
+X-RAY WRIST AP&LAT 	600
+X-RAY WRIST SCAPHOID AP/LAT 	600
+ZINK 	1800
+28/04/2026, 11:01 	Order Maintenance
+https://medfileshared2.bharathcloud.com/lab/Order/OrderMaintenance 	48/48
+
+-- 48 of 48 --
+

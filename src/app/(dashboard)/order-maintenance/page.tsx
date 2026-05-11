@@ -10,10 +10,10 @@ export default function OrderMaintenancePage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
-  
+
   const [selectedTestId, setSelectedTestId] = useState<number | null>(null);
   const [selectedTestDetails, setSelectedTestDetails] = useState<any | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
@@ -106,10 +106,10 @@ export default function OrderMaintenancePage() {
   return (
     <div className="order-maintenance-container">
       <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)' }}>
-        <input 
-          type="text" 
-          placeholder="Search by Order Name..." 
-          className="form-input" 
+        <input
+          type="text"
+          placeholder="Search by Order Name..."
+          className="form-input"
           style={{ maxWidth: '300px' }}
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -118,7 +118,7 @@ export default function OrderMaintenancePage() {
           Showing {currentTests.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, filteredTests.length)} of {filteredTests.length} entries
         </div>
       </div>
-      
+
       <div className="table-container" style={{ padding: '24px', overflowX: 'auto', height: 'calc(100vh - 180px)', overflowY: 'auto' }}>
         {loading ? (
           <div style={{ textAlign: 'center', padding: '60px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
@@ -146,8 +146,8 @@ export default function OrderMaintenancePage() {
                   <td style={{ padding: '8px 12px' }}>{test.orderType}</td>
                   <td style={{ padding: '8px 12px', color: test.status === 'InActive' ? '#dc2626' : 'inherit' }}>{test.status}</td>
                   <td style={{ padding: '8px 12px', textAlign: 'right' }}>
-                    <button 
-                      className="btn btn-primary btn-sm" 
+                    <button
+                      className="btn btn-primary btn-sm"
                       style={{ padding: '4px 12px', fontSize: '12px', backgroundColor: '#e25838', border: 'none' }}
                       onClick={() => router.push(`/add-order?orderid=${test.id}`)}
                     >
@@ -159,12 +159,12 @@ export default function OrderMaintenancePage() {
             </tbody>
           </table>
         )}
-        
+
         {/* Pagination Controls */}
         {!loading && totalPages > 1 && (
           <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
-            <button 
-              className="btn btn-outline btn-sm" 
+            <button
+              className="btn btn-outline btn-sm"
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
             >
@@ -173,8 +173,8 @@ export default function OrderMaintenancePage() {
             <span style={{ padding: '4px 12px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
               Page {currentPage} of {totalPages}
             </span>
-            <button 
-              className="btn btn-outline btn-sm" 
+            <button
+              className="btn btn-outline btn-sm"
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
             >
@@ -183,7 +183,7 @@ export default function OrderMaintenancePage() {
           </div>
         )}
       </div>
-      
+
       <style>{`
         .order-maintenance-container {
           background: var(--bg-card);

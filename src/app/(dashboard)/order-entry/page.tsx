@@ -1761,8 +1761,8 @@ export default function OrderEntryPage() {
                         formContainer.style.display = formContainer.style.display === 'none' ? 'flex' : 'none';
                       }
                     }}>Add Source Names</button>
-                    <span 
-                      style={{ fontWeight: 600, cursor: 'pointer' }} 
+                    <span
+                      style={{ fontWeight: 600, cursor: 'pointer' }}
                       onClick={() => { setShowManageSources(false); setShowAddlDetails(true); }}
                     >
                       Back To Patient Addl Details
@@ -1779,7 +1779,7 @@ export default function OrderEntryPage() {
               </div>
               <button className="modal-close" onClick={() => { setShowManageSources(false); setEditingSourceId(null); }}>✕</button>
             </div>
-            
+
             <div className="modal-body" style={{ flex: 1, overflowY: 'auto', padding: 0 }}>
               {!editingSourceId ? (
                 <>
