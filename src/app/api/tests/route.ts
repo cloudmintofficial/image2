@@ -83,8 +83,11 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(test);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating order/test:', error);
+    if (error.code === 'P2002') {
+      return NextResponse.json({ error: 'Order name already exists' }, { status: 409 });
+    }
     return NextResponse.json({ error: 'Failed to create order', details: String(error) }, { status: 500 });
   }
 }

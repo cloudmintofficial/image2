@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = parseInt(params.id);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
     }
@@ -26,9 +27,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = parseInt(params.id);
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
     }
@@ -71,8 +73,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     });
 
     return NextResponse.json(test);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating order/test:', error);
-    return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
+    if (error.code === 'P2002') {
+      return NextResponse.json({ error: 'Order name already exists' }, { status: 409 });
+    }
+    return NextResponse.json({ error: 'Failed to update order', details: String(error) }, { status: 500 });
   }
 }

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import { Loader2 } from 'lucide-react';
+import AddOrderModal from '@/components/modals/AddOrderModal';
 
 export default function OrderMaintenancePage() {
   const [tests, setTests] = useState<any[]>([]);
@@ -17,6 +18,8 @@ export default function OrderMaintenancePage() {
   const [selectedTestId, setSelectedTestId] = useState<number | null>(null);
   const [selectedTestDetails, setSelectedTestDetails] = useState<any | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  
+  const [showAddOrderModal, setShowAddOrderModal] = useState(false);
 
   // Debounce search
   useEffect(() => {
@@ -38,6 +41,7 @@ export default function OrderMaintenancePage() {
       if (res.ok) {
         const data = await res.json();
         setSelectedTestDetails(data);
+        setShowAddOrderModal(true);
       } else {
         alert('Failed to fetch details');
       }
@@ -90,7 +94,8 @@ export default function OrderMaintenancePage() {
     const handler = (e: Event) => {
       const action = (e as CustomEvent).detail;
       if (action === 'Add Order') {
-        router.push('/add-order');
+        setSelectedTestDetails(null);
+        setShowAddOrderModal(true);
       } else {
         alert(`${action} coming soon!`);
       }
@@ -99,8 +104,8 @@ export default function OrderMaintenancePage() {
     return () => window.removeEventListener('topnav-action', handler);
   }, [router]);
 
-  const filteredTests = tests.filter(t => t.name.toLowerCase().includes(debouncedSearch.toLowerCase()));
-  const totalPages = Math.ceil(filteredTests.length / itemsPerPage);
+  const filteredTests = tests.filter(t => (t.name || '').toLowerCase().includes(debouncedSearch.toLowerCase()));
+  const totalPages = Math.ceil(filteredTests.length / itemsPerPage) || 1;
   const currentTests = filteredTests.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
@@ -149,9 +154,10 @@ export default function OrderMaintenancePage() {
                     <button
                       className="btn btn-primary btn-sm"
                       style={{ padding: '4px 12px', fontSize: '12px', backgroundColor: '#e25838', border: 'none' }}
-                      onClick={() => router.push(`/add-order?orderid=${test.id}`)}
+                      onClick={() => fetchTestDetails(test.id)}
+                      disabled={loadingDetails && selectedTestId === test.id}
                     >
-                      Details
+                      {loadingDetails && selectedTestId === test.id ? 'Loading...' : 'Details'}
                     </button>
                   </td>
                 </tr>
@@ -183,6 +189,19 @@ export default function OrderMaintenancePage() {
           </div>
         )}
       </div>
+      <AddOrderModal
+        isOpen={showAddOrderModal}
+        onClose={() => {
+          setShowAddOrderModal(false);
+          closeModal();
+        }}
+        onSuccess={() => {
+          setShowAddOrderModal(false);
+          closeModal();
+          fetchTests();
+        }}
+        initialData={selectedTestDetails}
+      />
 
       <style>{`
         .order-maintenance-container {
