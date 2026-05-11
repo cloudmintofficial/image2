@@ -4,21 +4,24 @@ import { prisma } from '@/lib/prisma';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const search = searchParams.get('search') || '';
+  const all = searchParams.get('all') === 'true';
 
   try {
     let tests: any[] = [];
+    const baseWhere = all ? {} : { status: 'Active' };
+
     if (search) {
       tests = await prisma.testMaster.findMany({
         where: { 
-          status: 'Active',
+          ...baseWhere,
           testName: { contains: search, mode: 'insensitive' }
         },
-        take: 20
+        take: all ? undefined : 20
       });
     } else {
       tests = await prisma.testMaster.findMany({
-        where: { status: 'Active' },
-        take: 20
+        where: baseWhere,
+        take: all ? undefined : 20
       });
     }
 
@@ -28,7 +31,9 @@ export async function GET(request: Request) {
       name: t.testName,
       category: t.category,
       price: t.price,
-      department: t.department
+      department: t.department,
+      orderType: t.orderType || 'Internal',
+      status: t.status
     }));
 
     return NextResponse.json(formatted);

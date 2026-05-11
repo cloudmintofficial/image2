@@ -22,8 +22,9 @@ const navItems: NavItem[] = [
   { icon: <Printer size={20} />, label: 'Previous Bills', path: '/previous-bills', shortcut: 'Alt+P' },
   { icon: <BarChart3 size={20} />, label: 'Dashboard', path: '/dashboard', adminOnly: true },
   { icon: <FileText size={20} />, label: 'Reports', path: '/reports', adminOnly: true },
+  { icon: <ClipboardList size={20} />, label: 'Order Maintenance', path: '/order-maintenance', adminOnly: true },
   { icon: <Users size={20} />, label: 'User Management', path: '/users', adminOnly: true },
-  { icon: <ClipboardList size={20} />, label: 'Settings', path: '/settings', adminOnly: true },
+  { icon: <Settings size={20} />, label: 'Settings', path: '/settings', adminOnly: true },
 ];
 
 interface SidebarProps {
