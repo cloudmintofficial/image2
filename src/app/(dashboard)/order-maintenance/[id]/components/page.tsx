@@ -97,10 +97,10 @@ export default function OrderComponentsPage() {
       }
       setIsSearching(true);
       try {
-        const res = await fetch(`/api/tests?search=${encodeURIComponent(searchTerm)}&all=true`);
+        const res = await fetch(`/api/components/search?q=${encodeURIComponent(searchTerm)}`);
         if (res.ok) {
           const data = await res.json();
-          setSearchResults(data.filter((t: any) => t.id !== parseInt(testId as string)));
+          setSearchResults(data);
         }
       } catch (err) {
         console.error(err);
@@ -113,22 +113,27 @@ export default function OrderComponentsPage() {
     return () => clearTimeout(timeout);
   }, [searchTerm, testId]);
 
-  const handleCopyTemplate = async (sourceId: number) => {
+  const handleCopyTemplate = async (componentId: number) => {
     try {
       setIsCopying(true);
-      const res = await fetch(`/api/tests/${testId}/copy-template?sourceId=${sourceId}`, {
-        method: 'POST'
+      const res = await fetch(`/api/tests/${testId}/link-component`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          componentId,
+          templateId: templateId ? parseInt(templateId) : null
+        })
       });
       if (res.ok) {
-        showToast('Components copied successfully', 'success');
+        showToast('Component linked successfully', 'success');
         setShowAddTemplateModal(false);
         fetchDetails();
       } else {
-        showToast('Failed to copy components', 'error');
+        showToast('Failed to link component', 'error');
       }
     } catch (err) {
       console.error(err);
-      showToast('Error copying components', 'error');
+      showToast('Error linking component', 'error');
     } finally {
       setIsCopying(false);
     }
@@ -398,20 +403,20 @@ export default function OrderComponentsPage() {
       {/* Add Template Modal */}
       {showAddTemplateModal && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '12px', width: '600px', maxWidth: '90%', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '12px', width: '650px', maxWidth: '90%', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700' }}>Add templates from existing orders</h2>
+              <h2 style={{ fontSize: '20px', fontWeight: '700' }}>Link Existing Diagnostic Component</h2>
               <button className="btn btn-ghost" onClick={() => setShowAddTemplateModal(false)}>✕</button>
             </div>
             
             <div style={{ marginBottom: '20px' }}>
               <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
-                Search for an order to copy its components to <span style={{ fontWeight: '700', color: 'var(--primary)' }}>{test?.testName}</span>
+                Search for an individual component to add into <span style={{ fontWeight: '700', color: 'var(--primary)' }}>{test?.testName}</span>
               </p>
               <div style={{ position: 'relative' }}>
                 <input
                   type="text"
-                  placeholder="Search Order Name..."
+                  placeholder="Search Component Name (e.g. Haemoglobin)..."
                   className="form-input"
                   style={{ width: '100%', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border)' }}
                   value={searchTerm}
@@ -426,10 +431,10 @@ export default function OrderComponentsPage() {
               </div>
             </div>
 
-            <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid var(--border)', borderRadius: '8px' }}>
+            <div style={{ maxHeight: '320px', overflowY: 'auto', border: '1px solid var(--border)', borderRadius: '8px' }}>
               {searchResults.length === 0 ? (
                 <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  {searchTerm.length < 2 ? 'Type at least 2 characters to search...' : 'No orders found matching your search.'}
+                  {searchTerm.length < 2 ? 'Type at least 2 characters to search existing components...' : 'No components found matching your search.'}
                 </div>
               ) : (
                 searchResults.map((result: any) => (
@@ -440,11 +445,18 @@ export default function OrderComponentsPage() {
                     className="hover-bg"
                   >
                     <div>
-                      <div style={{ fontWeight: '600' }}>{result.name}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{result.category} | {result.department}</div>
+                      <div style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '14px' }}>{result.componentName}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                        Source Test: <span style={{ fontWeight: '500' }}>{result.testName}</span> ({result.department})
+                      </div>
+                      {(result.normalRange || result.unit) && (
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                          Range: {result.normalRange || '-'} {result.unit || ''}
+                        </div>
+                      )}
                     </div>
-                    <button className="btn btn-primary btn-sm" style={{ backgroundColor: '#e25838', border: 'none' }} disabled={isCopying}>
-                      {isCopying ? 'Copying...' : 'Copy Template'}
+                    <button className="btn btn-primary btn-sm" style={{ backgroundColor: '#e25838', border: 'none', padding: '6px 12px' }} disabled={isCopying}>
+                      {isCopying ? 'Linking...' : 'Link Component'}
                     </button>
                   </div>
                 ))
@@ -618,64 +630,98 @@ export default function OrderComponentsPage() {
       <div className="print-preview-section" style={{ display: 'none' }}>
         <style type="text/css" media="print">
           {`
-            @page { size: auto; margin: 20mm; }
-            body { margin: 0; padding: 0; background: #fff; }
+            @page { size: auto; margin: 15mm 20mm; }
+            body { margin: 0; padding: 0; background: #fff; color: #000; }
             nav, header, aside, .sidebar { display: none !important; }
             .order-components-container > *:not(.print-preview-section) { display: none !important; }
             .print-preview-section { display: block !important; width: 100%; font-family: 'Helvetica', 'Arial', sans-serif; }
-            .print-header { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 30px; color: #333; }
-            .print-meta { display: flex; justify-content: space-between; font-size: 11px; line-height: 1.8; margin-bottom: 10px; padding: 0 20px; }
+            .print-header { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 25px; }
+            .print-meta { display: flex; justify-content: space-between; font-size: 11px; line-height: 1.6; margin-bottom: 15px; padding: 0 10px; }
             .print-meta-col { flex: 1; }
             .print-meta-row { display: flex; }
-            .print-meta-label { width: 120px; font-weight: normal; }
+            .print-meta-label { width: 130px; font-weight: normal; }
             .print-meta-value { font-weight: bold; }
-            .print-divider { border-top: 1px solid #000; margin: 10px 20px 30px 20px; }
-            .print-subheading { color: #d32f2f !important; font-weight: bold; font-size: 14px; margin: 20px 0 10px 0; -webkit-print-color-adjust: exact; color-adjust: exact; }
-            .print-component { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; padding-left: 20px; }
-            .print-comp-name { font-weight: bold; width: 40%; }
-            .print-comp-value { width: 20%; text-align: left; }
-            .print-comp-ref { width: 40%; text-align: left; color: #333; }
+            .print-divider { border-top: 1px solid #000; margin: 15px 10px 20px 10px; }
+            .print-dept { text-align: center; font-size: 12px; font-weight: bold; text-decoration: underline; margin-bottom: 10px; text-transform: uppercase; }
+            .print-title { text-align: center; font-size: 13px; font-weight: bold; text-decoration: underline; margin-bottom: 25px; }
+            .print-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; padding: 0 10px; }
+            .print-table th { text-align: left; padding-bottom: 15px; text-decoration: underline; font-weight: bold; font-size: 11px; }
+            .print-table td { vertical-align: top; padding-bottom: 12px; }
+            .print-inv-col { width: 40%; }
+            .print-res-col { width: 15%; }
+            .print-unit-col { width: 15%; }
+            .print-ref-col { width: 30%; white-space: pre-line; line-height: 1.4; }
           `}
         </style>
         
         <div className="print-header">
           <span>{currentDate}</span>
           <span style={{ fontWeight: 'bold' }}>OrderDetails</span>
-          <span>1/1</span>
-        </div>
-
-        <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '14px', marginBottom: '20px' }}>
-          Order Details for {test?.testName}
+          <span>1 page</span>
         </div>
 
         <div className="print-meta">
           <div className="print-meta-col">
             <div className="print-meta-row"><span className="print-meta-label">Name</span><span>: <span className="print-meta-value">PatientName</span></span></div>
             <div className="print-meta-row"><span className="print-meta-label">Age/Gender</span><span>: <span className="print-meta-value">AGE/GENDER</span></span></div>
-            <div className="print-meta-row"><span className="print-meta-label">Ref By</span><span>: <span className="print-meta-value">Self</span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Sample Type</span><span>: <span className="print-meta-value">--</span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Reff By</span><span>: <span className="print-meta-value">Self</span></span></div>
           </div>
-          <div className="print-meta-col">
+          <div className="print-meta-col" style={{ paddingLeft: '20px' }}>
             <div className="print-meta-row"><span className="print-meta-label">Bill / UMR Number</span><span>: <span className="print-meta-value">BillNumber / </span></span></div>
             <div className="print-meta-row"><span className="print-meta-label">Bill Date</span><span>: <span className="print-meta-value">Date</span></span></div>
-            <div className="print-meta-row"><span className="print-meta-label">Reporting Date</span><span>: <span className="print-meta-value">12-May-2026 02:45 PM</span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Sample Collection</span><span>: <span className="print-meta-value">Sample Collected date</span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Reporting Date</span><span>: <span className="print-meta-value">12-May-2026 03:13 PM</span></span></div>
           </div>
         </div>
 
         <div className="print-divider"></div>
 
-        <div style={{ padding: '0 20px' }}>
-          {components.map((comp, idx) => (
-            <React.Fragment key={idx}>
-              {comp.subHeading && (
-                <div className="print-subheading">{comp.subHeading}</div>
-              )}
-              <div className="print-component">
-                <span className="print-comp-name">{comp.componentName}</span>
-                <span className="print-comp-value"></span>
-                <span className="print-comp-ref">{comp.normalRange} {comp.unit}</span>
-              </div>
-            </React.Fragment>
-          ))}
+        {test?.department && test.department !== 'NONE' && (
+          <div className="print-dept">{test.department}</div>
+        )}
+
+        <div className="print-title">
+          {test?.testName || 'INVESTIGATION'}
+        </div>
+
+        <div style={{ padding: '0 10px' }}>
+          <table className="print-table">
+            <thead>
+              <tr>
+                <th className="print-inv-col">INVESTIGATION</th>
+                <th className="print-res-col">RESULT</th>
+                <th className="print-unit-col">UNITS</th>
+                <th className="print-ref-col">NORMAL RANGE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {components.map((comp, idx) => (
+                <React.Fragment key={idx}>
+                  {comp.subHeading && (
+                    <tr>
+                      <td colSpan={4} style={{ fontWeight: 'bold', textDecoration: 'underline', paddingTop: '10px', paddingBottom: '8px' }}>
+                        {comp.subHeading}
+                      </td>
+                    </tr>
+                  )}
+                  <tr>
+                    <td className="print-inv-col">
+                      <div style={{ fontWeight: 'bold' }}>{comp.componentName}</div>
+                      {comp.method && (
+                        <div style={{ fontSize: '10px', fontStyle: 'italic', marginTop: '2px', color: '#333' }}>
+                          (Method : {comp.method})
+                        </div>
+                      )}
+                    </td>
+                    <td className="print-res-col">Value</td>
+                    <td className="print-unit-col">{comp.unit || ''}</td>
+                    <td className="print-ref-col">{comp.normalRange || ''}</td>
+                  </tr>
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

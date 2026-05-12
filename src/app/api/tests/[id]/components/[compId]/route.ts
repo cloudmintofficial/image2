@@ -19,6 +19,12 @@ export async function PUT(
       fieldType, options 
     } = body;
 
+    const safeFloat = (val: any) => {
+      if (!val) return null;
+      const parsed = parseFloat(val);
+      return isNaN(parsed) ? null : parsed;
+    };
+
     const component = await prisma.testComponent.update({
       where: { id: compId },
       data: {
@@ -30,10 +36,10 @@ export async function PUT(
         normalRange,
         fromRange,
         toRange,
-        minMale: minMale ? parseFloat(minMale) : null,
-        maxMale: maxMale ? parseFloat(maxMale) : null,
-        minFemale: minFemale ? parseFloat(minFemale) : null,
-        maxFemale: maxFemale ? parseFloat(maxFemale) : null,
+        minMale: safeFloat(minMale),
+        maxMale: safeFloat(maxMale),
+        minFemale: safeFloat(minFemale),
+        maxFemale: safeFloat(maxFemale),
         method,
         defaultValue,
         calculations,

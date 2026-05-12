@@ -39,15 +39,21 @@ export async function POST(
       return NextResponse.json({ error: 'Template Name is required' }, { status: 400 });
     }
 
+    const safeInt = (val: any) => {
+      if (!val) return null;
+      const parsed = parseInt(val);
+      return isNaN(parsed) ? null : parsed;
+    };
+
     const template = await prisma.orderDetailTemplate.create({
       data: {
         testId,
         templateName,
         status: status || 'Active',
-        fromAge: fromAge ? parseInt(fromAge) : null,
-        toAge: toAge ? parseInt(toAge) : null,
-        fromAgeDays: fromAgeDays ? parseInt(fromAgeDays) : null,
-        toAgeDays: toAgeDays ? parseInt(toAgeDays) : null,
+        fromAge: safeInt(fromAge),
+        toAge: safeInt(toAge),
+        fromAgeDays: safeInt(fromAgeDays),
+        toAgeDays: safeInt(toAgeDays),
         gender: gender || 'Both'
       }
     });

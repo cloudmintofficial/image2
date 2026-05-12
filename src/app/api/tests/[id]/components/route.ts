@@ -50,6 +50,12 @@ export async function POST(
       return NextResponse.json({ error: 'Component Name is required' }, { status: 400 });
     }
 
+    const safeFloat = (val: any) => {
+      if (!val) return null;
+      const parsed = parseFloat(val);
+      return isNaN(parsed) ? null : parsed;
+    };
+
     const component = await prisma.testComponent.create({
       data: {
         testId,
@@ -62,10 +68,10 @@ export async function POST(
         normalRange,
         fromRange,
         toRange,
-        minMale: minMale ? parseFloat(minMale) : null,
-        maxMale: maxMale ? parseFloat(maxMale) : null,
-        minFemale: minFemale ? parseFloat(minFemale) : null,
-        maxFemale: maxFemale ? parseFloat(maxFemale) : null,
+        minMale: safeFloat(minMale),
+        maxMale: safeFloat(maxMale),
+        minFemale: safeFloat(minFemale),
+        maxFemale: safeFloat(maxFemale),
         method,
         defaultValue,
         calculations,
