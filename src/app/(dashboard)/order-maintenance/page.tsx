@@ -21,6 +21,73 @@ export default function OrderMaintenancePage() {
   
   const [showAddOrderModal, setShowAddOrderModal] = useState(false);
 
+  // Lab Default Font global modal state
+  const [showLabFontModal, setShowLabFontModal] = useState(false);
+  const [labFontForm, setLabFontForm] = useState({
+    fontFamily: 'Arial',
+    patientDetailsFont: '10',
+    departmentNameFont: '10',
+    orderNameFont: '10',
+    resultHeadingFont: '10',
+    subHeadingFont: '10',
+    componentNameFont: '10',
+    methodFont: '10',
+    resultNotesFont: '10',
+    leftSignatureFont: '10',
+    rightSignatureFont: '10',
+    spaceBeforeLineFont: '',
+    spaceAfterLineFont: ''
+  });
+  const [isSavingLabFont, setIsSavingLabFont] = useState(false);
+
+  const fetchLabFont = async () => {
+    try {
+      const res = await fetch('/api/lab/default-font');
+      if (res.ok) {
+        const data = await res.json();
+        setLabFontForm({
+          fontFamily: data.fontFamily || 'Arial',
+          patientDetailsFont: data.patientDetailsFont || '10',
+          departmentNameFont: data.departmentNameFont || '10',
+          orderNameFont: data.orderNameFont || '10',
+          resultHeadingFont: data.resultHeadingFont || '10',
+          subHeadingFont: data.subHeadingFont || '10',
+          componentNameFont: data.componentNameFont || '10',
+          methodFont: data.methodFont || '10',
+          resultNotesFont: data.resultNotesFont || '10',
+          leftSignatureFont: data.leftSignatureFont || '10',
+          rightSignatureFont: data.rightSignatureFont || '10',
+          spaceBeforeLineFont: data.spaceBeforeLineFont || '',
+          spaceAfterLineFont: data.spaceAfterLineFont || ''
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSaveLabFont = async () => {
+    try {
+      setIsSavingLabFont(true);
+      const res = await fetch('/api/lab/default-font', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(labFontForm)
+      });
+      if (res.ok) {
+        alert('Lab Default Font saved successfully');
+        setShowLabFontModal(false);
+      } else {
+        alert('Failed to save Lab Default Font');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error saving Lab Default Font');
+    } finally {
+      setIsSavingLabFont(false);
+    }
+  };
+
   // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 300);
@@ -96,6 +163,9 @@ export default function OrderMaintenancePage() {
       if (action === 'Add Order') {
         setSelectedTestDetails(null);
         setShowAddOrderModal(true);
+      } else if (action === 'Lab Default Font') {
+        fetchLabFont();
+        setShowLabFontModal(true);
       } else {
         alert(`${action} coming soon!`);
       }
@@ -220,6 +290,80 @@ export default function OrderMaintenancePage() {
         }}
         initialData={selectedTestDetails}
       />
+
+      {/* Global Lab Default Font Modal */}
+      {showLabFontModal && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '8px', width: '850px', maxWidth: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+            {/* Top Action Bar */}
+            <div style={{ padding: '12px 24px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+              <button 
+                onClick={handleSaveLabFont} 
+                disabled={isSavingLabFont}
+                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '15px', color: '#000', cursor: 'pointer', padding: 0 }}
+              >
+                {isSavingLabFont ? 'Saving...' : 'Save'}
+              </button>
+              <button 
+                onClick={() => setShowLabFontModal(false)}
+                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '18px', color: '#000', cursor: 'pointer', padding: 0 }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Inner Content Area */}
+            <div style={{ padding: '24px', overflowY: 'auto', flex: 1, background: '#fff' }}>
+              <div style={{ border: '1px solid #e5e7eb', borderRadius: '4px', padding: '20px', background: '#fff' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#d1d5db', marginBottom: '24px', borderBottom: '1px solid #f3f4f6', paddingBottom: '12px' }}>
+                  Add Default Font
+                </h2>
+
+                <div style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '14px', marginLeft: '40px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
+                    <label style={{ fontSize: '13px', color: '#000' }}>FontFamily</label>
+                    <select 
+                      value={labFontForm.fontFamily} 
+                      onChange={e => setLabFontForm({...labFontForm, fontFamily: e.target.value})}
+                      style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #d1d5db', fontSize: '13px', background: '#fff', width: '100%' }}
+                    >
+                      <option value="Arial">Arial</option>
+                      <option value="Helvetica">Helvetica</option>
+                      <option value="Times New Roman">Times New Roman</option>
+                      <option value="Courier New">Courier New</option>
+                    </select>
+                  </div>
+
+                  {[
+                    { label: 'PatientDetailsFont', key: 'patientDetailsFont' },
+                    { label: 'DepartmentNameFont', key: 'departmentNameFont' },
+                    { label: 'OrderNameFont', key: 'orderNameFont' },
+                    { label: 'ResultHeadingFont', key: 'resultHeadingFont' },
+                    { label: 'SubHeadingFont', key: 'subHeadingFont' },
+                    { label: 'ComponentNameFont', key: 'componentNameFont' },
+                    { label: 'MethodFont', key: 'methodFont' },
+                    { label: 'ResultNotesFont', key: 'resultNotesFont' },
+                    { label: 'LeftSignatureFont', key: 'leftSignatureFont' },
+                    { label: 'RightSignatureFont', key: 'rightSignatureFont' },
+                    { label: 'SpaceBeforeLineFont', key: 'spaceBeforeLineFont' },
+                    { label: 'SpaceAfterLineFont', key: 'spaceAfterLineFont' },
+                  ].map((field) => (
+                    <div key={field.key} style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
+                      <label style={{ fontSize: '13px', color: '#000' }}>{field.label}</label>
+                      <input 
+                        type="text" 
+                        value={(labFontForm as any)[field.key]} 
+                        onChange={e => setLabFontForm({...labFontForm, [field.key]: e.target.value})}
+                        style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #d1d5db', fontSize: '13px', width: '100%' }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         .order-maintenance-container {
