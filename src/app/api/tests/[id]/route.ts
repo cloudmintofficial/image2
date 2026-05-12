@@ -99,3 +99,53 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: 'Failed to update order', details: String(error) }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const resolvedParams = await params;
+    const id = parseInt(resolvedParams.id);
+    if (isNaN(id)) {
+      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    }
+
+    // Check if test exists
+    const test = await prisma.testMaster.findUnique({
+      where: { id }
+    });
+
+    if (!test) {
+      return NextResponse.json({ error: 'Test not found' }, { status: 404 });
+    }
+
+    // Check if test is used in any active bills/order items
+    // Since OrderItem uses string orderName instead of testId relation, we check by name
+    const usageCount = await prisma.orderItem.count({
+      where: { orderName: test.testName }
+    });
+
+    if (usageCount > 0) {
+      return NextResponse.json({ 
+        error: 'Cannot delete order because it has already been used in existing bills. Consider marking it as Inactive instead.' 
+      }, { status: 400 });
+    }
+
+    // Delete associated components first (if not cascaded)
+    await prisma.testComponent.deleteMany({ where: { testId: id } });
+    
+    // Delete associated templates
+    await prisma.orderDetailTemplate.deleteMany({ where: { testId: id } });
+    
+    // Delete associated font settings
+    await prisma.orderFont.deleteMany({ where: { testId: id } });
+
+    // Delete the test itself
+    await prisma.testMaster.delete({
+      where: { id }
+    });
+
+    return NextResponse.json({ message: 'Order deleted successfully' });
+  } catch (error: any) {
+    console.error('Error deleting order:', error);
+    return NextResponse.json({ error: 'Failed to delete order', details: String(error) }, { status: 500 });
+  }
+}

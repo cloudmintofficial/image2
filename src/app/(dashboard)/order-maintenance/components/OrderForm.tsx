@@ -18,6 +18,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   const { showToast } = useToast();
   const router = useRouter();
   const [isSavingEntity, setIsSavingEntity] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [orderForm, setOrderForm] = useState({
     orderName: '', hasComponents: false, testCode: '', displayOrderName: '',
@@ -141,6 +142,34 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
     }
   };
 
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+    
+    if (!confirm(`Are you sure you want to permanently delete "${orderForm.orderName}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      const res = await fetch(`/api/tests/${initialData.id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        showToast('Order deleted successfully', 'success');
+        router.push('/order-maintenance');
+      } else {
+        const data = await res.json();
+        showToast(data.error || 'Failed to delete order', 'error');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+      showToast('Error deleting order', 'error');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="order-form-workspace">
       {/* Action Header */}
@@ -155,10 +184,21 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
           </div>
         </div>
         <div className="header-actions">
+          {isEdit && (
+            <button 
+              className="btn btn-outline" 
+              onClick={handleDelete} 
+              disabled={isDeleting || isSavingEntity}
+              style={{ color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.2)', gap: '8px' }}
+            >
+              {isDeleting ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+              {isDeleting ? 'Deleting...' : 'Delete Order'}
+            </button>
+          )}
           <button className="btn btn-outline" onClick={handleClear} style={{ gap: '8px' }}>
             <Trash2 size={16} /> Clear
           </button>
-          <button className="btn btn-primary" onClick={handleSave} disabled={isSavingEntity} style={{ minWidth: '140px' }}>
+          <button className="btn btn-primary" onClick={handleSave} disabled={isSavingEntity || isDeleting} style={{ minWidth: '140px' }}>
             {isSavingEntity ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
             {isSavingEntity ? 'Saving...' : (isEdit ? 'Update Order' : 'Save Order')}
           </button>
