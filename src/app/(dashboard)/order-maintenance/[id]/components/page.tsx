@@ -57,7 +57,7 @@ export default function OrderComponentsPage() {
       }
 
       // Fetch components filtered by templateId
-      const url = templateId 
+      const url = templateId
         ? `/api/tests/${testId}/components?templateId=${templateId}`
         : `/api/tests/${testId}/components`;
       const resComp = await fetch(url);
@@ -147,7 +147,7 @@ export default function OrderComponentsPage() {
 
     try {
       setLoading(true);
-      const url = editingComponent 
+      const url = editingComponent
         ? `/api/tests/${testId}/components/${editingComponent.id}`
         : `/api/tests/${testId}/components`;
       const method = editingComponent ? 'PUT' : 'POST';
@@ -293,8 +293,8 @@ export default function OrderComponentsPage() {
           <button className="btn btn-outline" onClick={() => router.push('/order-maintenance')}>
             <ArrowLeft size={18} style={{ marginRight: '8px' }} /> Back to Orders
           </button>
-          <button 
-            className="btn btn-primary" 
+          <button
+            className="btn btn-primary"
             style={{ backgroundColor: '#e25838', border: 'none' }}
             onClick={() => {
               setEditingComponent(null);
@@ -313,29 +313,29 @@ export default function OrderComponentsPage() {
 
       {/* Sub Top Nav mimicking the old version */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <button 
-          className="btn btn-ghost btn-sm" 
+        <button
+          className="btn btn-ghost btn-sm"
           style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           onClick={handleOpenFontModal}
         >
           <Type size={16} style={{ marginRight: '6px' }} /> Order Font
         </button>
-        <button 
-          className="btn btn-ghost btn-sm" 
+        <button
+          className="btn btn-ghost btn-sm"
           style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           onClick={() => router.push(`/order-maintenance/${testId}/templates`)}
         >
           <Layout size={16} style={{ marginRight: '6px' }} /> Templates
         </button>
-        <button 
-          className="btn btn-ghost btn-sm" 
+        <button
+          className="btn btn-ghost btn-sm"
           style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           onClick={() => setShowAddTemplateModal(true)}
         >
           <Plus size={16} style={{ marginRight: '6px' }} /> Add Components Of Existing Order
         </button>
-        <button 
-          className="btn btn-ghost btn-sm" 
+        <button
+          className="btn btn-ghost btn-sm"
           style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
           onClick={handlePrintPreview}
         >
@@ -379,10 +379,10 @@ export default function OrderComponentsPage() {
                   </td>
                   <td style={{ padding: '12px 24px' }}>{comp.unit || '---'}</td>
                   <td style={{ padding: '12px 24px' }}>
-                    <span style={{ 
-                      padding: '4px 10px', 
-                      borderRadius: '20px', 
-                      fontSize: '11px', 
+                    <span style={{
+                      padding: '4px 10px',
+                      borderRadius: '20px',
+                      fontSize: '11px',
                       fontWeight: '700',
                       background: comp.status && comp.status.toLowerCase().includes('inactive') ? 'var(--danger-light)' : 'var(--success-light)',
                       color: comp.status && comp.status.toLowerCase().includes('inactive') ? 'var(--danger)' : 'var(--success)',
@@ -412,7 +412,7 @@ export default function OrderComponentsPage() {
               <h2 style={{ fontSize: '20px', fontWeight: '700' }}>Link Existing Diagnostic Component</h2>
               <button className="btn btn-ghost" onClick={() => setShowAddTemplateModal(false)}>✕</button>
             </div>
-            
+
             <div style={{ marginBottom: '20px' }}>
               <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
                 Search for an individual component to add into <span style={{ fontWeight: '700', color: 'var(--primary)' }}>{test?.testName}</span>
@@ -442,8 +442,8 @@ export default function OrderComponentsPage() {
                 </div>
               ) : (
                 searchResults.map((result: any) => (
-                  <div 
-                    key={result.id} 
+                  <div
+                    key={result.id}
                     style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
                     onClick={() => handleCopyTemplate(result.id)}
                     className="hover-bg"
@@ -466,7 +466,7 @@ export default function OrderComponentsPage() {
                 ))
               )}
             </div>
-            
+
             <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
               <button className="btn btn-outline" onClick={() => setShowAddTemplateModal(false)}>Cancel</button>
             </div>
@@ -500,60 +500,60 @@ export default function OrderComponentsPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="form-group">
                   <label className="form-label">Sub Heading:</label>
-                  <input type="text" className="form-input" value={compForm.subHeading} onChange={e => setCompForm({...compForm, subHeading: e.target.value})} placeholder="Sub Heading" />
+                  <input type="text" className="form-input" value={compForm.subHeading} onChange={e => setCompForm({ ...compForm, subHeading: e.target.value })} placeholder="Sub Heading" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Component Name: <span style={{ color: 'var(--danger)' }}>*</span></label>
-                  <input type="text" className="form-input" value={compForm.componentName} onChange={e => setCompForm({...compForm, componentName: e.target.value})} placeholder="Component Name" />
+                  <input type="text" className="form-input" value={compForm.componentName} onChange={e => setCompForm({ ...compForm, componentName: e.target.value })} placeholder="Component Name" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Machine Code:</label>
-                  <input type="text" className="form-input" value={compForm.machineCode} onChange={e => setCompForm({...compForm, machineCode: e.target.value})} placeholder="Machine Code" />
+                  <input type="text" className="form-input" value={compForm.machineCode} onChange={e => setCompForm({ ...compForm, machineCode: e.target.value })} placeholder="Machine Code" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Specimen Code:</label>
-                  <input type="text" className="form-input" value={compForm.specimenCode} onChange={e => setCompForm({...compForm, specimenCode: e.target.value})} placeholder="Specimen Code" />
+                  <input type="text" className="form-input" value={compForm.specimenCode} onChange={e => setCompForm({ ...compForm, specimenCode: e.target.value })} placeholder="Specimen Code" />
                 </div>
-                
+
                 <div className="form-group" style={{ gridColumn: 'span 2' }}>
                   <label className="form-label">Range:</label>
-                  <textarea className="form-input" style={{ height: '80px' }} value={compForm.normalRange} onChange={e => setCompForm({...compForm, normalRange: e.target.value})} placeholder="Textual Reference Range"></textarea>
+                  <textarea className="form-input" style={{ height: '80px' }} value={compForm.normalRange} onChange={e => setCompForm({ ...compForm, normalRange: e.target.value })} placeholder="Textual Reference Range"></textarea>
                 </div>
 
                 <div className="form-group">
                   <label className="form-label">From Range (Numeric):</label>
-                  <input type="text" className="form-input" value={compForm.fromRange} onChange={e => setCompForm({...compForm, fromRange: e.target.value})} placeholder="e.g. 13.0" />
+                  <input type="text" className="form-input" value={compForm.fromRange} onChange={e => setCompForm({ ...compForm, fromRange: e.target.value })} placeholder="e.g. 13.0" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">To Range (Numeric):</label>
-                  <input type="text" className="form-input" value={compForm.toRange} onChange={e => setCompForm({...compForm, toRange: e.target.value})} placeholder="e.g. 45.0" />
+                  <input type="text" className="form-input" value={compForm.toRange} onChange={e => setCompForm({ ...compForm, toRange: e.target.value })} placeholder="e.g. 45.0" />
                 </div>
 
                 <div className="form-group">
                   <label className="form-label">Units:</label>
-                  <input type="text" className="form-input" value={compForm.unit} onChange={e => setCompForm({...compForm, unit: e.target.value})} placeholder="Units" />
+                  <input type="text" className="form-input" value={compForm.unit} onChange={e => setCompForm({ ...compForm, unit: e.target.value })} placeholder="Units" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Method:</label>
-                  <input type="text" className="form-input" value={compForm.method} onChange={e => setCompForm({...compForm, method: e.target.value})} placeholder="Method" />
+                  <input type="text" className="form-input" value={compForm.method} onChange={e => setCompForm({ ...compForm, method: e.target.value })} placeholder="Method" />
                 </div>
-                
+
                 <div className="form-group">
                   <label className="form-label">Default Value:</label>
-                  <input type="text" className="form-input" value={compForm.defaultValue} onChange={e => setCompForm({...compForm, defaultValue: e.target.value})} placeholder="Default Value" />
+                  <input type="text" className="form-input" value={compForm.defaultValue} onChange={e => setCompForm({ ...compForm, defaultValue: e.target.value })} placeholder="Default Value" />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Calculations:</label>
-                  <input type="text" className="form-input" value={compForm.calculations} onChange={e => setCompForm({...compForm, calculations: e.target.value})} placeholder="e.g. Rbc = ((Haemoglobin*4)/3)" />
+                  <input type="text" className="form-input" value={compForm.calculations} onChange={e => setCompForm({ ...compForm, calculations: e.target.value })} placeholder="e.g. Rbc = ((Haemoglobin*4)/3)" />
                   <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '4px' }}>Example: Rbc = ((Haemoglobin*4)/3)</p>
                 </div>
 
                 <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '8px', gridColumn: 'span 2' }}>
-                  <input 
-                    type="checkbox" 
-                    id="compStatus" 
-                    checked={compForm.status === 'InActive'} 
-                    onChange={e => setCompForm({...compForm, status: e.target.checked ? 'InActive' : 'Active'})} 
+                  <input
+                    type="checkbox"
+                    id="compStatus"
+                    checked={compForm.status === 'InActive'}
+                    onChange={e => setCompForm({ ...compForm, status: e.target.checked ? 'InActive' : 'Active' })}
                     style={{ width: '18px', height: '18px' }}
                   />
                   <label htmlFor="compStatus" className="form-label" style={{ marginBottom: 0 }}>Check to Inactive</label>
@@ -570,14 +570,14 @@ export default function OrderComponentsPage() {
           <div className="modal-content" style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', width: '850px', maxWidth: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.1)', border: '1px solid var(--border)' }}>
             {/* Top Action Bar */}
             <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
-              <button 
-                onClick={handleSaveFont} 
+              <button
+                onClick={handleSaveFont}
                 disabled={isSavingFont}
                 style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '15px', color: 'var(--text-primary)', cursor: 'pointer', padding: '4px 8px' }}
               >
                 {isSavingFont ? 'Saving...' : 'Save'}
               </button>
-              <button 
+              <button
                 onClick={() => setShowOrderFontModal(false)}
                 style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '18px', color: 'var(--text-primary)', cursor: 'pointer', padding: '4px 8px' }}
               >
@@ -595,9 +595,9 @@ export default function OrderComponentsPage() {
                 <div style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '16px', marginLeft: '40px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
                     <label style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>FontFamily</label>
-                    <select 
-                      value={fontForm.fontFamily} 
-                      onChange={e => setFontForm({...fontForm, fontFamily: e.target.value})}
+                    <select
+                      value={fontForm.fontFamily}
+                      onChange={e => setFontForm({ ...fontForm, fontFamily: e.target.value })}
                       style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--border)', fontSize: '13px', background: 'var(--bg-card)', color: 'var(--text-primary)', width: '100%' }}
                     >
                       <option value="Arial">Arial</option>
@@ -623,10 +623,10 @@ export default function OrderComponentsPage() {
                   ].map((field) => (
                     <div key={field.key} style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
                       <label style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>{field.label}</label>
-                      <input 
-                        type="text" 
-                        value={(fontForm as any)[field.key]} 
-                        onChange={e => setFontForm({...fontForm, [field.key]: e.target.value})}
+                      <input
+                        type="text"
+                        value={(fontForm as any)[field.key]}
+                        onChange={e => setFontForm({ ...fontForm, [field.key]: e.target.value })}
                         style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--border)', fontSize: '13px', background: 'var(--bg-card)', color: 'var(--text-primary)', width: '100%' }}
                       />
                     </div>
@@ -665,7 +665,7 @@ export default function OrderComponentsPage() {
             .print-ref-col { width: 30%; white-space: pre-line; line-height: 1.4; }
           `}
         </style>
-        
+
         <div className="print-header">
           <span>{currentDate}</span>
           <span style={{ fontWeight: 'bold' }}>OrderDetails</span>
@@ -711,29 +711,29 @@ export default function OrderComponentsPage() {
               {components
                 .filter(c => !c.status || !c.status.toLowerCase().includes('inactive'))
                 .map((comp, idx) => (
-                <React.Fragment key={idx}>
-                  {comp.subHeading && (
+                  <React.Fragment key={idx}>
+                    {comp.subHeading && (
+                      <tr>
+                        <td colSpan={4} style={{ fontWeight: 'bold', textDecoration: 'underline', paddingTop: '10px', paddingBottom: '8px' }}>
+                          {comp.subHeading}
+                        </td>
+                      </tr>
+                    )}
                     <tr>
-                      <td colSpan={4} style={{ fontWeight: 'bold', textDecoration: 'underline', paddingTop: '10px', paddingBottom: '8px' }}>
-                        {comp.subHeading}
+                      <td className="print-inv-col">
+                        <div style={{ fontWeight: 'bold' }}>{comp.componentName}</div>
+                        {comp.method && (
+                          <div style={{ fontSize: '10px', fontStyle: 'italic', marginTop: '2px', color: '#333' }}>
+                            (Method : {comp.method})
+                          </div>
+                        )}
                       </td>
+                      <td className="print-res-col">Value</td>
+                      <td className="print-unit-col">{comp.unit || ''}</td>
+                      <td className="print-ref-col">{comp.normalRange || ''}</td>
                     </tr>
-                  )}
-                  <tr>
-                    <td className="print-inv-col">
-                      <div style={{ fontWeight: 'bold' }}>{comp.componentName}</div>
-                      {comp.method && (
-                        <div style={{ fontSize: '10px', fontStyle: 'italic', marginTop: '2px', color: '#333' }}>
-                          (Method : {comp.method})
-                        </div>
-                      )}
-                    </td>
-                    <td className="print-res-col">Value</td>
-                    <td className="print-unit-col">{comp.unit || ''}</td>
-                    <td className="print-ref-col">{comp.normalRange || ''}</td>
-                  </tr>
-                </React.Fragment>
-              ))}
+                  </React.Fragment>
+                ))}
             </tbody>
           </table>
         </div>
