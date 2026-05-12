@@ -99,6 +99,11 @@ export default function OrderEntryPage() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [discountReason, setDiscountReason] = useState('');
 
+  // Selection skip flags
+  const doctorSelected = useRef(false);
+  const sourceSelected = useRef(false);
+  const orderSelected = useRef(false);
+
   // Source Management Modal
   const [showManageSources, setShowManageSources] = useState(false);
   const [allSources, setAllSources] = useState<any[]>([]);
@@ -160,6 +165,11 @@ export default function OrderEntryPage() {
   // Autocomplete for orders
   useEffect(() => {
     const fetchTests = async () => {
+      if (orderSelected.current) {
+        orderSelected.current = false;
+        setOrderSuggestions([]);
+        return;
+      }
       if (orderSearch.length >= 2) {
         setIsSearchingOrdersDropdown(true);
         try {
@@ -186,6 +196,11 @@ export default function OrderEntryPage() {
   // Autocomplete for doctors
   useEffect(() => {
     const fetchDoctors = async () => {
+      if (doctorSelected.current) {
+        doctorSelected.current = false;
+        setDoctorSuggestions([]);
+        return;
+      }
       if (doctor.length >= 2) {
         setIsSearchingDoctorsDropdown(true);
         try {
@@ -211,6 +226,11 @@ export default function OrderEntryPage() {
   // Autocomplete for sources
   useEffect(() => {
     const fetchSources = async () => {
+      if (sourceSelected.current) {
+        sourceSelected.current = false;
+        setSourceSuggestions([]);
+        return;
+      }
       if (source.length >= 2) {
         setIsSearchingSourcesDropdown(true);
         try {
@@ -234,8 +254,8 @@ export default function OrderEntryPage() {
   }, [source]);
 
   const addOrder = (test: any) => {
-    const displayName = (test.displayOrderName && test.displayOrderName.trim().toLowerCase() !== 'blank') 
-      ? test.displayOrderName 
+    const displayName = (test.displayOrderName && test.displayOrderName.trim().toLowerCase() !== 'blank')
+      ? test.displayOrderName
       : test.name;
 
     setOrders(prev => [
@@ -679,7 +699,14 @@ export default function OrderEntryPage() {
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Source</label>
                   <div style={{ position: 'relative' }}>
-                    <input className="form-input" placeholder="Referral source" value={source} onChange={e => setSource(e.target.value)} style={{ paddingRight: 32 }} />
+                    <input 
+                      className="form-input" 
+                      placeholder="Referral source" 
+                      value={source} 
+                      onChange={e => setSource(e.target.value)} 
+                      onFocus={() => { setDoctorSuggestions([]); setOrderSuggestions([]); }}
+                      style={{ paddingRight: 32 }} 
+                    />
                     {isSearchingSourcesDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                     )}
@@ -690,7 +717,12 @@ export default function OrderEntryPage() {
                         <div
                           key={idx}
                           className="suggestion-item"
-                          onClick={() => { setSource(src.name); setSourceSuggestions([]); }}
+                          onMouseDown={(e) => { 
+                            e.preventDefault(); 
+                            sourceSelected.current = true;
+                            setSource(src.name); 
+                            setSourceSuggestions([]); 
+                          }}
                         >
                           <div className="name">{src.name}</div>
                         </div>
@@ -707,7 +739,14 @@ export default function OrderEntryPage() {
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Doctor</label>
                   <div style={{ position: 'relative' }}>
-                    <input className="form-input" placeholder="Referring doctor" value={doctor} onChange={e => setDoctor(e.target.value)} style={{ paddingRight: 32 }} />
+                    <input 
+                      className="form-input" 
+                      placeholder="Referring doctor" 
+                      value={doctor} 
+                      onChange={e => setDoctor(e.target.value)} 
+                      onFocus={() => { setSourceSuggestions([]); setOrderSuggestions([]); }}
+                      style={{ paddingRight: 32 }} 
+                    />
                     {isSearchingDoctorsDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                     )}
@@ -718,7 +757,12 @@ export default function OrderEntryPage() {
                         <div
                           key={idx}
                           className="suggestion-item"
-                          onClick={() => { setDoctor(doc.name); setDoctorSuggestions([]); }}
+                          onMouseDown={(e) => { 
+                            e.preventDefault(); 
+                            doctorSelected.current = true;
+                            setDoctor(doc.name); 
+                            setDoctorSuggestions([]); 
+                          }}
                         >
                           <div className="name">{doc.name}</div>
                         </div>
@@ -741,14 +785,15 @@ export default function OrderEntryPage() {
               <div className="form-group" style={{ position: 'relative' }}>
                 <label className="form-label">Order Name</label>
                 <div style={{ position: 'relative' }}>
-                  <input
-                    ref={orderSearchRef}
-                    className="form-input"
-                    placeholder="Type to search tests/procedures..."
-                    value={orderSearch}
-                    onChange={e => setOrderSearch(e.target.value)}
-                    style={{ paddingRight: 32 }}
-                  />
+                    <input
+                      ref={orderSearchRef}
+                      className="form-input"
+                      placeholder="Type to search tests/procedures..."
+                      value={orderSearch}
+                      onChange={e => setOrderSearch(e.target.value)}
+                      onFocus={() => { setDoctorSuggestions([]); setSourceSuggestions([]); }}
+                      style={{ paddingRight: 32 }}
+                    />
                   {isSearchingOrdersDropdown && (
                     <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                   )}
@@ -759,7 +804,11 @@ export default function OrderEntryPage() {
                       <div
                         key={i}
                         className="suggestion-item"
-                        onClick={() => addOrder(test)}
+                        onMouseDown={(e) => { 
+                          e.preventDefault(); 
+                          orderSelected.current = true;
+                          addOrder(test); 
+                        }}
                       >
                         <div className="name">{test.name}</div>
                         <div className="sub">{test.category}</div>
@@ -958,13 +1007,13 @@ export default function OrderEntryPage() {
         </div>
       )}
 
-      <AddOrderModal 
-        isOpen={showAddOrderModal} 
-        onClose={() => setShowAddOrderModal(false)} 
+      <AddOrderModal
+        isOpen={showAddOrderModal}
+        onClose={() => setShowAddOrderModal(false)}
         onSuccess={() => {
           // If we want to refresh order suggestions or do anything else
           setShowAddOrderModal(false);
-        }} 
+        }}
       />
 
       {showAddExpense && (
