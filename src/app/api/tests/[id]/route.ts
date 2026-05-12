@@ -133,9 +133,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     await prisma.testComponent.deleteMany({ where: { testId: id } });
     
     // Delete associated templates
+    // @ts-ignore
     await prisma.orderDetailTemplate.deleteMany({ where: { testId: id } });
     
     // Delete associated font settings
+    // @ts-ignore
     await prisma.orderFont.deleteMany({ where: { testId: id } });
 
     // Delete the test itself

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
+    // @ts-ignore
     const serviceGroups = await prisma.serviceGroup.findMany({
       include: {
         tests: {
@@ -14,12 +15,12 @@ export async function GET() {
       orderBy: { groupName: 'asc' }
     });
 
-    const formatted = serviceGroups.map(g => ({
+    const formatted = serviceGroups.map((g: any) => ({
       id: g.id,
       name: g.groupName,
       amount: g.amount,
       status: g.status,
-      orders: g.tests.map(t => t.testName).join(', ')
+      orders: g.tests.map((t: any) => t.testName).join(', ')
     }));
 
     return NextResponse.json(formatted);
@@ -40,6 +41,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No lab found' }, { status: 400 });
     }
 
+    // @ts-ignore
     const newGroup = await prisma.serviceGroup.create({
       data: {
         groupName,

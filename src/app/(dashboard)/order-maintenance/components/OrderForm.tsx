@@ -548,7 +548,40 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
 
       {/* Hidden Print Content */}
       <div style={{ display: 'none' }}>
-        <div ref={printRef} style={{ padding: '40px', color: '#000', fontFamily: 'Arial, sans-serif' }}>
+        <div ref={printRef} style={{ padding: '30px', color: '#000', fontFamily: '"Inter", sans-serif', fontSize: '12px', lineHeight: '1.5' }}>
+          {/* Professional Header matching screenshot */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', paddingBottom: '15px', borderBottom: '2px solid #000', marginBottom: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '100px auto', gap: '8px' }}>
+              <span style={{ color: '#555' }}>Name</span><span style={{ fontWeight: 800 }}>: PatientName</span>
+              <span style={{ color: '#555' }}>Age/Gender</span><span style={{ fontWeight: 800 }}>: AGE / GENDER</span>
+              <span style={{ color: '#555' }}>Ref By</span><span style={{ fontWeight: 800 }}>: Self</span>
+              <span style={{ color: '#555' }}>TypedBy</span><span>: </span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '120px auto', gap: '8px' }}>
+              <span style={{ color: '#555' }}>Bill / UMR Number</span><span style={{ fontWeight: 800 }}>: BillNumber / </span>
+              <span style={{ color: '#555' }}>Bill Date</span><span style={{ fontWeight: 800 }}>: Date</span>
+              <span style={{ color: '#555' }}>Reporting Date</span><span style={{ fontWeight: 800 }}>: {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+            </div>
+          </div>
+
+          {/* QR Code Placeholder matching screenshot */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
+            <div style={{ width: '80px', height: '80px', padding: '4px', border: '1px solid #ddd' }}>
+              <img 
+                src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=PREVIEW" 
+                alt="QR Code" 
+                style={{ width: '100%', height: '100%' }}
+              />
+            </div>
+          </div>
+
+          {/* Test Name Header */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <h1 style={{ fontSize: '18px', fontWeight: 800, margin: 0, textTransform: 'uppercase', textDecoration: 'underline' }}>
+              {orderForm.orderName || 'DIAGNOSTIC TEST PREVIEW'}
+            </h1>
+          </div>
+
           <div dangerouslySetInnerHTML={{ __html: resultNotesPage1 }} />
           {resultNotesPage2 && (
             <>

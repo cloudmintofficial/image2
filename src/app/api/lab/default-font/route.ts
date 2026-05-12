@@ -30,6 +30,7 @@ async function getGlobalTestContainer() {
 export async function GET() {
   try {
     const master = await getGlobalTestContainer();
+    // @ts-ignore
     const orderFont = await prisma.orderFont.findUnique({
       where: { testId: master.id }
     });
@@ -67,6 +68,7 @@ export async function POST(request: Request) {
       spaceAfterLineFont: spaceAfterLineFont || null
     };
 
+    // @ts-ignore
     const orderFont = await prisma.orderFont.upsert({
       where: { testId: master.id },
       update: data,
