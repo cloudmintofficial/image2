@@ -9,19 +9,6 @@ import { useRouter } from 'next/navigation';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
-const FALLBACK_SAMPLE_TYPES = [
-  { id: 'f1', name: 'Blood' },
-  { id: 'f2', name: 'Serum' },
-  { id: 'f3', name: 'Urine' },
-  { id: 'f4', name: 'Plasma' },
-  { id: 'f5', name: 'Pus' },
-  { id: 'f6', name: 'Sputum' },
-  { id: 'f7', name: 'Stool' },
-  { id: 'f8', name: 'Swab' },
-  { id: 'f9', name: 'Semen' },
-  { id: 'f10', name: 'WB EDTA' }
-];
-
 interface OrderFormProps {
   initialData?: any;
   isEdit?: boolean;
@@ -34,6 +21,8 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentSample, setCurrentSample] = useState('Select Sample');
   const [dbSampleTypes, setDbSampleTypes] = useState<any[]>([]);
+  const [dbOrderTypes, setDbOrderTypes] = useState<any[]>([]);
+  const [dbBillingCategories, setDbBillingCategories] = useState<any[]>([]);
 
   const [orderForm, setOrderForm] = useState({
     orderName: '', hasComponents: false, testCode: '', displayOrderName: '',
@@ -54,19 +43,29 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   });
 
   useEffect(() => {
+    // Fetch Sample Types
     fetch('/api/sample-types')
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          setDbSampleTypes(data);
-        } else {
-          setDbSampleTypes(FALLBACK_SAMPLE_TYPES);
-        }
+        if (Array.isArray(data)) setDbSampleTypes(data);
       })
-      .catch(err => {
-        console.error('Failed to fetch sample types:', err);
-        setDbSampleTypes(FALLBACK_SAMPLE_TYPES);
-      });
+      .catch(err => console.error('Failed to fetch sample types:', err));
+
+    // Fetch Order Types
+    fetch('/api/order-types')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setDbOrderTypes(data);
+      })
+      .catch(err => console.error('Failed to fetch order types:', err));
+
+    // Fetch Billing Categories
+    fetch('/api/billing-categories')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setDbBillingCategories(data);
+      })
+      .catch(err => console.error('Failed to fetch billing categories:', err));
 
     if (initialData) {
       // Parse resultNotes to split back into page 1 and page 2 if needed
@@ -440,17 +439,34 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
                 />
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Order Type</label>
-                <select 
-                  className="form-select" 
-                  value={orderForm.orderType} 
-                  onChange={e => setOrderForm({ ...orderForm, orderType: e.target.value })}
-                >
-                  <option value="Internal">Internal</option>
-                  <option value="External">External</option>
-                </select>
-              </div>
+                <div className="form-group">
+                  <label className="form-label">Order Type</label>
+                  <select 
+                    className="form-select" 
+                    value={orderForm.orderType} 
+                    onChange={e => setOrderForm({ ...orderForm, orderType: e.target.value })}
+                  >
+                    {dbOrderTypes.length > 0 ? (
+                      dbOrderTypes.map(ot => <option key={ot.id} value={ot.name}>{ot.name}</option>)
+                    ) : (
+                      <option value="Internal">Internal</option>
+                    )}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">IP Billing Category Type</label>
+                  <select 
+                    className="form-select" 
+                    value={orderForm.ipBillingCategoryType} 
+                    onChange={e => setOrderForm({ ...orderForm, ipBillingCategoryType: e.target.value })}
+                  >
+                    <option value="Select Category">Select Category</option>
+                    {dbBillingCategories.map(bc => (
+                      <option key={bc.id} value={bc.name}>{bc.name}</option>
+                    ))}
+                  </select>
+                </div>
 
               <div className="form-group" style={{ gridColumn: 'span 3', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '32px', padding: '16px', background: 'var(--bg-main)', borderRadius: '12px', marginTop: '8px' }}>
                 <label className="checkbox-container">

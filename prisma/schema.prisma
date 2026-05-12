@@ -235,6 +235,20 @@ model SampleType {
   createdAt DateTime @default(now())
 }
 
+model OrderType {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+}
+
+model IPBillingCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  status    String   @default("Active")
+  createdAt DateTime @default(now())
+}
+
 model DoctorSignature {
   id        String   @id
   label     String
