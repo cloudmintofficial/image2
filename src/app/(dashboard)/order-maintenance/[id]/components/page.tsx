@@ -384,11 +384,11 @@ export default function OrderComponentsPage() {
                       borderRadius: '20px', 
                       fontSize: '11px', 
                       fontWeight: '700',
-                      background: comp.status === 'Active' ? 'var(--success-light)' : 'var(--danger-light)',
-                      color: comp.status === 'Active' ? 'var(--success)' : 'var(--danger)',
+                      background: comp.status && comp.status.toLowerCase().includes('inactive') ? 'var(--danger-light)' : 'var(--success-light)',
+                      color: comp.status && comp.status.toLowerCase().includes('inactive') ? 'var(--danger)' : 'var(--success)',
                       textTransform: 'uppercase'
                     }}>
-                      {comp.status || 'Active'}
+                      {comp.status && comp.status.toLowerCase().includes('inactive') ? 'INACTIVE' : 'ACTIVE'}
                     </span>
                   </td>
                   <td style={{ padding: '12px 24px', textAlign: 'right' }}>
@@ -700,7 +700,9 @@ export default function OrderComponentsPage() {
               </tr>
             </thead>
             <tbody>
-              {components.map((comp, idx) => (
+              {components
+                .filter(c => !c.status || !c.status.toLowerCase().includes('inactive'))
+                .map((comp, idx) => (
                 <React.Fragment key={idx}>
                   {comp.subHeading && (
                     <tr>
