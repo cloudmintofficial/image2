@@ -8,19 +8,19 @@ datasource db {
 }
 
 model Lab {
-  id            Int      @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   labName       String
   labAddress    String
   contactPerson String?
   primaryPhone  String
   email         String?
   logo          String?
-  status        String   @default("Active") // Active, InActive
-  users         User[]
+  status        String       @default("Active")
+  createdAt     DateTime     @default(now())
   bills         Bill[]
-  tests         TestMaster[]
   expenses      Expense[]
-  createdAt     DateTime @default(now())
+  tests         TestMaster[]
+  users         User[]
 }
 
 model User {
@@ -28,14 +28,14 @@ model User {
   username     String     @unique
   passwordHash String
   displayName  String
-  role         String     // Owner, Reception, LabEntry
-  status       String     @default("Active") // Active, InActive
-  lab          Lab        @relation(fields: [labId], references: [id])
+  role         String
+  status       String     @default("Active")
   labId        Int
+  createdAt    DateTime   @default(now())
+  auditLogs    AuditLog[]
   bills        Bill[]
   payments     Payment[]  @relation("ReceivedBy")
-  auditLogs    AuditLog[]
-  createdAt    DateTime   @default(now())
+  lab          Lab        @relation(fields: [labId], references: [id])
 }
 
 model Patient {
@@ -43,22 +43,22 @@ model Patient {
   umr               String   @unique @default(cuid())
   name              String
   age               Int?
-  gender            String   @default("M") // M, F
+  gender            String   @default("M")
   phone             String?
   source            String?
   externalId        String?
   email             String?
   photoUrl          String?
-  additionalDetails Json?    // Native JSON in PostgreSQL
-  bills             Bill[]
+  additionalDetails Json?
   createdAt         DateTime @default(now())
+  bills             Bill[]
 }
 
 model Doctor {
   id             Int      @id @default(autoincrement())
   name           String
-  type           String?  @default("Referral") // From "Doctor Type" dropdown
-  percentage     Float?   // From "Percentage To Doctor"
+  type           String?  @default("Referral")
+  percentage     Float?
   address        String?
   phone          String?
   email          String?
@@ -67,63 +67,63 @@ model Doctor {
   location       String?
   hospital       String?
   salesExecutive String?
-  status         String   @default("Active") // Active, InActive
-  bills          Bill[]
+  status         String   @default("Active")
   createdAt      DateTime @default(now())
+  bills          Bill[]
 }
 
 model Bill {
-  id             Int        @id @default(autoincrement())
-  billNumber     Int        @unique
-  billDate       DateTime   @default(now())
-  patient        Patient    @relation(fields: [patientId], references: [id])
+  id             Int         @id @default(autoincrement())
+  billNumber     Int         @unique
+  billDate       DateTime    @default(now())
   patientId      Int
-  doctor         Doctor?    @relation(fields: [doctorId], references: [id])
   doctorId       Int?
-  totalBill      Float      @default(0)
-  discount       Float      @default(0)
+  totalBill      Float       @default(0)
+  discount       Float       @default(0)
   discountReason String?
-  paidAmount     Float      @default(0)
-  balance        Float      @default(0)
-  status         String     @default("InProcess") // InProcess, Completed, Cancelled, Refunded
-  createdByUser  User       @relation(fields: [createdBy], references: [id])
+  paidAmount     Float       @default(0)
+  balance        Float       @default(0)
+  status         String      @default("InProcess")
   createdBy      Int
-  lab            Lab        @relation(fields: [labId], references: [id])
   labId          Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  createdByUser  User        @relation(fields: [createdBy], references: [id])
+  doctor         Doctor?     @relation(fields: [doctorId], references: [id])
+  lab            Lab         @relation(fields: [labId], references: [id])
+  patient        Patient     @relation(fields: [patientId], references: [id])
   orders         OrderItem[]
   payments       Payment[]
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
 }
 
 model OrderItem {
-  id           Int          @id @default(autoincrement())
-  bill         Bill         @relation(fields: [billId], references: [id])
+  id           Int       @id @default(autoincrement())
   billId       Int
   orderName    String
-  orderDate    DateTime     @default(now())
+  orderDate    DateTime  @default(now())
   amount       Float
-  resultStatus  String       @default("Pending") // Pending, Entered, Verified
-  resultData    String?      // HTML result from quill
-  resultMethod  String?
-  resultDoctor  String?
-  resultAdvice  String?
-  signatureId   String?
-  verifiedBy    String?
-  verifiedAt    DateTime?
-  createdAt     DateTime     @default(now())
+  resultStatus String    @default("Pending")
+  resultData   String?
+  resultMethod String?
+  resultDoctor String?
+  resultAdvice String?
+  signatureId  String?
+  verifiedBy   String?
+  verifiedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  bill         Bill      @relation(fields: [billId], references: [id])
 }
 
 model Payment {
-  id         Int           @id @default(autoincrement())
-  bill       Bill          @relation(fields: [billId], references: [id])
+  id         Int      @id @default(autoincrement())
   billId     Int
   amount     Float
-  method     String        @default("Cash") // Cash, Card, UPI, Online
+  method     String   @default("Cash")
   reference  String?
-  receivedBy User          @relation("ReceivedBy", fields: [userId], references: [id])
   userId     Int
-  paidAt     DateTime      @default(now())
+  paidAt     DateTime @default(now())
+  bill       Bill     @relation(fields: [billId], references: [id])
+  receivedBy User     @relation("ReceivedBy", fields: [userId], references: [id])
 }
 
 model TestMaster {
@@ -147,29 +147,29 @@ model TestMaster {
   ipBillingCategoryType String?
   recurring             Boolean         @default(false)
   serviceDoctorRequired Boolean         @default(false)
-  resultTemplate        String?         // JSON template for radiology/rich text
-  uiType                String          @default("richtext") // richtext, panel, single, microbiology, immunology
-  status                String          @default("Active") // Active, InActive
-  lab                   Lab             @relation(fields: [labId], references: [id])
+  resultTemplate        String?
+  uiType                String          @default("richtext")
+  status                String          @default("Active")
   labId                 Int
   components            TestComponent[]
+  lab                   Lab             @relation(fields: [labId], references: [id])
 }
 
 model TestComponent {
-  id           Int        @id @default(autoincrement())
-  test         TestMaster @relation(fields: [testId], references: [id])
-  testId       Int
+  id            Int        @id @default(autoincrement())
+  testId        Int
   componentName String
-  unit         String?
-  normalRange  String?    // Legacy string format
-  minMale      Float?
-  maxMale      Float?
-  minFemale    Float?
-  maxFemale    Float?
-  method       String?
-  sortOrder    Int        @default(0)
-  fieldType    String     @default("number") // number, text, select
-  options      String?    // comma-separated options for select type
+  unit          String?
+  normalRange   String?
+  minMale       Float?
+  maxMale       Float?
+  minFemale     Float?
+  maxFemale     Float?
+  method        String?
+  sortOrder     Int        @default(0)
+  fieldType     String     @default("number")
+  options       String?
+  test          TestMaster @relation(fields: [testId], references: [id])
 }
 
 model Expense {
@@ -179,27 +179,27 @@ model Expense {
   category    String?
   expenseDate DateTime @default(now())
   createdBy   Int
-  lab         Lab      @relation(fields: [labId], references: [id])
   labId       Int
   createdAt   DateTime @default(now())
+  lab         Lab      @relation(fields: [labId], references: [id])
 }
 
 model AuditLog {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
   userId    Int
   action    String
   entity    String
   entityId  Int?
-  oldData   Json?    // Native JSON in PostgreSQL
-  newData   Json?    // Native JSON in PostgreSQL
+  oldData   Json?
+  newData   Json?
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Source {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  status    String   @default("Active") // Active, InActive
+  status    String   @default("Active")
   createdAt DateTime @default(now())
 }
 
@@ -209,7 +209,7 @@ model DoctorSignature {
   name      String
   title     String
   signText  String?
-  imageData String?  // Base64 string for the image
+  imageData String?
   status    String   @default("Active")
   createdAt DateTime @default(now())
 }
