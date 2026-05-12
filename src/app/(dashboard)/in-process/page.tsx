@@ -1479,10 +1479,14 @@ export default function InProcessPage() {
 
               {/* Right Column */}
               <div style={{ fontSize: 13, lineHeight: 1.8 }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '8px', marginLeft: '124px' }}>
-                  {/* Barcode representation */}
-                  <div style={{ fontFamily: 'monospace', fontSize: 26, letterSpacing: '-1.5px', transform: 'scaleY(1.5)', fontWeight: 'bold' }}>
-                    || ||||| |||| || | ||| ||
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+                  {/* Optimized High-Fidelity Barcode */}
+                  <div style={{ textAlign: 'right' }}>
+                    <img 
+                      src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${selectedBill?.billNo || '0000'}&scale=3&rotate=N&includetext=false`} 
+                      alt="Barcode" 
+                      style={{ height: '40px', maxWidth: '220px' }}
+                    />
                   </div>
                 </div>
                 <div style={{ display: 'flex' }}>
@@ -1563,15 +1567,16 @@ export default function InProcessPage() {
 
             {/* Footer Signature Block */}
             <div style={{ marginTop: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '80px' }}>
-              {/* QR Code Placeholder */}
-              <div>
-                <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="100" height="100" fill="#fff" />
-                  <path d="M10,10 h30 v30 h-30 z M15,15 h20 v20 h-20 z" fill="#000" />
-                  <path d="M60,10 h30 v30 h-30 z M65,15 h20 v20 h-20 z" fill="#000" />
-                  <path d="M10,60 h30 v30 h-30 z M15,65 h20 v20 h-20 z" fill="#000" />
-                  <path d="M45,45 h10 v10 h-10 z M60,45 h10 v10 h-10 z M75,45 h15 v15 h-15 z M45,60 h15 v15 h-15 z M65,65 h10 v10 h-10 z M80,65 h10 v10 h-10 z M45,80 h10 v10 h-10 z M60,80 h15 v15 h-15 z M80,80 h10 v10 h-10 z" fill="#000" />
-                </svg>
+              {/* Dynamic QR Code for Report Verification */}
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ width: '80px', height: '80px', padding: '4px', border: '1px solid #eee', marginBottom: '4px' }}>
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://medfileshared2.bharathcloud.com/lab/InProcess/OrderResultsEntry?billid=${selectedBill?.id}`} 
+                    alt="QR Code" 
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                </div>
+                <div style={{ fontSize: '9px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Verify Report</div>
               </div>
 
               {/* Signature */}

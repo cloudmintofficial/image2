@@ -549,6 +549,17 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
       {/* Hidden Print Content */}
       <div style={{ display: 'none' }}>
         <div ref={printRef} style={{ padding: '30px', color: '#000', fontFamily: '"Inter", sans-serif', fontSize: '12px', lineHeight: '1.5' }}>
+          {/* Optimized Barcode Placeholder */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+            <div style={{ textAlign: 'right' }}>
+              <img 
+                src="https://bwipjs-api.metafloor.com/?bcid=code128&text=BILL0000&scale=3&rotate=N&includetext=false" 
+                alt="Barcode" 
+                style={{ height: '40px', maxWidth: '220px' }}
+              />
+            </div>
+          </div>
+
           {/* Professional Header matching screenshot */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', paddingBottom: '15px', borderBottom: '2px solid #000', marginBottom: '20px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '100px auto', gap: '8px' }}>
@@ -575,9 +586,14 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
             </div>
           </div>
 
-          {/* Test Name Header */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <h1 style={{ fontSize: '18px', fontWeight: 800, margin: 0, textTransform: 'uppercase', textDecoration: 'underline' }}>
+          {/* Test Name Header with Department branding matching screenshot */}
+          <div style={{ textAlign: 'center', marginBottom: '25px' }}>
+            {orderForm.department && orderForm.department !== 'NONE' && (
+              <h2 style={{ fontSize: '14px', fontWeight: 800, margin: '0 0 4px 0', textTransform: 'uppercase', color: '#000' }}>
+                {orderForm.department === 'RADIOLOGY' ? 'DEPARTMENT OF RADIOLOGY AND IMAGING SCIENCES' : `DEPARTMENT OF ${orderForm.department}`}
+              </h2>
+            )}
+            <h1 style={{ fontSize: '16px', fontWeight: 800, margin: 0, textTransform: 'uppercase' }}>
               {orderForm.orderName || 'DIAGNOSTIC TEST PREVIEW'}
             </h1>
           </div>

@@ -91,7 +91,7 @@ export default function OrderComponentsPage() {
 
   useEffect(() => {
     const searchTests = async () => {
-      if (searchTerm.length < 2) {
+      if (searchTerm.length < 1) {
         setSearchResults([]);
         return;
       }
@@ -438,7 +438,7 @@ export default function OrderComponentsPage() {
             <div style={{ maxHeight: '320px', overflowY: 'auto', border: '1px solid var(--border)', borderRadius: '8px' }}>
               {searchResults.length === 0 ? (
                 <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                  {searchTerm.length < 2 ? 'Type at least 2 characters to search existing components...' : 'No components found matching your search.'}
+                  {searchTerm.length < 1 ? 'Start typing to search existing components...' : 'No components found matching your search.'}
                 </div>
               ) : (
                 searchResults.map((result: any) => (
