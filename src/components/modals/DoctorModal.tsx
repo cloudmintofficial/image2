@@ -136,85 +136,126 @@ export default function DoctorModal({ isOpen, onClose, onSuccess, initialData }:
           <h3>{initialData ? 'Update Doctor' : 'Add Doctor'}</h3>
           <button className="modal-close" onClick={onClose}><X size={18} /></button>
         </div>
-        <div className="modal-body" style={{ maxWidth: 600, margin: '0 auto', display: 'grid', gridTemplateColumns: '160px 1fr', gap: '16px 24px', alignItems: 'center', paddingTop: 20, width: '100%' }}>
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Doctor Name:</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <input className="form-input" value={docName} onChange={e => setDocName(e.target.value)} placeholder="Doctor Name" />
-            <span style={{ color: 'var(--danger)' }}>*</span>
-          </div>
+        <div className="modal-body">
+          <div className="doc-form-grid">
+            <label className="form-label">Doctor Name <span className="required">*</span></label>
+            <input className="form-input" value={docName} onChange={e => setDocName(e.target.value)} placeholder="Full Name" />
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Doctor Type:</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <label className="form-label">Doctor Type <span className="required">*</span></label>
             <select className="form-input form-select" value={docType} onChange={e => setDocType(e.target.value)}>
               <option value="Referral">Referral</option>
               <option value="Service Provider">Service Provider</option>
               <option value="Both">Both</option>
             </select>
-            <span style={{ color: 'var(--danger)' }}>*</span>
-          </div>
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Percentage To Doctor:</label>
-          <input className="form-input" type="number" value={docPercentage} onChange={e => setDocPercentage(e.target.value)} placeholder="Percentage to Doctor" />
+            <label className="form-label">Comm. Percentage</label>
+            <div style={{ position: 'relative' }}>
+              <input className="form-input" type="number" value={docPercentage} onChange={e => setDocPercentage(e.target.value)} placeholder="0.00" />
+              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '13px' }}>%</span>
+            </div>
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Address:</label>
-          <input className="form-input" value={docAddress} onChange={e => setDocAddress(e.target.value)} placeholder="Address" />
+            <label className="form-label">Phone Number</label>
+            <input className="form-input" value={docPhone} onChange={e => setDocPhone(e.target.value)} placeholder="Contact number" />
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Phone Number:</label>
-          <input className="form-input" value={docPhone} onChange={e => setDocPhone(e.target.value)} placeholder="Phone Number" />
+            <label className="form-label">Email Address</label>
+            <input className="form-input" value={docEmail} onChange={e => setDocEmail(e.target.value)} placeholder="doctor@example.com" />
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Email:</label>
-          <input className="form-input" value={docEmail} onChange={e => setDocEmail(e.target.value)} placeholder="Email" />
+            <label className="form-label">Department</label>
+            <select className="form-input form-select" value={docDepartment} onChange={e => setDocDepartment(e.target.value)}>
+              <option value="">-- Select Department --</option>
+              <option value="BIO CHEMISTRY">BIO CHEMISTRY</option>
+              <option value="IMMUNOLOGY">IMMUNOLOGY</option>
+              <option value="SEROLOGY">SEROLOGY</option>
+              <option value="CLINICAL PATHOLOGY">CLINICAL PATHOLOGY</option>
+              <option value="HEMATOLOGY">HEMATOLOGY</option>
+              <option value="MICRO BIOLOGY">MICRO BIOLOGY</option>
+              <option value="PATHOLOGY">PATHOLOGY</option>
+              <option value="CYTOLOGY">CYTOLOGY</option>
+              <option value="X-RAY">X-RAY</option>
+              <option value="HISTOPATHOLOGY">HISTOPATHOLOGY</option>
+              <option value="ECG">ECG</option>
+              <option value="HORMONES">HORMONES</option>
+              <option value="RADIOLOGY">RADIOLOGY</option>
+              <option value="2 D ECHOCARDIOGRAM">2 D ECHOCARDIOGRAM</option>
+              <option value="PACKAGE INCLUSION">PACKAGE INCLUSION</option>
+            </select>
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Department:</label>
-          <select className="form-input form-select" value={docDepartment} onChange={e => setDocDepartment(e.target.value)}>
-            <option value="">-- Select Department --</option>
-            <option value="BIO CHEMISTRY">BIO CHEMISTRY</option>
-            <option value="IMMUNOLOGY">IMMUNOLOGY</option>
-            <option value="SEROLOGY">SEROLOGY</option>
-            <option value="CLINICAL PATHOLOGY">CLINICAL PATHOLOGY</option>
-            <option value="HEMATOLOGY">HEMATOLOGY</option>
-            <option value="MICRO BIOLOGY">MICRO BIOLOGY</option>
-            <option value="PATHOLOGY">PATHOLOGY</option>
-            <option value="CYTOLOGY">CYTOLOGY</option>
-            <option value="X-RAY">X-RAY</option>
-            <option value="HISTOPATHOLOGY">HISTOPATHOLOGY</option>
-            <option value="ECG">ECG</option>
-            <option value="HORMONES">HORMONES</option>
-            <option value="RADIOLOGY">RADIOLOGY</option>
-            <option value="2 D ECHOCARDIOGRAM">2 D ECHOCARDIOGRAM</option>
-            <option value="PACKAGE INCLUSION">PACKAGE INCLUSION</option>
-          </select>
+            <label className="form-label">Specialization</label>
+            <input className="form-input" value={docSpecialty} onChange={e => setDocSpecialty(e.target.value)} placeholder="e.g. Cardiologist" />
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Specialization:</label>
-          <input className="form-input" value={docSpecialty} onChange={e => setDocSpecialty(e.target.value)} placeholder="Specialization" />
+            <label className="form-label">Hospital</label>
+            <input className="form-input" value={docHospital} onChange={e => setDocHospital(e.target.value)} placeholder="Hospital name" />
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Location:</label>
-          <input className="form-input" value={docLocation} onChange={e => setDocLocation(e.target.value)} placeholder="Location" />
+            <label className="form-label">Location</label>
+            <input className="form-input" value={docLocation} onChange={e => setDocLocation(e.target.value)} placeholder="City/Region" />
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Hospital:</label>
-          <input className="form-input" value={docHospital} onChange={e => setDocHospital(e.target.value)} placeholder="Hospital" />
+            <label className="form-label">Clinic Address</label>
+            <textarea className="form-input" rows={2} value={docAddress} onChange={e => setDocAddress(e.target.value)} placeholder="Full clinic address" style={{ resize: 'vertical' }} />
 
-          <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Sales Executive:</label>
-          <select className="form-input form-select" value={docSalesExecutive} onChange={e => setDocSalesExecutive(e.target.value)}>
-            <option value="">-- Select Sales Executive --</option>
-            <option value="No Sales Executives Available" disabled>No Sales Executives Available</option>
-          </select>
+            <label className="form-label">Sales Executive</label>
+            <select className="form-input form-select" value={docSalesExecutive} onChange={e => setDocSalesExecutive(e.target.value)}>
+              <option value="">-- Select Executive --</option>
+              <option value="No Sales Executives Available" disabled>No Sales Executives Available</option>
+            </select>
 
-          <div style={{ gridColumn: '2' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, marginTop: 4 }}>
-              <input type="checkbox" checked={docInactive} onChange={e => setDocInactive(e.target.checked)} />
-              Check to Inactive
-            </label>
+            <div />
+            <div style={{ paddingTop: '8px' }}>
+              <label className="checkbox-container">
+                <input type="checkbox" checked={docInactive} onChange={e => setDocInactive(e.target.checked)} />
+                <span className="checkbox-label" style={{ color: docInactive ? 'var(--danger)' : 'inherit' }}>Mark as Inactive</span>
+              </label>
+            </div>
           </div>
         </div>
-        <div className="modal-footer" style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', borderTop: '1px solid var(--border)', paddingTop: 16, marginTop: 16 }}>
-          <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
-          <button className="btn btn-outline" onClick={handleClear}>Clear</button>
-          <button className="btn btn-primary" onClick={handleSave} disabled={isSaving}>
-            {isSaving && <Loader2 size={16} className="animate-spin" style={{ marginRight: 6 }} />}
-            {isSaving ? 'Saving...' : 'Save'}
+
+        <div className="modal-footer">
+          <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+          <button className="btn btn-primary" onClick={handleSave} disabled={isSaving} style={{ minWidth: '120px' }}>
+            {isSaving ? <Loader2 size={16} className="animate-spin" /> : 'Save Doctor'}
           </button>
         </div>
+
+        <style jsx>{`
+          .doc-form-grid {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 20px 24px;
+            align-items: center;
+          }
+          .required {
+            color: var(--danger);
+            margin-left: 2px;
+          }
+          .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            background: #f8fafc;
+            width: fit-content;
+          }
+          .checkbox-container:hover {
+            background: #f1f5f9;
+          }
+          .checkbox-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+          }
+          @media (max-width: 600px) {
+            .doc-form-grid {
+              grid-template-columns: 1fr;
+              gap: 8px;
+            }
+            .doc-form-grid label {
+              text-align: left;
+              margin-bottom: 0;
+            }
+          }
+        `}</style>
       </div>
     </div>
   );

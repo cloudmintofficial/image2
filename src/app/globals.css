@@ -417,24 +417,32 @@ button {
 /* ===== CARDS ===== */
 .card {
   background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   overflow: hidden;
+  transition: all 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 }
 
 .card-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
+  padding: 18px 24px;
+  border-bottom: 1px solid #f1f5f9;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #fff;
 }
 
 .card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .card-body {
@@ -456,40 +464,43 @@ button {
 
 .form-input {
   width: 100%;
-  padding: 9px 12px;
-  border: 1px solid var(--border-input);
-  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
   background: var(--bg-input);
   color: var(--text-primary);
   font-size: 14px;
-  transition: all var(--transition-fast);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
 }
 
 .form-input:focus {
-  border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(232, 117, 26, 0.1);
+  border-color: var(--primary);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(232, 117, 26, 0.08), inset 0 1px 2px rgba(0,0,0,0.02);
 }
 
 .form-input::placeholder {
-  color: var(--text-muted);
+  color: #94a3b8;
 }
 
 .form-input.error {
-  border-color: var(--danger);
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
 .form-input.required {
-  border-color: var(--primary);
+  border-left: 3px solid var(--primary);
 }
 
 .form-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 36px;
+  background-position: right 12px center;
+  padding-right: 40px;
+  cursor: pointer;
 }
 
 .form-radio-group {
@@ -675,35 +686,32 @@ button {
 }
 
 .modal {
-  background: var(--bg-card);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   width: 100%;
   max-width: 480px;
   max-height: 90vh;
-  overflow-y: auto;
-  animation: modalScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.modal::-webkit-scrollbar {
-  display: none;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalScaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .modal-header {
-  padding: 16px 20px;
+  padding: 20px 24px;
   background: var(--primary-gradient);
   color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  border-bottom: none;
 }
 
 .modal-header h3 {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .modal-close {
@@ -726,15 +734,18 @@ button {
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 24px 32px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .modal-footer {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
+  padding: 20px 32px;
+  background: #f8fafc;
   display: flex;
-  gap: 8px;
+  gap: 12px;
   justify-content: flex-end;
+  border-top: 1px solid #f1f5f9;
 }
 
 /* ===== TOAST ===== */

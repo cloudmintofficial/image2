@@ -685,25 +685,14 @@ export default function OrderEntryPage() {
                     )}
                   </div>
                   {sourceSuggestions.length > 0 && (
-                    <div style={{
-                      position: 'absolute', top: '100%', left: 0, right: 0,
-                      background: 'var(--bg-card)', border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)',
-                      zIndex: 50, maxHeight: 250, overflowY: 'auto',
-                    }}>
+                    <div className="suggestion-dropdown">
                       {sourceSuggestions.map((src, idx) => (
                         <div
                           key={idx}
+                          className="suggestion-item"
                           onClick={() => { setSource(src.name); setSourceSuggestions([]); }}
-                          style={{
-                            padding: '10px 14px', cursor: 'pointer',
-                            borderBottom: '1px solid var(--border)',
-                            fontSize: 13, transition: 'background 0.15s',
-                          }}
-                          onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-light)')}
-                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                         >
-                          <div style={{ fontWeight: 500 }}>{src.name}</div>
+                          <div className="name">{src.name}</div>
                         </div>
                       ))}
                     </div>
@@ -724,25 +713,14 @@ export default function OrderEntryPage() {
                     )}
                   </div>
                   {doctorSuggestions.length > 0 && (
-                    <div style={{
-                      position: 'absolute', top: '100%', left: 0, right: 0,
-                      background: 'var(--bg-card)', border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)',
-                      zIndex: 50, maxHeight: 250, overflowY: 'auto',
-                    }}>
+                    <div className="suggestion-dropdown">
                       {doctorSuggestions.map((doc, idx) => (
                         <div
                           key={idx}
+                          className="suggestion-item"
                           onClick={() => { setDoctor(doc.name); setDoctorSuggestions([]); }}
-                          style={{
-                            padding: '10px 14px', cursor: 'pointer',
-                            borderBottom: '1px solid var(--border)',
-                            fontSize: 13, transition: 'background 0.15s',
-                          }}
-                          onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-light)')}
-                          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                         >
-                          <div style={{ fontWeight: 500 }}>{doc.name}</div>
+                          <div className="name">{doc.name}</div>
                         </div>
                       ))}
                     </div>
@@ -776,29 +754,15 @@ export default function OrderEntryPage() {
                   )}
                 </div>
                 {orderSuggestions.length > 0 && (
-                  <div style={{
-                    position: 'absolute', top: '100%', left: 0, right: 0,
-                    background: 'var(--bg-card)', border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)',
-                    zIndex: 50, maxHeight: 250, overflowY: 'auto',
-                  }}>
+                  <div className="suggestion-dropdown">
                     {orderSuggestions.map((test, i) => (
                       <div
                         key={i}
+                        className="suggestion-item"
                         onClick={() => addOrder(test)}
-                        style={{
-                          padding: '10px 14px', cursor: 'pointer',
-                          borderBottom: '1px solid var(--border)',
-                          display: 'flex', justifyContent: 'space-between',
-                          fontSize: 13, transition: 'background 0.15s',
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--primary-light)')}
-                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
-                        <div>
-                          <div style={{ fontWeight: 500 }}>{test.name}</div>
-                          <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{test.category}</div>
-                        </div>
+                        <div className="name">{test.name}</div>
+                        <div className="sub">{test.category}</div>
                         <span style={{ fontWeight: 600, color: 'var(--primary)' }}>₹{test.price}</span>
                       </div>
                     ))}
@@ -1584,6 +1548,120 @@ export default function OrderEntryPage() {
           </div>
         </div>
       )}
+      <style jsx>{`
+        .order-entry-container {
+          animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+          border-radius: 16px;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card:hover {
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+          transform: translateY(-2px);
+        }
+
+        .patient-card-selected {
+          border-color: var(--primary);
+          background: #fff;
+          box-shadow: 0 0 0 1px var(--primary), 0 10px 20px -5px rgba(232, 117, 26, 0.1);
+        }
+
+        .card-header {
+          padding: 18px 24px;
+          background: #fff;
+          border-bottom: 1px solid #f1f5f9;
+        }
+
+        .card-title {
+          font-size: 14px;
+          font-weight: 800;
+          color: #1e293b;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+        }
+
+        .form-row {
+          gap: 24px;
+        }
+
+        .form-group {
+          margin-bottom: 0;
+        }
+
+        .form-label {
+          font-size: 12px;
+          font-weight: 700;
+          color: #64748b;
+          margin-bottom: 8px;
+        }
+
+        .suggestion-dropdown {
+          position: absolute;
+          top: calc(100% + 4px);
+          left: 0;
+          right: 0;
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+          z-index: 100;
+          max-height: 300px;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+
+        .suggestion-item {
+          padding: 12px 16px;
+          cursor: pointer;
+          border-bottom: 1px solid #f1f5f9;
+          transition: all 0.2s;
+        }
+
+        .suggestion-item:last-child {
+          border-bottom: none;
+        }
+
+        .suggestion-item:hover {
+          background: #f8fafc;
+          padding-left: 20px;
+        }
+
+        .suggestion-item .name {
+          font-weight: 600;
+          color: #0f172a;
+          font-size: 14px;
+        }
+
+        .suggestion-item .sub {
+          font-size: 11px;
+          color: #94a3b8;
+          margin-top: 2px;
+        }
+
+        .btn-sm {
+          padding: 8px 16px;
+          border-radius: 10px;
+        }
+
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
