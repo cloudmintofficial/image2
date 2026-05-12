@@ -56,7 +56,7 @@ export async function GET(request: Request) {
         fieldType: c.fieldType,
         options: c.options,
       })),
-      resultTemplate: test.resultTemplate,
+      resultTemplate: test.resultTemplate || test.resultNotes,
       method: test.method,
       advice: test.advice,
       sampleType: test.sampleType,

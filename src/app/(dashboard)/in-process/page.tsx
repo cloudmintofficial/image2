@@ -1528,7 +1528,7 @@ export default function InProcessPage() {
                       {testTemplate.components?.map((c: any) => (
                          <tr key={c.id}>
                            <td style={{ padding: '8px 0' }}>{c.name}</td>
-                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{panelResults[c.name] || ''}</td>
+                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{panelResults[c.name]?.value || ''}</td>
                            <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.normalRange || ''}</td>
                            <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.unit || ''}</td>
                          </tr>

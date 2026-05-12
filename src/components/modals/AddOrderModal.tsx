@@ -171,18 +171,18 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
               <div className="form-grid">
                 <div className="form-group">
                   <label className="form-label">Order Name *</label>
-                  <input 
-                    className="form-input" 
-                    value={orderForm.orderName} 
+                  <input
+                    className="form-input"
+                    value={orderForm.orderName}
                     onChange={e => setOrderForm({ ...orderForm, orderName: e.target.value })}
                     placeholder="e.g. Complete Blood Picture"
                   />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Test Code</label>
-                  <input 
-                    className="form-input" 
-                    value={orderForm.testCode} 
+                  <input
+                    className="form-input"
+                    value={orderForm.testCode}
                     onChange={e => setOrderForm({ ...orderForm, testCode: e.target.value })}
                     placeholder="Unique identifier"
                   />
@@ -219,27 +219,27 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
                 </div>
                 <div className="form-group">
                   <label className="form-label">Price / Amount (₹)</label>
-                  <input 
-                    className="form-input" 
-                    type="number" 
-                    value={orderForm.amount} 
+                  <input
+                    className="form-input"
+                    type="number"
+                    value={orderForm.amount}
                     onChange={e => setOrderForm({ ...orderForm, amount: e.target.value })}
                   />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Processing Time</label>
-                  <input 
-                    className="form-input" 
-                    value={orderForm.processTime} 
+                  <input
+                    className="form-input"
+                    value={orderForm.processTime}
                     onChange={e => setOrderForm({ ...orderForm, processTime: e.target.value })}
                     placeholder="e.g. 24 Hours"
                   />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Machine Name</label>
-                  <input 
-                    className="form-input" 
-                    value={orderForm.machineName} 
+                  <input
+                    className="form-input"
+                    value={orderForm.machineName}
                     onChange={e => setOrderForm({ ...orderForm, machineName: e.target.value })}
                   />
                 </div>
@@ -286,7 +286,7 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
                   <button className="btn btn-outline btn-sm" onClick={handlePreviewPrint} style={{ marginLeft: 12 }}><Printer size={14} /> Preview</button>
                 </div>
               </div>
-              
+
               <div className="editor-wrapper">
                 {resultNotesTab === 'Page 1' ? (
                   <RichTextEditor value={resultNotesPage1} onChange={setResultNotesPage1} minHeight={350} />
@@ -314,12 +314,12 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
                 </div>
                 <div className="form-group">
                   <label className="form-label">Order Purpose</label>
-                  <textarea 
-                    className="form-input" 
-                    rows={4} 
-                    value={orderForm.purpose} 
-                    onChange={e => setOrderForm({ ...orderForm, purpose: e.target.value })} 
-                    placeholder="Enter clinical purpose..." 
+                  <textarea
+                    className="form-input"
+                    rows={4}
+                    value={orderForm.purpose}
+                    onChange={e => setOrderForm({ ...orderForm, purpose: e.target.value })}
+                    placeholder="Enter clinical purpose..."
                   />
                 </div>
               </div>
