@@ -363,7 +363,18 @@ export default function OrderEntryPage() {
 
     try {
       setIsSubmittingBill(true);
-      setIsSubmittingBill(true);
+      
+      const trimmedName = name.trim();
+      const trimmedPhone = phone.trim();
+      const trimmedDoctor = doctor.trim();
+      const trimmedSource = source.trim();
+
+      if (totalBill <= 0) {
+        showToast('Total bill amount must be greater than zero', 'error');
+        setIsSubmittingBill(false);
+        return;
+      }
+
       let finalPatientId = patientId;
 
       // Create patient if new
@@ -371,7 +382,14 @@ export default function OrderEntryPage() {
         const pRes = await fetch('/api/patients', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, age, gender, phone, source, additionalDetails: JSON.stringify(addlDetails) })
+          body: JSON.stringify({ 
+            name: trimmedName, 
+            age: age.toString(), 
+            gender, 
+            phone: trimmedPhone, 
+            source: trimmedSource, 
+            additionalDetails: JSON.stringify(addlDetails) 
+          })
         });
         if (pRes.ok) {
           const newPatient = await pRes.json();
@@ -386,7 +404,14 @@ export default function OrderEntryPage() {
         await fetch(`/api/patients/${finalPatientId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, age, gender, phone, source, additionalDetails: JSON.stringify(addlDetails) })
+          body: JSON.stringify({ 
+            name: trimmedName, 
+            age: age.toString(), 
+            gender, 
+            phone: trimmedPhone, 
+            source: trimmedSource, 
+            additionalDetails: JSON.stringify(addlDetails) 
+          })
         });
       }
 
@@ -399,17 +424,17 @@ export default function OrderEntryPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           patientId: finalPatientId,
-          totalBill,
-          discount: discountAmount,
-          discountReason,
-          paidAmount,
-          balance,
+          totalBill: parseFloat(totalBill.toString()),
+          discount: parseFloat(discountAmount.toString()),
+          discountReason: discountReason.trim(),
+          paidAmount: parseFloat(paidAmount.toString()),
+          balance: parseFloat(balance.toString()),
           paymentType,
-          referenceNumber,
-          orders,
-          createdBy: user.id || 1,
-          labId: user.labId || 1,
-          doctorName: doctor
+          referenceNumber: referenceNumber.trim(),
+          orders: orders.map(o => ({ ...o, amount: parseFloat(o.amount.toString()) })),
+          createdBy: parseInt(user.id?.toString() || '1'),
+          labId: parseInt(user.labId?.toString() || '1'),
+          doctorName: trimmedDoctor
         })
       });
 
@@ -877,7 +902,7 @@ export default function OrderEntryPage() {
                 {discountAmount > 0 && (
                   <div className="form-group">
                     <label className="form-label">Discount</label>
-                    <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--danger)' }}>-₹{discountAmount}</div>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--danger)' }}>-₹{Number(discountAmount).toFixed(2)}</div>
                   </div>
                 )}
                 <div className="form-group">
@@ -898,7 +923,22 @@ export default function OrderEntryPage() {
                 )}
                 <div className="form-group">
                   <label className="form-label">Paid Amount</label>
-                  <input className="form-input" type="number" value={paidAmount} onChange={e => setPaidAmount(Number(e.target.value))} />
+                  <input 
+                    className="form-input" 
+                    type="text"
+                    inputMode="decimal"
+                    value={paidAmount} 
+                    onFocus={(e) => e.target.select()}
+                    onChange={e => {
+                      let val = e.target.value.replace(/[^0-9.]/g, '');
+                      if (val.startsWith('0') && val.length > 1 && val[1] !== '.') {
+                        val = val.replace(/^0+/, '');
+                      }
+                      if (val === '') setPaidAmount(0);
+                      else setPaidAmount(val as any); // allow decimal string while typing
+                    }}
+                    onBlur={() => setPaidAmount(Number(paidAmount) || 0)}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Balance</label>
@@ -1069,9 +1109,19 @@ export default function OrderEntryPage() {
                 <label className="form-label">Discount Amount (₹)</label>
                 <input
                   className="form-input"
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   value={discountAmount || ''}
-                  onChange={e => setDiscountAmount(Number(e.target.value))}
+                  onFocus={(e) => e.target.select()}
+                  onChange={e => {
+                    let val = e.target.value.replace(/[^0-9.]/g, '');
+                    if (val.startsWith('0') && val.length > 1 && val[1] !== '.') {
+                      val = val.replace(/^0+/, '');
+                    }
+                    if (val === '') setDiscountAmount(0);
+                    else setDiscountAmount(val as any);
+                  }}
+                  onBlur={() => setDiscountAmount(Number(discountAmount) || 0)}
                   placeholder="0.00"
                 />
               </div>
