@@ -90,8 +90,8 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
   };
 
   const handleSaveNewOrder = async () => {
-    if (!orderForm.orderName.trim() || !orderForm.testCode.trim() || !orderForm.amount.trim() || !orderForm.processTime.trim()) {
-      showToast('Order Name, Test Code, Amount, and Process Time are required', 'error');
+    if (!orderForm.orderName.trim()) {
+      showToast('Order Name is required', 'error');
       return;
     }
     try {
@@ -107,20 +107,26 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
       const user = userRaw ? JSON.parse(userRaw) : null;
       const labId = user?.labId || 1;
 
+      const payload = {
+        ...orderForm,
+        amount: orderForm.amount ? orderForm.amount : '0',
+        resultNotes: combinedNotes,
+        status: orderForm.inactive ? 'InActive' : 'Active',
+        labId
+      };
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...orderForm,
-          resultNotes: combinedNotes,
-          status: orderForm.inactive ? 'InActive' : 'Active',
-          labId
-        })
+        body: JSON.stringify(payload)
       });
       if (res.ok) {
         showToast(initialData?.id ? 'Order updated successfully' : 'Order added successfully', 'success');
         onSuccess();
         handleClear();
+      } else if (res.status === 400) {
+        const errorData = await res.json().catch(() => ({}));
+        showToast(errorData.error || 'Validation error', 'error');
       } else if (res.status === 409) {
         showToast('An order with this name already exists', 'error');
       } else {
@@ -166,8 +172,7 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
 
           <label className="form-label" style={{ textAlign: 'right', marginTop: 8 }}>Test Code:</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <input className="form-input" value={orderForm.testCode} onChange={e => setOrderForm({ ...orderForm, testCode: e.target.value })} />
-            <span style={{ color: 'var(--danger)' }}>*</span>
+            <input className="form-input" style={{ width: '100%' }} value={orderForm.testCode} onChange={e => setOrderForm({ ...orderForm, testCode: e.target.value })} />
           </div>
 
           <label className="form-label" style={{ textAlign: 'right', marginTop: 8 }}>Display Order Name:</label>
@@ -202,13 +207,11 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
           <label className="form-label" style={{ textAlign: 'right', marginTop: 8 }}>Amount:</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <input className="form-input" style={{ width: '100%' }} type="number" value={orderForm.amount} onChange={e => setOrderForm({ ...orderForm, amount: e.target.value })} />
-            <span style={{ color: 'var(--danger)' }}>*</span>
           </div>
 
           <label className="form-label" style={{ textAlign: 'right', marginTop: 8 }}>Process Time:</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <input className="form-input" style={{ width: '100%' }} value={orderForm.processTime} onChange={e => setOrderForm({ ...orderForm, processTime: e.target.value })} />
-            <span style={{ color: 'var(--danger)' }}>*</span>
           </div>
 
           <label className="form-label" style={{ textAlign: 'right', marginTop: 8 }}>Machine Name:</label>

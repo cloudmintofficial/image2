@@ -43,19 +43,22 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       serviceDoctorRequired, status, labId, uiType, resultTemplate
     } = body;
 
-    if (!orderName || !testCode || !amount) {
-      return NextResponse.json({ error: 'Order Name, Test Code, and Amount are required' }, { status: 400 });
+    if (!orderName) {
+      return NextResponse.json({ error: 'Order Name is required' }, { status: 400 });
     }
 
-    const existingCode = await prisma.testMaster.findFirst({
-      where: { 
-        testCode: { equals: testCode, mode: 'insensitive' },
-        id: { not: id }
-      }
-    });
+    // Only verify testCode uniqueness if explicitly provided
+    if (testCode && testCode.trim() !== '') {
+      const existingCode = await prisma.testMaster.findFirst({
+        where: { 
+          testCode: { equals: testCode.trim(), mode: 'insensitive' },
+          id: { not: id }
+        }
+      });
 
-    if (existingCode) {
-      return NextResponse.json({ error: 'Another order with this test code already exists' }, { status: 400 });
+      if (existingCode) {
+        return NextResponse.json({ error: 'Another order with this test code already exists' }, { status: 400 });
+      }
     }
 
     const test = await prisma.testMaster.update({

@@ -57,16 +57,19 @@ export async function POST(request: Request) {
       serviceDoctorRequired, status, labId, uiType
     } = body;
 
-    if (!orderName || !testCode || !amount) {
-      return NextResponse.json({ error: 'Order Name, Test Code, and Amount are required' }, { status: 400 });
+    if (!orderName) {
+      return NextResponse.json({ error: 'Order Name is required' }, { status: 400 });
     }
 
-    const existingCode = await prisma.testMaster.findFirst({
-      where: { testCode: { equals: testCode, mode: 'insensitive' } }
-    });
+    // Only verify testCode uniqueness if explicitly provided
+    if (testCode && testCode.trim() !== '') {
+      const existingCode = await prisma.testMaster.findFirst({
+        where: { testCode: { equals: testCode.trim(), mode: 'insensitive' } }
+      });
 
-    if (existingCode) {
-      return NextResponse.json({ error: 'An order with this test code already exists' }, { status: 400 });
+      if (existingCode) {
+        return NextResponse.json({ error: 'An order with this test code already exists' }, { status: 400 });
+      }
     }
 
     const test = await prisma.testMaster.create({
