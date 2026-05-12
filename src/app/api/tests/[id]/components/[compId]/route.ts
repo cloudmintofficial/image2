@@ -67,9 +67,22 @@ export async function DELETE(
   if (isNaN(compId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
 
   try {
-    await prisma.testComponent.delete({
+    const deleted = await prisma.testComponent.delete({
       where: { id: compId }
     });
+
+    // Check remaining components for this test
+    const remaining = await prisma.testComponent.count({
+      where: { testId: deleted.testId }
+    });
+
+    if (remaining === 0) {
+      await prisma.testMaster.update({
+        where: { id: deleted.testId },
+        data: { hasComponents: false }
+      });
+    }
+
     return NextResponse.json({ message: 'Component deleted successfully' });
   } catch (error) {
     console.error('Error deleting component:', error);

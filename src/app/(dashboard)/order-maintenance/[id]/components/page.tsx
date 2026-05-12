@@ -208,7 +208,11 @@ export default function OrderComponentsPage() {
     try {
       const res = await fetch(`/api/tests/${testId}/components/${compId}`, { method: 'DELETE' });
       if (res.ok) {
-        showToast('Component deleted', 'success');
+        showToast('Component deleted successfully', 'success');
+        fetchDetails();
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        showToast(errorData.error || 'Failed to delete component', 'error');
         fetchDetails();
       }
     } catch (err) {
