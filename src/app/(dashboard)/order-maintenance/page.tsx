@@ -165,14 +165,18 @@ export default function OrderMaintenancePage() {
                   <td style={{ padding: '8px 12px' }}>{test.orderType}</td>
                   <td style={{ padding: '8px 12px', color: test.status === 'InActive' ? '#dc2626' : 'inherit' }}>{test.status}</td>
                   <td style={{ padding: '8px 12px', textAlign: 'right' }}>
-                    <button
-                      className="btn btn-primary btn-sm"
-                      style={{ padding: '4px 12px', fontSize: '12px', backgroundColor: '#e25838', border: 'none' }}
-                      onClick={() => fetchTestDetails(test.id)}
-                      disabled={loadingDetails && selectedTestId === test.id}
-                    >
-                      {loadingDetails && selectedTestId === test.id ? 'Loading...' : 'Details'}
-                    </button>
+                    {test.hasComponents && (
+                      <button
+                        className="btn btn-primary btn-sm"
+                        style={{ padding: '4px 12px', fontSize: '12px', backgroundColor: '#e25838', border: 'none' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/order-maintenance/${test.id}/components`);
+                        }}
+                      >
+                        Details
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
