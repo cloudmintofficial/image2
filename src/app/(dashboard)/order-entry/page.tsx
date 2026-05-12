@@ -360,6 +360,10 @@ export default function OrderEntryPage() {
       showToast('Phone number is required', 'error');
       return;
     }
+    if (!age || !age.trim()) {
+      showToast('Patient age is required', 'error');
+      return;
+    }
 
     try {
       setIsSubmittingBill(true);
