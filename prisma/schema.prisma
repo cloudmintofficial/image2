@@ -21,6 +21,7 @@ model Lab {
   expenses      Expense[]
   tests         TestMaster[]
   users         User[]
+  serviceGroups ServiceGroup[]
 }
 
 model User {
@@ -153,8 +154,20 @@ model TestMaster {
   labId                 Int
   components            TestComponent[]
   orderTemplates        OrderDetailTemplate[]
+  serviceGroups         ServiceGroup[]  @relation("ServiceGroupTests")
   orderFont             OrderFont?
   lab                   Lab             @relation(fields: [labId], references: [id])
+}
+
+model ServiceGroup {
+  id        Int      @id @default(autoincrement())
+  groupName String
+  amount    Float
+  status    String   @default("Active")
+  labId     Int
+  createdAt DateTime @default(now())
+  lab       Lab      @relation(fields: [labId], references: [id])
+  tests     TestMaster[] @relation("ServiceGroupTests")
 }
 
 model TestComponent {

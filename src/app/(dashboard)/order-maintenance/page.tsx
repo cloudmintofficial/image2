@@ -163,6 +163,8 @@ export default function OrderMaintenancePage() {
       if (action === 'Add Order') {
         setSelectedTestDetails(null);
         setShowAddOrderModal(true);
+      } else if (action === 'Service Group') {
+        router.push('/order-maintenance/service-groups');
       } else if (action === 'Lab Default Font') {
         fetchLabFont();
         setShowLabFontModal(true);
@@ -170,15 +172,13 @@ export default function OrderMaintenancePage() {
         setTimeout(() => window.print(), 100);
       } else if (action === 'Price List Excel') {
         // Construct Excel-compatible CSV mapping exactly as shown in list
-        const headers = ['Order Name', 'Order Amount', 'Order Type', 'Status'];
-        const rows = tests.map(t => [
+        const csvHeaders = ['Order Name', 'Order Amount'];
+        const csvRows = tests.map(t => [
           `"${(t.name || '').replace(/"/g, '""')}"`,
-          t.price || 0,
-          `"${(t.orderType || '').replace(/"/g, '""')}"`,
-          `"${(t.status || '').replace(/"/g, '""')}"`
+          `"${t.price || 0}"`
         ].join(','));
         
-        const csvContent = [headers.join(','), ...rows].join('\n');
+        const csvContent = '\uFEFF' + [csvHeaders.join(','), ...csvRows].join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
