@@ -149,8 +149,12 @@ export default function OrderMaintenancePage() {
             <tbody>
               {currentTests.map((test, index) => (
                 <tr key={test.id} style={{ backgroundColor: index % 2 === 0 ? 'transparent' : 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}>
-                  <td style={{ padding: '8px 12px' }}>
-                    {test.name}
+                  <td 
+                    style={{ padding: '8px 12px', cursor: 'pointer' }}
+                    onClick={() => fetchTestDetails(test.id)}
+                    className="hover-underline"
+                  >
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{test.name}</div>
                     {test.displayOrderName && test.displayOrderName.trim().toLowerCase() !== 'blank' && test.displayOrderName !== test.name && (
                       <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
                         Display: {test.displayOrderName}

@@ -1153,3 +1153,6 @@ button {
 .hidden {
   display: none;
 }
+.hover-underline:hover div:first-child {
+  text-decoration: underline;
+}
