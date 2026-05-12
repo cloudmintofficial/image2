@@ -6,12 +6,16 @@ export async function GET(request: Request) {
   const search = searchParams.get('search') || '';
 
   try {
+    const status = searchParams.get('status');
+    const all = searchParams.get('all') === 'true';
+
     const doctors = await prisma.doctor.findMany({
       where: {
-        status: 'Active',
+        ...(status ? { status } : {}),
         name: { contains: search, mode: 'insensitive' }
       },
-      take: 10
+      orderBy: { name: 'asc' },
+      ...(all ? {} : { take: 50 })
     });
 
     return NextResponse.json(doctors);
@@ -29,11 +33,32 @@ export async function POST(request: Request) {
       department, specialization, location, hospital, salesExecutive, status 
     } = body;
 
+    if (!name) {
+      return NextResponse.json({ error: 'Doctor name is required' }, { status: 400 });
+    }
+
+    // Check for duplicate name
+    const existing = await prisma.doctor.findFirst({
+      where: { name: { equals: name, mode: 'insensitive' } }
+    });
+
+    if (existing) {
+      return NextResponse.json({ error: 'A doctor with this name already exists' }, { status: 400 });
+    }
+
+    let parsedPercentage = null;
+    if (percentage !== '' && percentage !== null && percentage !== undefined) {
+      parsedPercentage = parseFloat(percentage);
+      if (isNaN(parsedPercentage) || parsedPercentage < 0 || parsedPercentage > 100) {
+        return NextResponse.json({ error: 'Percentage must be between 0 and 100' }, { status: 400 });
+      }
+    }
+
     const doctor = await prisma.doctor.create({
       data: {
         name,
         type: type || 'Referral',
-        percentage: percentage !== '' && percentage !== null && percentage !== undefined ? parseFloat(percentage) : null,
+        percentage: parsedPercentage,
         address,
         phone,
         email,

@@ -10,9 +10,10 @@ import {
 interface NavItem {
   icon: React.ReactNode;
   label: string;
-  path: string;
+  path?: string;
   adminOnly?: boolean;
   shortcut?: string;
+  subItems?: { label: string; path: string; icon?: React.ReactNode }[];
 }
 
 const navItems: NavItem[] = [
@@ -21,10 +22,22 @@ const navItems: NavItem[] = [
   { icon: <CheckCircle size={20} />, label: 'Completed Bills', path: '/completed-bills', shortcut: 'Alt+C' },
   { icon: <Printer size={20} />, label: 'Previous Bills', path: '/previous-bills', shortcut: 'Alt+P' },
   { icon: <BarChart3 size={20} />, label: 'Dashboard', path: '/dashboard', adminOnly: true },
+  { 
+    icon: <ClipboardList size={20} />, 
+    label: 'Options', 
+    adminOnly: true,
+    subItems: [
+      { label: 'Order Maintenance', path: '/order-maintenance' },
+      { label: 'Department Maintenance', path: '/settings' },
+      { label: 'Doctors', path: '/doctors' },
+      { label: 'Locations', path: '/locations' },
+      { label: 'Lab Users', path: '/users' },
+      { label: 'Patient Requests', path: '/patient-requests' },
+      { label: 'SMS', path: '/sms' },
+      { label: 'Incoming Labs', path: '/incoming-labs' },
+    ]
+  },
   { icon: <FileText size={20} />, label: 'Reports', path: '/reports', adminOnly: true },
-  { icon: <ClipboardList size={20} />, label: 'Order Maintenance', path: '/order-maintenance', adminOnly: true },
-  { icon: <Users size={20} />, label: 'User Management', path: '/users', adminOnly: true },
-  { icon: <Settings size={20} />, label: 'Settings', path: '/settings', adminOnly: true },
 ];
 
 interface SidebarProps {
@@ -38,6 +51,7 @@ interface SidebarProps {
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose, userRole = 'Owner' }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
   const filteredItems = navItems.filter(item => {
     if (item.adminOnly && userRole !== 'Owner') return false;
@@ -81,18 +95,47 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
         {/* Navigation */}
         <nav className="sidebar-nav">
           {filteredItems.map((item, index) => {
-            const isActive = pathname === item.path || 
-              (item.path !== '/' && pathname?.startsWith(item.path));
+            const hasSubItems = !!item.subItems;
+            const isSubmenuOpen = openSubmenu === item.label;
+            const isActive = item.path ? (pathname === item.path || (item.path !== '/' && pathname?.startsWith(item.path))) : false;
+            const anySubItemActive = item.subItems?.some(si => pathname === si.path);
+
             return (
-              <button
-                key={index}
-                className={`nav-item ${isActive ? 'active' : ''}`}
-                onClick={() => handleNavigate(item.path)}
-                title={collapsed ? item.label : undefined}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                <span className="nav-label">{item.label}</span>
-              </button>
+              <div key={index} className="nav-item-container">
+                <button
+                  className={`nav-item ${(isActive || (hasSubItems && anySubItemActive)) ? 'active' : ''}`}
+                  onClick={() => {
+                    if (hasSubItems) {
+                      setOpenSubmenu(isSubmenuOpen ? null : item.label);
+                    } else if (item.path) {
+                      handleNavigate(item.path);
+                    }
+                  }}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  <span className="nav-label">{item.label}</span>
+                  {hasSubItems && !collapsed && (
+                    <span style={{ marginLeft: 'auto', opacity: 0.5 }}>
+                      {isSubmenuOpen ? <ChevronRight size={14} style={{ transform: 'rotate(90deg)' }} /> : <ChevronRight size={14} />}
+                    </span>
+                  )}
+                </button>
+
+                {hasSubItems && isSubmenuOpen && !collapsed && (
+                  <div className="submenu">
+                    {item.subItems?.map((subItem, idx) => (
+                      <button
+                        key={idx}
+                        className={`submenu-item ${pathname === subItem.path ? 'active' : ''}`}
+                        onClick={() => handleNavigate(subItem.path)}
+                      >
+                        {subItem.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>

@@ -1156,3 +1156,47 @@ button {
 .hover-underline:hover div:first-child {
   text-decoration: underline;
 }
+
+/* ===== SUBMENU STYLES ===== */
+.nav-item-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.submenu {
+  padding-left: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+  margin-bottom: 8px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.submenu-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-sidebar);
+  border-radius: var(--radius-md);
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.submenu-item:hover {
+  background: var(--bg-sidebar-hover);
+  color: var(--text-inverse);
+}
+
+.submenu-item.active {
+  color: var(--primary);
+  font-weight: 600;
+  background: rgba(232, 117, 26, 0.1);
+}
