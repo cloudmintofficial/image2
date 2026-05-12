@@ -170,7 +170,7 @@ export default function OrderEntryPage() {
         setOrderSuggestions([]);
         return;
       }
-      if (orderSearch.length >= 2) {
+      if (orderSearch.length >= 1) {
         setIsSearchingOrdersDropdown(true);
         try {
           const res = await fetch(`/api/tests?search=${encodeURIComponent(orderSearch)}`);
@@ -363,7 +363,7 @@ export default function OrderEntryPage() {
 
     try {
       setIsSubmittingBill(true);
-      
+
       const trimmedName = name.trim();
       const trimmedPhone = phone.trim();
       const trimmedDoctor = doctor.trim();
@@ -382,13 +382,13 @@ export default function OrderEntryPage() {
         const pRes = await fetch('/api/patients', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            name: trimmedName, 
-            age: age.toString(), 
-            gender, 
-            phone: trimmedPhone, 
-            source: trimmedSource, 
-            additionalDetails: JSON.stringify(addlDetails) 
+          body: JSON.stringify({
+            name: trimmedName,
+            age: age.toString(),
+            gender,
+            phone: trimmedPhone,
+            source: trimmedSource,
+            additionalDetails: JSON.stringify(addlDetails)
           })
         });
         if (pRes.ok) {
@@ -404,13 +404,13 @@ export default function OrderEntryPage() {
         await fetch(`/api/patients/${finalPatientId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            name: trimmedName, 
-            age: age.toString(), 
-            gender, 
-            phone: trimmedPhone, 
-            source: trimmedSource, 
-            additionalDetails: JSON.stringify(addlDetails) 
+          body: JSON.stringify({
+            name: trimmedName,
+            age: age.toString(),
+            gender,
+            phone: trimmedPhone,
+            source: trimmedSource,
+            additionalDetails: JSON.stringify(addlDetails)
           })
         });
       }
@@ -724,13 +724,13 @@ export default function OrderEntryPage() {
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Source</label>
                   <div style={{ position: 'relative' }}>
-                    <input 
-                      className="form-input" 
-                      placeholder="Referral source" 
-                      value={source} 
-                      onChange={e => setSource(e.target.value)} 
+                    <input
+                      className="form-input"
+                      placeholder="Referral source"
+                      value={source}
+                      onChange={e => setSource(e.target.value)}
                       onFocus={() => { setDoctorSuggestions([]); setOrderSuggestions([]); }}
-                      style={{ paddingRight: 32 }} 
+                      style={{ paddingRight: 32 }}
                     />
                     {isSearchingSourcesDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -742,11 +742,11 @@ export default function OrderEntryPage() {
                         <div
                           key={idx}
                           className="suggestion-item"
-                          onMouseDown={(e) => { 
-                            e.preventDefault(); 
+                          onMouseDown={(e) => {
+                            e.preventDefault();
                             sourceSelected.current = true;
-                            setSource(src.name); 
-                            setSourceSuggestions([]); 
+                            setSource(src.name);
+                            setSourceSuggestions([]);
                           }}
                         >
                           <div className="name">{src.name}</div>
@@ -764,13 +764,13 @@ export default function OrderEntryPage() {
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Doctor</label>
                   <div style={{ position: 'relative' }}>
-                    <input 
-                      className="form-input" 
-                      placeholder="Referring doctor" 
-                      value={doctor} 
-                      onChange={e => setDoctor(e.target.value)} 
+                    <input
+                      className="form-input"
+                      placeholder="Referring doctor"
+                      value={doctor}
+                      onChange={e => setDoctor(e.target.value)}
                       onFocus={() => { setSourceSuggestions([]); setOrderSuggestions([]); }}
-                      style={{ paddingRight: 32 }} 
+                      style={{ paddingRight: 32 }}
                     />
                     {isSearchingDoctorsDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -782,11 +782,11 @@ export default function OrderEntryPage() {
                         <div
                           key={idx}
                           className="suggestion-item"
-                          onMouseDown={(e) => { 
-                            e.preventDefault(); 
+                          onMouseDown={(e) => {
+                            e.preventDefault();
                             doctorSelected.current = true;
-                            setDoctor(doc.name); 
-                            setDoctorSuggestions([]); 
+                            setDoctor(doc.name);
+                            setDoctorSuggestions([]);
                           }}
                         >
                           <div className="name">{doc.name}</div>
@@ -810,15 +810,15 @@ export default function OrderEntryPage() {
               <div className="form-group" style={{ position: 'relative' }}>
                 <label className="form-label">Order Name</label>
                 <div style={{ position: 'relative' }}>
-                    <input
-                      ref={orderSearchRef}
-                      className="form-input"
-                      placeholder="Type to search tests/procedures..."
-                      value={orderSearch}
-                      onChange={e => setOrderSearch(e.target.value)}
-                      onFocus={() => { setDoctorSuggestions([]); setSourceSuggestions([]); }}
-                      style={{ paddingRight: 32 }}
-                    />
+                  <input
+                    ref={orderSearchRef}
+                    className="form-input"
+                    placeholder="Type to search tests/procedures..."
+                    value={orderSearch}
+                    onChange={e => setOrderSearch(e.target.value)}
+                    onFocus={() => { setDoctorSuggestions([]); setSourceSuggestions([]); }}
+                    style={{ paddingRight: 32 }}
+                  />
                   {isSearchingOrdersDropdown && (
                     <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                   )}
@@ -829,10 +829,10 @@ export default function OrderEntryPage() {
                       <div
                         key={i}
                         className="suggestion-item"
-                        onMouseDown={(e) => { 
-                          e.preventDefault(); 
+                        onMouseDown={(e) => {
+                          e.preventDefault();
                           orderSelected.current = true;
-                          addOrder(test); 
+                          addOrder(test);
                         }}
                       >
                         <div className="name">{test.name}</div>
@@ -923,21 +923,34 @@ export default function OrderEntryPage() {
                 )}
                 <div className="form-group">
                   <label className="form-label">Paid Amount</label>
-                  <input 
-                    className="form-input" 
+                  <input
+                    className="form-input"
                     type="text"
                     inputMode="decimal"
-                    value={paidAmount} 
+                    value={paidAmount}
                     onFocus={(e) => e.target.select()}
                     onChange={e => {
                       let val = e.target.value.replace(/[^0-9.]/g, '');
                       if (val.startsWith('0') && val.length > 1 && val[1] !== '.') {
                         val = val.replace(/^0+/, '');
                       }
-                      if (val === '') setPaidAmount(0);
-                      else setPaidAmount(val as any); // allow decimal string while typing
+                      
+                      const netTotal = totalBill - discountAmount;
+                      const numVal = parseFloat(val) || 0;
+                      
+                      if (numVal > netTotal) {
+                        setPaidAmount(netTotal);
+                      } else if (val === '') {
+                        setPaidAmount(0);
+                      } else {
+                        setPaidAmount(val as any);
+                      }
                     }}
-                    onBlur={() => setPaidAmount(Number(paidAmount) || 0)}
+                    onBlur={() => {
+                      const netTotal = totalBill - discountAmount;
+                      const current = Number(paidAmount) || 0;
+                      setPaidAmount(current > netTotal ? netTotal : current);
+                    }}
                   />
                 </div>
                 <div className="form-group">
