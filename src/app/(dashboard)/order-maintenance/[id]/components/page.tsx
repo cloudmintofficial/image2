@@ -21,6 +21,15 @@ export default function OrderComponentsPage() {
   const [isCopying, setIsCopying] = useState(false);
   const [showAddComponentModal, setShowAddComponentModal] = useState(false);
   const [editingComponent, setEditingComponent] = useState<any>(null);
+  const [showOrderFontModal, setShowOrderFontModal] = useState(false);
+  const [fontForm, setFontForm] = useState({
+    fontFamily: '', patientDetailsFont: '', departmentNameFont: '', orderNameFont: '',
+    resultHeadingFont: '', subHeadingFont: '', componentNameFont: '', methodFont: '',
+    resultNotesFont: '', leftSignatureFont: '', rightSignatureFont: '',
+    spaceBeforeLineFont: '', spaceAfterLineFont: ''
+  });
+  const [isSavingFont, setIsSavingFont] = useState(false);
+
   const [compForm, setCompForm] = useState({
     componentName: '', subHeading: '', machineCode: '', specimenCode: '',
     unit: '', normalRange: '', fromRange: '', toRange: '',
@@ -167,6 +176,57 @@ export default function OrderComponentsPage() {
     }
   };
 
+  const handleOpenFontModal = async () => {
+    try {
+      const res = await fetch(`/api/tests/${testId}/font`);
+      if (res.ok) {
+        const data = await res.json();
+        setFontForm({
+          fontFamily: data.fontFamily || '',
+          patientDetailsFont: data.patientDetailsFont || '',
+          departmentNameFont: data.departmentNameFont || '',
+          orderNameFont: data.orderNameFont || '',
+          resultHeadingFont: data.resultHeadingFont || '',
+          subHeadingFont: data.subHeadingFont || '',
+          componentNameFont: data.componentNameFont || '',
+          methodFont: data.methodFont || '',
+          resultNotesFont: data.resultNotesFont || '',
+          leftSignatureFont: data.leftSignatureFont || '',
+          rightSignatureFont: data.rightSignatureFont || '',
+          spaceBeforeLineFont: data.spaceBeforeLineFont || '',
+          spaceAfterLineFont: data.spaceAfterLineFont || ''
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    setShowOrderFontModal(true);
+  };
+
+  const handleSaveFont = async () => {
+    try {
+      setIsSavingFont(true);
+      const res = await fetch(`/api/tests/${testId}/font`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fontForm)
+      });
+      if (res.ok) {
+        showToast('Order font settings saved', 'success');
+        setShowOrderFontModal(false);
+      } else {
+        showToast('Failed to save font settings', 'error');
+      }
+    } catch (err) {
+      showToast('Error saving font settings', 'error');
+    } finally {
+      setIsSavingFont(false);
+    }
+  };
+
+  const handlePrintPreview = () => {
+    window.print();
+  };
 
   return (
     <div className="order-components-container" style={{ padding: '24px' }}>
@@ -204,7 +264,11 @@ export default function OrderComponentsPage() {
 
       {/* Sub Top Nav mimicking the old version */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+        <button 
+          className="btn btn-ghost btn-sm" 
+          style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+          onClick={handleOpenFontModal}
+        >
           <Type size={16} style={{ marginRight: '6px' }} /> Order Font
         </button>
         <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
@@ -217,7 +281,11 @@ export default function OrderComponentsPage() {
         >
           <Plus size={16} style={{ marginRight: '6px' }} /> Add Components Of Existing Order
         </button>
-        <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+        <button 
+          className="btn btn-ghost btn-sm" 
+          style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+          onClick={handlePrintPreview}
+        >
           <Printer size={16} style={{ marginRight: '6px' }} /> Print Preview
         </button>
       </div>
@@ -435,6 +503,137 @@ export default function OrderComponentsPage() {
           </div>
         </div>
       )}
+
+      {/* Order Font Modal */}
+      {showOrderFontModal && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '12px', width: '800px', maxWidth: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+            <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button className="btn btn-primary" style={{ backgroundColor: '#e25838', border: 'none' }} onClick={handleSaveFont} disabled={isSavingFont}>
+                  {isSavingFont ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+              <button className="btn btn-ghost" onClick={() => setShowOrderFontModal(false)}>✕</button>
+            </div>
+
+            <div style={{ padding: '24px', overflowY: 'auto', flex: 1 }}>
+              <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '24px', color: 'var(--text-secondary)' }}>
+                Add Order Font for <span style={{ color: 'var(--primary)', fontStyle: 'italic' }}>{test?.testName}</span>
+              </h2>
+
+              <div style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', alignItems: 'center', gap: '16px' }}>
+                  <label style={{ fontSize: '14px', fontWeight: '500' }}>FontFamily</label>
+                  <select 
+                    className="form-input" 
+                    value={fontForm.fontFamily} 
+                    onChange={e => setFontForm({...fontForm, fontFamily: e.target.value})}
+                    style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--border)' }}
+                  >
+                    <option value="">select</option>
+                    <option value="Arial">Arial</option>
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                  </select>
+                </div>
+
+                {[
+                  { label: 'PatientDetailsFont', key: 'patientDetailsFont' },
+                  { label: 'DepartmentNameFont', key: 'departmentNameFont' },
+                  { label: 'OrderNameFont', key: 'orderNameFont' },
+                  { label: 'ResultHeadingFont', key: 'resultHeadingFont' },
+                  { label: 'SubHeadingFont', key: 'subHeadingFont' },
+                  { label: 'ComponentNameFont', key: 'componentNameFont' },
+                  { label: 'MethodFont', key: 'methodFont' },
+                  { label: 'ResultNotesFont', key: 'resultNotesFont' },
+                  { label: 'LeftSignatureFont', key: 'leftSignatureFont' },
+                  { label: 'RightSignatureFont', key: 'rightSignatureFont' },
+                  { label: 'SpaceBeforeLineFont', key: 'spaceBeforeLineFont' },
+                  { label: 'SpaceAfterLineFont', key: 'spaceAfterLineFont' },
+                ].map((field) => (
+                  <div key={field.key} style={{ display: 'grid', gridTemplateColumns: '200px 1fr', alignItems: 'center', gap: '16px' }}>
+                    <label style={{ fontSize: '14px', fontWeight: '500' }}>{field.label}</label>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      value={(fontForm as any)[field.key]} 
+                      onChange={e => setFontForm({...fontForm, [field.key]: e.target.value})}
+                      style={{ padding: '8px', borderRadius: '4px', border: '1px solid var(--border)' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Print Preview Section (Visible only when printing) */}
+      <div className="print-preview-section" style={{ display: 'none' }}>
+        <style type="text/css" media="print">
+          {`
+            @page { size: auto; margin: 20mm; }
+            body { margin: 0; padding: 0; background: #fff; }
+            nav, header, aside, .sidebar { display: none !important; }
+            .order-components-container > *:not(.print-preview-section) { display: none !important; }
+            .print-preview-section { display: block !important; width: 100%; font-family: 'Helvetica', 'Arial', sans-serif; }
+            .print-header { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 30px; color: #333; }
+            .print-meta { display: flex; justify-content: space-between; font-size: 11px; line-height: 1.8; margin-bottom: 10px; padding: 0 20px; }
+            .print-meta-col { flex: 1; }
+            .print-meta-row { display: flex; }
+            .print-meta-label { width: 120px; font-weight: normal; }
+            .print-meta-value { font-weight: bold; }
+            .print-divider { border-top: 1px solid #000; margin: 10px 20px 30px 20px; }
+            .print-subheading { color: #d32f2f !important; font-weight: bold; font-size: 14px; margin: 20px 0 10px 0; -webkit-print-color-adjust: exact; color-adjust: exact; }
+            .print-component { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; padding-left: 20px; }
+            .print-comp-name { font-weight: bold; width: 40%; }
+            .print-comp-value { width: 20%; text-align: left; }
+            .print-comp-ref { width: 40%; text-align: left; color: #333; }
+          `}
+        </style>
+        
+        <div className="print-header">
+          <span>{new Date().toLocaleString()}</span>
+          <span style={{ fontWeight: 'bold' }}>OrderDetails</span>
+          <span>1/1</span>
+        </div>
+
+        <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '14px', marginBottom: '20px' }}>
+          Order Details for {test?.testName}
+        </div>
+
+        <div className="print-meta">
+          <div className="print-meta-col">
+            <div className="print-meta-row"><span className="print-meta-label">Name</span><span>: <span className="print-meta-value">PatientName</span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Age/Gender</span><span>: <span className="print-meta-value">AGE/GENDER</span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Ref By</span><span>: <span className="print-meta-value">Self</span></span></div>
+          </div>
+          <div className="print-meta-col">
+            <div className="print-meta-row"><span className="print-meta-label">Bill / UMR Number</span><span>: <span className="print-meta-value">BillNumber / </span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Bill Date</span><span>: <span className="print-meta-value">Date</span></span></div>
+            <div className="print-meta-row"><span className="print-meta-label">Reporting Date</span><span>: <span className="print-meta-value">12-May-2026 02:45 PM</span></span></div>
+          </div>
+        </div>
+
+        <div className="print-divider"></div>
+
+        <div style={{ padding: '0 20px' }}>
+          {components.map((comp, idx) => (
+            <React.Fragment key={idx}>
+              {comp.subHeading && (
+                <div className="print-subheading">{comp.subHeading}</div>
+              )}
+              <div className="print-component">
+                <span className="print-comp-name">{comp.componentName}</span>
+                <span className="print-comp-value"></span>
+                <span className="print-comp-ref">{comp.normalRange} {comp.unit}</span>
+              </div>
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

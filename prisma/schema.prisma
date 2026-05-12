@@ -152,6 +152,7 @@ model TestMaster {
   status                String          @default("Active")
   labId                 Int
   components            TestComponent[]
+  orderFont             OrderFont?
   lab                   Lab             @relation(fields: [labId], references: [id])
 }
 
@@ -220,4 +221,24 @@ model DoctorSignature {
   imageData String?
   status    String   @default("Active")
   createdAt DateTime @default(now())
+}
+
+model OrderFont {
+  id                  Int        @id @default(autoincrement())
+  testId              Int        @unique
+  fontFamily          String?
+  patientDetailsFont  String?
+  departmentNameFont  String?
+  orderNameFont       String?
+  resultHeadingFont   String?
+  subHeadingFont      String?
+  componentNameFont   String?
+  methodFont          String?
+  resultNotesFont     String?
+  leftSignatureFont   String?
+  rightSignatureFont  String?
+  spaceBeforeLineFont String?
+  spaceAfterLineFont  String?
+  
+  test                TestMaster @relation(fields: [testId], references: [id], onDelete: Cascade)
 }

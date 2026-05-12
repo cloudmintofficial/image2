@@ -4,9 +4,10 @@ import { prisma } from '@/lib/prisma';
 // PUT /api/tests/[id]/components/[compId] - Update a component
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string, compId: string } }
+  { params }: { params: Promise<{ id: string, compId: string }> }
 ) {
-  const compId = parseInt(params.compId);
+  const { compId: paramCompId } = await params;
+  const compId = parseInt(paramCompId);
   if (isNaN(compId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
 
   try {
@@ -53,9 +54,10 @@ export async function PUT(
 // DELETE /api/tests/[id]/components/[compId] - Delete a component
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string, compId: string } }
+  { params }: { params: Promise<{ id: string, compId: string }> }
 ) {
-  const compId = parseInt(params.compId);
+  const { compId: paramCompId } = await params;
+  const compId = parseInt(paramCompId);
   if (isNaN(compId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
 
   try {

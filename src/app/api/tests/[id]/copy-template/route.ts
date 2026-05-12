@@ -4,9 +4,10 @@ import { prisma } from '@/lib/prisma';
 // POST /api/tests/[id]/copy-template?sourceId=123
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const targetId = parseInt(params.id);
+  const { id } = await params;
+  const targetId = parseInt(id);
   const { searchParams } = new URL(request.url);
   const sourceId = parseInt(searchParams.get('sourceId') || '');
 
