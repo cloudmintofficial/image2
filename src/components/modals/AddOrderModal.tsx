@@ -6,6 +6,19 @@ import { useToast } from '@/context/ToastContext';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
+const FALLBACK_SAMPLE_TYPES = [
+  { id: 'f1', name: 'Blood' },
+  { id: 'f2', name: 'Serum' },
+  { id: 'f3', name: 'Urine' },
+  { id: 'f4', name: 'Plasma' },
+  { id: 'f5', name: 'Pus' },
+  { id: 'f6', name: 'Sputum' },
+  { id: 'f7', name: 'Stool' },
+  { id: 'f8', name: 'Swab' },
+  { id: 'f9', name: 'Semen' },
+  { id: 'f10', name: 'WB EDTA' }
+];
+
 interface AddOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -17,6 +30,7 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
   const { showToast } = useToast();
   const [isSavingEntity, setIsSavingEntity] = useState(false);
   const [currentSample, setCurrentSample] = useState('Select Sample');
+  const [dbSampleTypes, setDbSampleTypes] = useState<any[]>([]);
 
   const [orderForm, setOrderForm] = useState({
     orderName: '', hasComponents: false, testCode: '', displayOrderName: '',
@@ -37,6 +51,20 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
   });
 
   useEffect(() => {
+    fetch('/api/sample-types')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setDbSampleTypes(data);
+        } else {
+          setDbSampleTypes(FALLBACK_SAMPLE_TYPES);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch sample types:', err);
+        setDbSampleTypes(FALLBACK_SAMPLE_TYPES);
+      });
+
     if (isOpen && initialData) {
       // Parse resultNotes to split back into page 1 and page 2 if needed
       let page1 = initialData.resultNotes || '';
@@ -254,20 +282,19 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
                       onChange={e => setCurrentSample(e.target.value)}
                     >
                       <option value="Select Sample">Select Sample</option>
-                      <option value="Blood">Blood</option>
-                      <option value="Serum">Serum</option>
-                      <option value="Urine">Urine</option>
-                      <option value="Plasma">Plasma</option>
-                      <option value="Pus">Pus</option>
-                      <option value="Sputum">Sputum</option>
-                      <option value="Stool">Stool</option>
+                      {dbSampleTypes.map(st => (
+                        <option key={st.id} value={st.name}>{st.name}</option>
+                      ))}
                     </select>
                     <button 
                       type="button"
                       className="btn btn-primary"
                       style={{ padding: '0 16px', height: '42px', borderRadius: '10px' }}
-                      onClick={() => {
+                      onClick={async () => {
                         if (currentSample !== 'Select Sample') {
+                          // If currentSample is not in dbSampleTypes, it's a new one?
+                          // Wait, the dropdown only has existing ones.
+                          // Let's add a simple way to add new ones.
                           const current = orderForm.sampleType === 'Select Sample' ? '' : orderForm.sampleType;
                           const samples = current ? current.split(',').map(s => s.trim()) : [];
                           if (!samples.includes(currentSample)) {
@@ -278,6 +305,37 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
                       }}
                     >
                       Add
+                    </button>
+                    <button 
+                      type="button"
+                      className="btn btn-outline"
+                      style={{ padding: '0 12px', height: '42px', borderRadius: '10px', fontSize: '12px' }}
+                      onClick={async () => {
+                        const newName = prompt('Enter new Sample Type:');
+                        if (newName && newName.trim()) {
+                          try {
+                            const res = await fetch('/api/sample-types', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ name: newName.trim() })
+                            });
+                            if (res.ok) {
+                              const newSt = await res.json();
+                              setDbSampleTypes(prev => [...prev, newSt].sort((a, b) => a.name.localeCompare(b.name)));
+                              setCurrentSample(newSt.name);
+                              showToast('Sample type added to database', 'success');
+                            } else {
+                              const err = await res.json();
+                              showToast(err.error || 'Failed to add', 'error');
+                            }
+                          } catch (e) {
+                            showToast('Error adding sample type', 'error');
+                          }
+                        }
+                      }}
+                      title="Add new sample type to database"
+                    >
+                      New
                     </button>
                   </div>
                   {orderForm.sampleType && orderForm.sampleType !== 'Select Sample' && (

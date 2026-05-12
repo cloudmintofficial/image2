@@ -9,6 +9,19 @@ import { useRouter } from 'next/navigation';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
+const FALLBACK_SAMPLE_TYPES = [
+  { id: 'f1', name: 'Blood' },
+  { id: 'f2', name: 'Serum' },
+  { id: 'f3', name: 'Urine' },
+  { id: 'f4', name: 'Plasma' },
+  { id: 'f5', name: 'Pus' },
+  { id: 'f6', name: 'Sputum' },
+  { id: 'f7', name: 'Stool' },
+  { id: 'f8', name: 'Swab' },
+  { id: 'f9', name: 'Semen' },
+  { id: 'f10', name: 'WB EDTA' }
+];
+
 interface OrderFormProps {
   initialData?: any;
   isEdit?: boolean;
@@ -20,6 +33,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   const [isSavingEntity, setIsSavingEntity] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentSample, setCurrentSample] = useState('Select Sample');
+  const [dbSampleTypes, setDbSampleTypes] = useState<any[]>([]);
 
   const [orderForm, setOrderForm] = useState({
     orderName: '', hasComponents: false, testCode: '', displayOrderName: '',
@@ -40,6 +54,20 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   });
 
   useEffect(() => {
+    fetch('/api/sample-types')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setDbSampleTypes(data);
+        } else {
+          setDbSampleTypes(FALLBACK_SAMPLE_TYPES);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch sample types:', err);
+        setDbSampleTypes(FALLBACK_SAMPLE_TYPES);
+      });
+
     if (initialData) {
       // Parse resultNotes to split back into page 1 and page 2 if needed
       let page1 = initialData.resultNotes || '';
@@ -319,15 +347,9 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
                     onChange={e => setCurrentSample(e.target.value)}
                   >
                     <option value="Select Sample">Select Sample</option>
-                    <option value="Blood">Blood</option>
-                    <option value="Urine">Urine</option>
-                    <option value="Sputum">Sputum</option>
-                    <option value="Pus">Pus</option>
-                    <option value="Stool">Stool</option>
-                    <option value="Swab">Swab</option>
-                    <option value="Semen">Semen</option>
-                    <option value="SERUM">SERUM</option>
-                    <option value="WB EDTA">WB EDTA</option>
+                    {dbSampleTypes.map(st => (
+                      <option key={st.id} value={st.name}>{st.name}</option>
+                    ))}
                   </select>
                   <button 
                     type="button"
@@ -345,6 +367,37 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
                     }}
                   >
                     Add
+                  </button>
+                  <button 
+                    type="button"
+                    className="btn btn-outline"
+                    style={{ padding: '0 12px', height: '42px', borderRadius: '10px', fontSize: '12px' }}
+                    onClick={async () => {
+                      const newName = prompt('Enter new Sample Type:');
+                      if (newName && newName.trim()) {
+                        try {
+                          const res = await fetch('/api/sample-types', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name: newName.trim() })
+                          });
+                          if (res.ok) {
+                            const newSt = await res.json();
+                            setDbSampleTypes(prev => [...prev, newSt].sort((a, b) => a.name.localeCompare(b.name)));
+                            setCurrentSample(newSt.name);
+                            showToast('Sample type added to database', 'success');
+                          } else {
+                            const err = await res.json();
+                            showToast(err.error || 'Failed to add', 'error');
+                          }
+                        } catch (e) {
+                          showToast('Error adding sample type', 'error');
+                        }
+                      }
+                    }}
+                    title="Add new sample type to database"
+                  >
+                    New
                   </button>
                 </div>
                 {orderForm.sampleType && orderForm.sampleType !== 'Select Sample' && (
