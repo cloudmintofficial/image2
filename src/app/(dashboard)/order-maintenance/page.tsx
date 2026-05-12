@@ -104,7 +104,10 @@ export default function OrderMaintenancePage() {
     return () => window.removeEventListener('topnav-action', handler);
   }, [router]);
 
-  const filteredTests = tests.filter(t => (t.name || '').toLowerCase().includes(debouncedSearch.toLowerCase()));
+  const filteredTests = tests.filter(t => 
+    (t.name || '').toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+    (t.displayOrderName || '').toLowerCase().includes(debouncedSearch.toLowerCase())
+  );
   const totalPages = Math.ceil(filteredTests.length / itemsPerPage) || 1;
   const currentTests = filteredTests.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -146,7 +149,14 @@ export default function OrderMaintenancePage() {
             <tbody>
               {currentTests.map((test, index) => (
                 <tr key={test.id} style={{ backgroundColor: index % 2 === 0 ? 'transparent' : 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}>
-                  <td style={{ padding: '8px 12px' }}>{test.name}</td>
+                  <td style={{ padding: '8px 12px' }}>
+                    {test.name}
+                    {test.displayOrderName && test.displayOrderName.trim().toLowerCase() !== 'blank' && test.displayOrderName !== test.name && (
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        Display: {test.displayOrderName}
+                      </div>
+                    )}
+                  </td>
                   <td style={{ padding: '8px 12px' }}>{test.price}</td>
                   <td style={{ padding: '8px 12px' }}>{test.orderType}</td>
                   <td style={{ padding: '8px 12px', color: test.status === 'InActive' ? '#dc2626' : 'inherit' }}>{test.status}</td>

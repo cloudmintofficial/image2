@@ -17,6 +17,8 @@ export async function GET(request: Request) {
         OR: [
           { testName: orderName },
           { testName: { contains: orderName, mode: 'insensitive' } },
+          { displayOrderName: orderName },
+          { displayOrderName: { contains: orderName, mode: 'insensitive' } },
         ]
       },
       include: {

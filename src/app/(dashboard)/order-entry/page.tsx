@@ -234,9 +234,13 @@ export default function OrderEntryPage() {
   }, [source]);
 
   const addOrder = (test: any) => {
+    const displayName = (test.displayOrderName && test.displayOrderName.trim().toLowerCase() !== 'blank') 
+      ? test.displayOrderName 
+      : test.name;
+
     setOrders(prev => [
       ...prev,
-      { sno: prev.length + 1, name: test.name, date: today, amount: test.price }
+      { sno: prev.length + 1, name: displayName, date: today, amount: test.price }
     ]);
     setOrderSearch('');
     setOrderSuggestions([]);

@@ -31,6 +31,7 @@ export async function GET(request: Request) {
     const formatted = tests.map(t => ({
       id: t.id,
       name: t.testName,
+      displayOrderName: t.displayOrderName,
       category: t.category,
       price: t.price,
       department: t.department,
