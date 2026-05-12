@@ -29,6 +29,11 @@ export default function OrderComponentsPage() {
     spaceBeforeLineFont: '', spaceAfterLineFont: ''
   });
   const [isSavingFont, setIsSavingFont] = useState(false);
+  const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    setCurrentDate(new Date().toLocaleString());
+  }, []);
 
   const [compForm, setCompForm] = useState({
     componentName: '', subHeading: '', machineCode: '', specimenCode: '',
@@ -595,7 +600,7 @@ export default function OrderComponentsPage() {
         </style>
         
         <div className="print-header">
-          <span>{new Date().toLocaleString()}</span>
+          <span>{currentDate}</span>
           <span style={{ fontWeight: 'bold' }}>OrderDetails</span>
           <span>1/1</span>
         </div>
