@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import { Loader2 } from 'lucide-react';
-import AddOrderModal from '@/components/modals/AddOrderModal';
 
 export default function OrderMaintenancePage() {
   const [tests, setTests] = useState<any[]>([]);
@@ -100,41 +99,8 @@ export default function OrderMaintenancePage() {
   }, [debouncedSearch]);
 
   const fetchTestDetails = async (id: number) => {
-    setSelectedTestId(id);
-    setLoadingDetails(true);
-    setSelectedTestDetails(null);
-    try {
-      const res = await fetch(`/api/tests/${id}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSelectedTestDetails(data);
-        setShowAddOrderModal(true);
-      } else {
-        alert('Failed to fetch details');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error fetching details');
-    } finally {
-      setLoadingDetails(false);
-    }
+    router.push(`/order-maintenance/${id}/edit`);
   };
-
-  const closeModal = () => {
-    setSelectedTestId(null);
-    setSelectedTestDetails(null);
-  };
-
-  // Close modal on escape
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal();
-    };
-    if (selectedTestId) {
-      window.addEventListener('keydown', handleEsc);
-    }
-    return () => window.removeEventListener('keydown', handleEsc);
-  }, [selectedTestId]);
 
   const fetchTests = async () => {
     try {
@@ -161,8 +127,7 @@ export default function OrderMaintenancePage() {
     const handler = (e: Event) => {
       const action = (e as CustomEvent).detail;
       if (action === 'Add Order') {
-        setSelectedTestDetails(null);
-        setShowAddOrderModal(true);
+        router.push('/order-maintenance/add');
       } else if (action === 'Service Group') {
         router.push('/order-maintenance/service-groups');
       } else if (action === 'Lab Default Font') {
@@ -187,6 +152,7 @@ export default function OrderMaintenancePage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       } else {
         alert(`${action} coming soon!`);
       }
@@ -298,19 +264,6 @@ export default function OrderMaintenancePage() {
           </div>
         )}
       </div>
-      <AddOrderModal
-        isOpen={showAddOrderModal}
-        onClose={() => {
-          setShowAddOrderModal(false);
-          closeModal();
-        }}
-        onSuccess={() => {
-          setShowAddOrderModal(false);
-          closeModal();
-          fetchTests();
-        }}
-        initialData={selectedTestDetails}
-      />
 
       {/* Global Lab Default Font Modal */}
       {showLabFontModal && (
