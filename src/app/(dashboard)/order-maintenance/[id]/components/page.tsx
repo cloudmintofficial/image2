@@ -566,39 +566,39 @@ export default function OrderComponentsPage() {
 
       {/* Order Font Modal */}
       {showOrderFontModal && (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '8px', width: '850px', maxWidth: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(2px)' }}>
+          <div className="modal-content" style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', width: '850px', maxWidth: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.1)', border: '1px solid var(--border)' }}>
             {/* Top Action Bar */}
-            <div style={{ padding: '12px 24px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+            <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
               <button 
                 onClick={handleSaveFont} 
                 disabled={isSavingFont}
-                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '15px', color: '#000', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '15px', color: 'var(--text-primary)', cursor: 'pointer', padding: '4px 8px' }}
               >
                 {isSavingFont ? 'Saving...' : 'Save'}
               </button>
               <button 
                 onClick={() => setShowOrderFontModal(false)}
-                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '18px', color: '#000', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '18px', color: 'var(--text-primary)', cursor: 'pointer', padding: '4px 8px' }}
               >
                 ✕
               </button>
             </div>
 
             {/* Inner Content Area */}
-            <div style={{ padding: '24px', overflowY: 'auto', flex: 1, background: '#fff' }}>
-              <div style={{ border: '1px solid #e5e7eb', borderRadius: '4px', padding: '20px', background: '#fff' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#d1d5db', marginBottom: '24px', borderBottom: '1px solid #f3f4f6', paddingBottom: '12px' }}>
+            <div style={{ padding: '24px', overflowY: 'auto', flex: 1, background: 'var(--bg-card)' }}>
+              <div style={{ border: '1px solid var(--border)', borderRadius: '6px', padding: '24px', background: 'var(--bg-card)' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--text-secondary)', marginBottom: '24px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
                   Add Default Font
                 </h2>
 
-                <div style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '14px', marginLeft: '40px' }}>
+                <div style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '16px', marginLeft: '40px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
-                    <label style={{ fontSize: '13px', color: '#000' }}>FontFamily</label>
+                    <label style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>FontFamily</label>
                     <select 
                       value={fontForm.fontFamily} 
                       onChange={e => setFontForm({...fontForm, fontFamily: e.target.value})}
-                      style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #d1d5db', fontSize: '13px', background: '#fff', width: '100%' }}
+                      style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--border)', fontSize: '13px', background: 'var(--bg-card)', color: 'var(--text-primary)', width: '100%' }}
                     >
                       <option value="Arial">Arial</option>
                       <option value="Helvetica">Helvetica</option>
@@ -622,12 +622,12 @@ export default function OrderComponentsPage() {
                     { label: 'SpaceAfterLineFont', key: 'spaceAfterLineFont' },
                   ].map((field) => (
                     <div key={field.key} style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
-                      <label style={{ fontSize: '13px', color: '#000' }}>{field.label}</label>
+                      <label style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>{field.label}</label>
                       <input 
                         type="text" 
                         value={(fontForm as any)[field.key]} 
                         onChange={e => setFontForm({...fontForm, [field.key]: e.target.value})}
-                        style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #d1d5db', fontSize: '13px', width: '100%' }}
+                        style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--border)', fontSize: '13px', background: 'var(--bg-card)', color: 'var(--text-primary)', width: '100%' }}
                       />
                     </div>
                   ))}

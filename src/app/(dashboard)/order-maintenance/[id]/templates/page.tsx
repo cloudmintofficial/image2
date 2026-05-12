@@ -114,7 +114,7 @@ export default function OrderDetailTemplatesPage() {
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <table className="medfile-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ background: '#fff', borderBottom: '2px solid var(--border)' }}>
+            <tr style={{ background: 'var(--bg-secondary)', borderBottom: '2px solid var(--border)' }}>
               <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left' }}>Template Name</th>
               <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left' }}>Status</th>
               <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left' }}>From Age</th>
@@ -157,51 +157,52 @@ export default function OrderDetailTemplatesPage() {
       </div>
 
       {showAddModal && (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '8px', width: '500px', padding: '24px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px' }}>Add Template</h3>
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(2px)' }}>
+          <div className="modal-content" style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', width: '500px', padding: '24px', border: '1px solid var(--border)', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2)' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: 'var(--text-primary)' }}>Add Template</h3>
             
             <div style={{ display: 'grid', gap: '16px' }}>
               <div>
-                <label className="form-label">Template Name *</label>
+                <label className="form-label" style={{ color: 'var(--text-primary)' }}>Template Name *</label>
                 <input 
                   type="text" 
                   className="form-input" 
+                  style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
                   value={form.templateName} 
                   onChange={e => setForm({...form, templateName: e.target.value})} 
                 />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
-                  <label className="form-label">From Age (Years)</label>
-                  <input type="number" className="form-input" value={form.fromAge} onChange={e => setForm({...form, fromAge: e.target.value})} />
+                  <label className="form-label" style={{ color: 'var(--text-primary)' }}>From Age (Years)</label>
+                  <input type="number" className="form-input" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} value={form.fromAge} onChange={e => setForm({...form, fromAge: e.target.value})} />
                 </div>
                 <div>
-                  <label className="form-label">To Age (Years)</label>
-                  <input type="number" className="form-input" value={form.toAge} onChange={e => setForm({...form, toAge: e.target.value})} />
+                  <label className="form-label" style={{ color: 'var(--text-primary)' }}>To Age (Years)</label>
+                  <input type="number" className="form-input" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} value={form.toAge} onChange={e => setForm({...form, toAge: e.target.value})} />
                 </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
-                  <label className="form-label">From Age (Days)</label>
-                  <input type="number" className="form-input" value={form.fromAgeDays} onChange={e => setForm({...form, fromAgeDays: e.target.value})} />
+                  <label className="form-label" style={{ color: 'var(--text-primary)' }}>From Age (Days)</label>
+                  <input type="number" className="form-input" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} value={form.fromAgeDays} onChange={e => setForm({...form, fromAgeDays: e.target.value})} />
                 </div>
                 <div>
-                  <label className="form-label">To Age (Days)</label>
-                  <input type="number" className="form-input" value={form.toAgeDays} onChange={e => setForm({...form, toAgeDays: e.target.value})} />
+                  <label className="form-label" style={{ color: 'var(--text-primary)' }}>To Age (Days)</label>
+                  <input type="number" className="form-input" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} value={form.toAgeDays} onChange={e => setForm({...form, toAgeDays: e.target.value})} />
                 </div>
               </div>
               <div>
-                <label className="form-label">Gender</label>
-                <select className="form-input" value={form.gender} onChange={e => setForm({...form, gender: e.target.value})}>
+                <label className="form-label" style={{ color: 'var(--text-primary)' }}>Gender</label>
+                <select className="form-input" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} value={form.gender} onChange={e => setForm({...form, gender: e.target.value})}>
                   <option value="Both">Both</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                 </select>
               </div>
               <div>
-                <label className="form-label">Status</label>
-                <select className="form-input" value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
+                <label className="form-label" style={{ color: 'var(--text-primary)' }}>Status</label>
+                <select className="form-input" style={{ background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)' }} value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
                   <option value="Active">Active</option>
                   <option value="InActive">InActive</option>
                 </select>
@@ -209,7 +210,7 @@ export default function OrderDetailTemplatesPage() {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
-              <button className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancel</button>
+              <button className="btn btn-ghost" style={{ color: 'var(--text-primary)' }} onClick={() => setShowAddModal(false)}>Cancel</button>
               <button className="btn btn-primary" onClick={handleSave} disabled={isSaving}>
                 {isSaving ? 'Saving...' : 'Save Template'}
               </button>

@@ -166,13 +166,34 @@ export default function OrderMaintenancePage() {
       } else if (action === 'Lab Default Font') {
         fetchLabFont();
         setShowLabFontModal(true);
+      } else if (action === 'Print Price List') {
+        setTimeout(() => window.print(), 100);
+      } else if (action === 'Price List Excel') {
+        // Construct Excel-compatible CSV mapping exactly as shown in list
+        const headers = ['Order Name', 'Order Amount', 'Order Type', 'Status'];
+        const rows = tests.map(t => [
+          `"${(t.name || '').replace(/"/g, '""')}"`,
+          t.price || 0,
+          `"${(t.orderType || '').replace(/"/g, '""')}"`,
+          `"${(t.status || '').replace(/"/g, '""')}"`
+        ].join(','));
+        
+        const csvContent = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `Orders_Price_List_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       } else {
         alert(`${action} coming soon!`);
       }
     };
     window.addEventListener('topnav-action', handler);
     return () => window.removeEventListener('topnav-action', handler);
-  }, [router]);
+  }, [router, tests]);
 
   const filteredTests = tests.filter(t => 
     (t.name || '').toLowerCase().includes(debouncedSearch.toLowerCase()) ||
@@ -293,39 +314,39 @@ export default function OrderMaintenancePage() {
 
       {/* Global Lab Default Font Modal */}
       {showLabFontModal && (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div className="modal-content" style={{ backgroundColor: '#fff', borderRadius: '8px', width: '850px', maxWidth: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, backdropFilter: 'blur(2px)' }}>
+          <div className="modal-content" style={{ backgroundColor: 'var(--bg-card)', borderRadius: '8px', width: '850px', maxWidth: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.1)', border: '1px solid var(--border)' }}>
             {/* Top Action Bar */}
-            <div style={{ padding: '12px 24px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
+            <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)', borderTopLeftRadius: '8px', borderTopRightRadius: '8px' }}>
               <button 
                 onClick={handleSaveLabFont} 
                 disabled={isSavingLabFont}
-                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '15px', color: '#000', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '15px', color: 'var(--text-primary)', cursor: 'pointer', padding: '4px 8px' }}
               >
                 {isSavingLabFont ? 'Saving...' : 'Save'}
               </button>
               <button 
                 onClick={() => setShowLabFontModal(false)}
-                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '18px', color: '#000', cursor: 'pointer', padding: 0 }}
+                style={{ background: 'none', border: 'none', fontWeight: 'bold', fontSize: '18px', color: 'var(--text-primary)', cursor: 'pointer', padding: '4px 8px' }}
               >
                 ✕
               </button>
             </div>
 
             {/* Inner Content Area */}
-            <div style={{ padding: '24px', overflowY: 'auto', flex: 1, background: '#fff' }}>
-              <div style={{ border: '1px solid #e5e7eb', borderRadius: '4px', padding: '20px', background: '#fff' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#d1d5db', marginBottom: '24px', borderBottom: '1px solid #f3f4f6', paddingBottom: '12px' }}>
+            <div style={{ padding: '24px', overflowY: 'auto', flex: 1, background: 'var(--bg-card)' }}>
+              <div style={{ border: '1px solid var(--border)', borderRadius: '6px', padding: '24px', background: 'var(--bg-card)' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--text-secondary)', marginBottom: '24px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
                   Add Default Font
                 </h2>
 
-                <div style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '14px', marginLeft: '40px' }}>
+                <div style={{ maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '16px', marginLeft: '40px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
-                    <label style={{ fontSize: '13px', color: '#000' }}>FontFamily</label>
+                    <label style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>FontFamily</label>
                     <select 
                       value={labFontForm.fontFamily} 
                       onChange={e => setLabFontForm({...labFontForm, fontFamily: e.target.value})}
-                      style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #d1d5db', fontSize: '13px', background: '#fff', width: '100%' }}
+                      style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--border)', fontSize: '13px', background: 'var(--bg-card)', color: 'var(--text-primary)', width: '100%' }}
                     >
                       <option value="Arial">Arial</option>
                       <option value="Helvetica">Helvetica</option>
@@ -349,12 +370,12 @@ export default function OrderMaintenancePage() {
                     { label: 'SpaceAfterLineFont', key: 'spaceAfterLineFont' },
                   ].map((field) => (
                     <div key={field.key} style={{ display: 'grid', gridTemplateColumns: '180px 200px', alignItems: 'center' }}>
-                      <label style={{ fontSize: '13px', color: '#000' }}>{field.label}</label>
+                      <label style={{ fontSize: '13px', fontWeight: '500', color: 'var(--text-primary)' }}>{field.label}</label>
                       <input 
                         type="text" 
                         value={(labFontForm as any)[field.key]} 
                         onChange={e => setLabFontForm({...labFontForm, [field.key]: e.target.value})}
-                        style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #d1d5db', fontSize: '13px', width: '100%' }}
+                        style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--border)', fontSize: '13px', background: 'var(--bg-card)', color: 'var(--text-primary)', width: '100%' }}
                       />
                     </div>
                   ))}
@@ -364,6 +385,52 @@ export default function OrderMaintenancePage() {
           </div>
         </div>
       )}
+
+      {/* Printable Price List Section */}
+      <div className="print-price-list-section" style={{ display: 'none' }}>
+        <style type="text/css" media="print">
+          {`
+            @page { size: auto; margin: 15mm 20mm; }
+            body { margin: 0; padding: 0; background: #fff; color: #000; font-family: 'Helvetica', 'Arial', sans-serif; }
+            nav, header, aside, .sidebar, .modal-overlay { display: none !important; }
+            .order-maintenance-container { height: auto !important; overflow: visible !important; border: none !important; box-shadow: none !important; background: transparent !important; }
+            .order-maintenance-container > *:not(.print-price-list-section) { display: none !important; }
+            .print-price-list-section { display: block !important; width: 100%; page-break-after: avoid; }
+            .print-price-header { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 30px; }
+            .print-price-title { font-size: 15px; font-weight: bold; margin-bottom: 25px; }
+            .print-price-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            .print-price-table th { text-align: left; padding-bottom: 8px; border-bottom: 1px solid #000; font-weight: bold; }
+            .print-price-table td { padding: 8px 0; border-bottom: 1px solid #f3f4f6; page-break-inside: avoid; }
+          `}
+        </style>
+
+        <div className="print-price-header">
+          <span>{new Date().toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+          <span style={{ fontWeight: 'bold' }}>Order Maintenance</span>
+          <span></span>
+        </div>
+
+        <div className="print-price-title">
+          Orders Price List for IMAGEE DIAGNOSTICS SERVICES
+        </div>
+
+        <table className="print-price-table">
+          <thead>
+            <tr>
+              <th style={{ width: '80%' }}>Order Name</th>
+              <th style={{ width: '20%', textAlign: 'right' }}>Order<br/>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tests.map(t => (
+              <tr key={t.id}>
+                <td>{t.name}</td>
+                <td style={{ textAlign: 'right' }}>{t.price}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <style>{`
         .order-maintenance-container {
