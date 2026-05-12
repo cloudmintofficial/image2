@@ -91,8 +91,8 @@ export async function POST(request: Request) {
         recurring: recurring || false,
         serviceDoctorRequired: serviceDoctorRequired || false,
         status: status || 'Active',
-        uiType: uiType || 'richtext',
-        labId: labId || 1
+        labId: labId || 1,
+        uiType: hasComponents ? 'panel' : (uiType || 'richtext')
       }
     });
 

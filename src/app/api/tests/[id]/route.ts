@@ -81,7 +81,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         recurring: recurring || false,
         serviceDoctorRequired: serviceDoctorRequired || false,
         status: status || 'Active',
-        uiType: uiType || 'richtext',
+        uiType: hasComponents ? 'panel' : (uiType || 'richtext'),
         resultTemplate: resultTemplate || null,
         labId: labId || 1
       }

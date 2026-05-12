@@ -34,7 +34,7 @@ export default function InProcessPage() {
 
   // Template-driven result entry
   const [testTemplate, setTestTemplate] = useState<any>(null);
-  const [panelResults, setPanelResults] = useState<Record<string, string>>({});
+  const [panelResults, setPanelResults] = useState<Record<string, any>>({});
   const [singleResult, setSingleResult] = useState('');
 
   // Microbiology state
@@ -129,6 +129,19 @@ export default function InProcessPage() {
         .catch(console.error);
     }
   }, [selectedOrder, viewMode]);
+
+  const updatePanelField = (compName: string, field: string, value: any) => {
+    setPanelResults(prev => {
+      const existing = prev[compName] || {};
+      return {
+        ...prev,
+        [compName]: {
+          ...existing,
+          [field]: value
+        }
+      };
+    });
+  };
 
   const fetchBills = async () => {
     setLoading(true);
@@ -999,9 +1012,12 @@ export default function InProcessPage() {
                         </thead>
                         <tbody>
                           {testTemplate.components.map((comp: any, idx: number) => {
-                            const val = panelResults[comp.name] || '';
+                            const resObj = panelResults[comp.name] || {};
+                            const val = resObj.value || '';
+                            const manualAbnormal = resObj.abnormal ?? false;
+                            
                             const gender = selectedBill?.patientObj?.gender;
-                            const isAbnormal = (() => {
+                            const autoAbnormal = (() => {
                               if (!val) return false;
                               const num = parseFloat(val);
                               if (isNaN(num)) return false;
@@ -1018,31 +1034,56 @@ export default function InProcessPage() {
                               if (rangeMatch) return num < parseFloat(rangeMatch[1]) || num > parseFloat(rangeMatch[2]);
                               return false;
                             })();
-                            const displayRange = (() => {
-                              if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
-                              if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
-                              return comp.normalRange || '—';
-                            })();
+
+                            const isAbnormal = manualAbnormal || autoAbnormal;
+
+                            const currentRange = resObj.range ?? comp.normalRange ?? '—';
+                            const currentUnit = resObj.unit ?? comp.unit ?? '—';
+                            const currentMethod = resObj.method ?? comp.method ?? resultMethod ?? '—';
+
                             return (
-                              <tr key={idx} style={{ borderTop: '1px solid #f1f5f9', background: isAbnormal ? '#fef2f2' : 'transparent', transition: 'background 0.2s' }}>
+                              <tr key={idx} style={{ borderTop: '1px solid #f1f5f9', background: isAbnormal ? '#fef2f2' : 'transparent' }}>
                                 <td style={{ padding: '10px 16px', fontWeight: 600, color: '#0f172a' }}>{comp.name}</td>
                                 <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                                   <input
                                     type={comp.fieldType === 'number' ? 'number' : 'text'}
-                                    style={{ width: '100%', padding: '8px 12px', border: `1.5px solid ${isAbnormal ? '#fca5a5' : '#e2e8f0'}`, borderRadius: 8, fontSize: 14, fontWeight: 600, textAlign: 'center', outline: 'none', transition: 'border-color 0.2s', background: isAbnormal ? '#fff5f5' : '#fff' }}
+                                    style={{ width: '100%', padding: '6px 12px', border: `1px solid ${isAbnormal ? '#fca5a5' : '#e2e8f0'}`, borderRadius: 4, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', background: isAbnormal ? '#fff' : '#fff' }}
                                     value={val}
-                                    onChange={e => setPanelResults(prev => ({ ...prev, [comp.name]: e.target.value }))}
-                                    onFocus={e => e.currentTarget.style.borderColor = '#f97316'}
-                                    onBlur={e => e.currentTarget.style.borderColor = isAbnormal ? '#fca5a5' : '#e2e8f0'}
-                                    placeholder="—"
+                                    onChange={e => updatePanelField(comp.name, 'value', e.target.value)}
                                   />
                                 </td>
-                                <td style={{ padding: '10px 8px', textAlign: 'center' }}>
-                                  {isAbnormal && <span style={{ color: '#dc2626', fontWeight: 800, fontSize: 16 }}>▲</span>}
+                                <td style={{ padding: '6px 8px', textAlign: 'center' }}>
+                                  <input 
+                                    type="checkbox" 
+                                    checked={isAbnormal} 
+                                    onChange={e => updatePanelField(comp.name, 'abnormal', e.target.checked)}
+                                    style={{ width: 16, height: 16, cursor: 'pointer' }}
+                                  />
                                 </td>
-                                <td style={{ padding: '10px 16px', color: '#64748b', fontSize: 12 }}>{displayRange}</td>
-                                <td style={{ padding: '10px 16px', color: '#64748b', fontSize: 12 }}>{comp.unit || '—'}</td>
-                                <td style={{ padding: '10px 16px', color: '#64748b', fontSize: 12 }}>{comp.method || resultMethod || '—'}</td>
+                                <td style={{ padding: '6px 8px' }}>
+                                  <input
+                                    type="text"
+                                    style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#64748b', background: '#f8fafc' }}
+                                    value={currentRange}
+                                    onChange={e => updatePanelField(comp.name, 'range', e.target.value)}
+                                  />
+                                </td>
+                                <td style={{ padding: '6px 8px' }}>
+                                  <input
+                                    type="text"
+                                    style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#64748b', background: '#f8fafc' }}
+                                    value={currentUnit}
+                                    onChange={e => updatePanelField(comp.name, 'unit', e.target.value)}
+                                  />
+                                </td>
+                                <td style={{ padding: '6px 8px' }}>
+                                  <input
+                                    type="text"
+                                    style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#64748b', background: '#f8fafc' }}
+                                    value={currentMethod}
+                                    onChange={e => updatePanelField(comp.name, 'method', e.target.value)}
+                                  />
+                                </td>
                               </tr>
                             );
                           })}

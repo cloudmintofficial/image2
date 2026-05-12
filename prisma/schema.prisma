@@ -159,13 +159,21 @@ model TestComponent {
   id            Int        @id @default(autoincrement())
   testId        Int
   componentName String
+  subHeading    String?
+  machineCode   String?
+  specimenCode  String?
   unit          String?
   normalRange   String?
+  fromRange     String?
+  toRange       String?
   minMale       Float?
   maxMale       Float?
   minFemale     Float?
   maxFemale     Float?
   method        String?
+  defaultValue  String?
+  calculations  String?
+  status        String     @default("Active")
   sortOrder     Int        @default(0)
   fieldType     String     @default("number")
   options       String?
