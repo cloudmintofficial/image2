@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
 
-// Force delete the old cached instance so Next.js loads the new schema (touched for DoctorSignature update)
-console.log("RELOADING PRISMA CLIENT CACHE FOR DOCTOR SIGNATURE...");
+// Force delete the old cached instance so Next.js loads the new schema (touched for OrderDetailTemplate update)
+console.log("RELOADING PRISMA CLIENT CACHE FOR ORDER TEMPLATES v2...");
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = undefined;
 }

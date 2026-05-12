@@ -10,9 +10,16 @@ export async function GET(
   const testId = parseInt(id);
   if (isNaN(testId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
 
+  const { searchParams } = new URL(request.url);
+  const templateIdParam = searchParams.get('templateId');
+  const templateId = templateIdParam ? parseInt(templateIdParam) : null;
+
   try {
     const components = await prisma.testComponent.findMany({
-      where: { testId },
+      where: { 
+        testId,
+        templateId
+      },
       orderBy: { sortOrder: 'asc' }
     });
     return NextResponse.json(components);
@@ -33,7 +40,7 @@ export async function POST(
   try {
     const body = await request.json();
     const { 
-      componentName, subHeading, machineCode, specimenCode, unit, 
+      templateId, componentName, subHeading, machineCode, specimenCode, unit, 
       normalRange, fromRange, toRange, minMale, maxMale, minFemale, 
       maxFemale, method, defaultValue, calculations, status, sortOrder, 
       fieldType, options 
@@ -46,6 +53,7 @@ export async function POST(
     const component = await prisma.testComponent.create({
       data: {
         testId,
+        templateId: templateId ? parseInt(templateId) : null,
         componentName,
         subHeading,
         machineCode,

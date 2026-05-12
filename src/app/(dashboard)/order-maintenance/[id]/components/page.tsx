@@ -1,17 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { Loader2, ArrowLeft, Plus, Edit, Trash2, Printer, Layout, Type } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 
 export default function OrderComponentsPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const testId = params.id;
+  const templateId = searchParams.get('templateId');
   const { showToast } = useToast();
 
   const [test, setTest] = useState<any>(null);
+  const [currentTemplate, setCurrentTemplate] = useState<any>(null);
   const [components, setComponents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddTemplateModal, setShowAddTemplateModal] = useState(false);
@@ -44,13 +47,35 @@ export default function OrderComponentsPage() {
   const fetchDetails = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/tests/${testId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setTest(data);
-        setComponents(data.components || []);
+      // Fetch test master details
+      const resTest = await fetch(`/api/tests/${testId}`);
+      if (resTest.ok) {
+        const dataTest = await resTest.json();
+        setTest(dataTest);
       } else {
         showToast('Failed to fetch test details', 'error');
+      }
+
+      // Fetch components filtered by templateId
+      const url = templateId 
+        ? `/api/tests/${testId}/components?templateId=${templateId}`
+        : `/api/tests/${testId}/components`;
+      const resComp = await fetch(url);
+      if (resComp.ok) {
+        const dataComp = await resComp.json();
+        setComponents(dataComp || []);
+      }
+
+      // Fetch active template info if templateId exists
+      if (templateId) {
+        const resTemplates = await fetch(`/api/tests/${testId}/templates`);
+        if (resTemplates.ok) {
+          const templates = await resTemplates.json();
+          const found = templates.find((t: any) => t.id === parseInt(templateId));
+          if (found) setCurrentTemplate(found);
+        }
+      } else {
+        setCurrentTemplate(null);
       }
     } catch (err) {
       console.error(err);
@@ -62,7 +87,7 @@ export default function OrderComponentsPage() {
 
   useEffect(() => {
     if (testId) fetchDetails();
-  }, [testId]);
+  }, [testId, templateId]);
 
   useEffect(() => {
     const searchTests = async () => {
@@ -122,10 +147,15 @@ export default function OrderComponentsPage() {
         : `/api/tests/${testId}/components`;
       const method = editingComponent ? 'PUT' : 'POST';
 
+      const payload = {
+        ...compForm,
+        templateId: templateId ? parseInt(templateId) : null
+      };
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(compForm)
+        body: JSON.stringify(payload)
       });
 
       if (res.ok) {
@@ -240,9 +270,14 @@ export default function OrderComponentsPage() {
         <div>
           <h1 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--text-primary)', margin: 0 }}>
             Order Details for <span style={{ color: 'var(--primary)' }}>{test?.testName || '...'}</span>
+            {currentTemplate && (
+              <span style={{ fontSize: '18px', color: 'var(--text-secondary)', marginLeft: '8px' }}>
+                ({currentTemplate.templateName})
+              </span>
+            )}
           </h1>
           <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-            Manage diagnostic parameters and reference ranges
+            Manage diagnostic parameters and reference ranges {currentTemplate ? `for template ${currentTemplate.templateName}` : ''}
           </p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -276,7 +311,11 @@ export default function OrderComponentsPage() {
         >
           <Type size={16} style={{ marginRight: '6px' }} /> Order Font
         </button>
-        <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+        <button 
+          className="btn btn-ghost btn-sm" 
+          style={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
+          onClick={() => router.push(`/order-maintenance/${testId}/templates`)}
+        >
           <Layout size={16} style={{ marginRight: '6px' }} /> Templates
         </button>
         <button 

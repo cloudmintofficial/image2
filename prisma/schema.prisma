@@ -152,6 +152,7 @@ model TestMaster {
   status                String          @default("Active")
   labId                 Int
   components            TestComponent[]
+  orderTemplates        OrderDetailTemplate[]
   orderFont             OrderFont?
   lab                   Lab             @relation(fields: [labId], references: [id])
 }
@@ -159,6 +160,7 @@ model TestMaster {
 model TestComponent {
   id            Int        @id @default(autoincrement())
   testId        Int
+  templateId    Int?
   componentName String
   subHeading    String?
   machineCode   String?
@@ -179,6 +181,7 @@ model TestComponent {
   fieldType     String     @default("number")
   options       String?
   test          TestMaster @relation(fields: [testId], references: [id])
+  template      OrderDetailTemplate? @relation(fields: [templateId], references: [id], onDelete: Cascade)
 }
 
 model Expense {
@@ -241,4 +244,20 @@ model OrderFont {
   spaceAfterLineFont  String?
   
   test                TestMaster @relation(fields: [testId], references: [id], onDelete: Cascade)
+}
+
+model OrderDetailTemplate {
+  id            Int        @id @default(autoincrement())
+  testId        Int
+  templateName  String
+  status        String     @default("Active")
+  fromAge       Int?
+  toAge         Int?
+  fromAgeDays   Int?
+  toAgeDays     Int?
+  gender        String?    @default("Both")
+  createdAt     DateTime   @default(now())
+
+  test          TestMaster @relation(fields: [testId], references: [id], onDelete: Cascade)
+  components    TestComponent[]
 }
