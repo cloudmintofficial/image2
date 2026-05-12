@@ -19,6 +19,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   const router = useRouter();
   const [isSavingEntity, setIsSavingEntity] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [currentSample, setCurrentSample] = useState('Select Sample');
 
   const [orderForm, setOrderForm] = useState({
     orderName: '', hasComponents: false, testCode: '', displayOrderName: '',
@@ -310,22 +311,60 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
 
               <div className="form-group">
                 <label className="form-label">Sample Type</label>
-                <select 
-                  className="form-select" 
-                  value={orderForm.sampleType} 
-                  onChange={e => setOrderForm({ ...orderForm, sampleType: e.target.value })}
-                >
-                  <option value="Select Sample">Select Sample</option>
-                  <option value="Blood">Blood</option>
-                  <option value="Urine">Urine</option>
-                  <option value="Sputum">Sputum</option>
-                  <option value="Pus">Pus</option>
-                  <option value="Stool">Stool</option>
-                  <option value="Swab">Swab</option>
-                  <option value="Semen">Semen</option>
-                  <option value="SERUM">SERUM</option>
-                  <option value="WB EDTA">WB EDTA</option>
-                </select>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <select 
+                    className="form-select" 
+                    style={{ flex: 1 }}
+                    value={currentSample} 
+                    onChange={e => setCurrentSample(e.target.value)}
+                  >
+                    <option value="Select Sample">Select Sample</option>
+                    <option value="Blood">Blood</option>
+                    <option value="Urine">Urine</option>
+                    <option value="Sputum">Sputum</option>
+                    <option value="Pus">Pus</option>
+                    <option value="Stool">Stool</option>
+                    <option value="Swab">Swab</option>
+                    <option value="Semen">Semen</option>
+                    <option value="SERUM">SERUM</option>
+                    <option value="WB EDTA">WB EDTA</option>
+                  </select>
+                  <button 
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ padding: '0 16px', height: '42px', borderRadius: '10px' }}
+                    onClick={() => {
+                      if (currentSample !== 'Select Sample') {
+                        const current = orderForm.sampleType === 'Select Sample' ? '' : orderForm.sampleType;
+                        const samples = current ? current.split(',').map(s => s.trim()) : [];
+                        if (!samples.includes(currentSample)) {
+                          setOrderForm({ ...orderForm, sampleType: [...samples, currentSample].join(', ') });
+                        }
+                        setCurrentSample('Select Sample');
+                      }
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
+                {orderForm.sampleType && orderForm.sampleType !== 'Select Sample' && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
+                    {orderForm.sampleType.split(',').filter(s => s.trim()).map(sample => (
+                      <div key={sample} className="sample-tag-maintenance">
+                        {sample.trim()}
+                        <span 
+                          className="tag-close" 
+                          onClick={() => {
+                            const samples = orderForm.sampleType.split(',').map(s => s.trim()).filter(s => s !== sample.trim());
+                            setOrderForm({ ...orderForm, sampleType: samples.length > 0 ? samples.join(', ') : 'Select Sample' });
+                          }}
+                        >
+                          ×
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
@@ -334,7 +373,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
                   className="form-input" 
                   value={orderForm.method} 
                   onChange={e => setOrderForm({ ...orderForm, method: e.target.value })} 
-                  placeholder="e.g. Automated"
+                  placeholder="Sample Type"
                 />
               </div>
 
@@ -509,6 +548,31 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
           color: #0f172a;
           margin: 0;
           letter-spacing: -0.025em;
+        }
+
+        .sample-tag-maintenance {
+          background: #f1f5f9;
+          color: #334155;
+          padding: 4px 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          border: 1px solid #e2e8f0;
+        }
+
+        .tag-close {
+          cursor: pointer;
+          font-size: 16px;
+          line-height: 1;
+          color: #94a3b8;
+          transition: color 0.2s;
+        }
+
+        .tag-close:hover {
+          color: var(--danger);
         }
 
         .workspace-subtitle {

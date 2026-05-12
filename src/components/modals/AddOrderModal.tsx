@@ -16,6 +16,7 @@ interface AddOrderModalProps {
 export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData }: AddOrderModalProps) {
   const { showToast } = useToast();
   const [isSavingEntity, setIsSavingEntity] = useState(false);
+  const [currentSample, setCurrentSample] = useState('Select Sample');
 
   const [orderForm, setOrderForm] = useState({
     orderName: '', hasComponents: false, testCode: '', displayOrderName: '',
@@ -245,14 +246,67 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
                 </div>
                 <div className="form-group">
                   <label className="form-label">Sample Type</label>
-                  <select className="form-input form-select" value={orderForm.sampleType} onChange={e => setOrderForm({ ...orderForm, sampleType: e.target.value })}>
-                    <option value="Select Sample">Select Sample</option>
-                    <option value="Blood">Blood</option>
-                    <option value="Serum">Serum</option>
-                    <option value="Urine">Urine</option>
-                    <option value="Plasma">Plasma</option>
-                    <option value="Pus">Pus</option>
-                  </select>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <select 
+                      className="form-input form-select" 
+                      style={{ flex: 1 }}
+                      value={currentSample} 
+                      onChange={e => setCurrentSample(e.target.value)}
+                    >
+                      <option value="Select Sample">Select Sample</option>
+                      <option value="Blood">Blood</option>
+                      <option value="Serum">Serum</option>
+                      <option value="Urine">Urine</option>
+                      <option value="Plasma">Plasma</option>
+                      <option value="Pus">Pus</option>
+                      <option value="Sputum">Sputum</option>
+                      <option value="Stool">Stool</option>
+                    </select>
+                    <button 
+                      type="button"
+                      className="btn btn-primary"
+                      style={{ padding: '0 16px', height: '42px', borderRadius: '10px' }}
+                      onClick={() => {
+                        if (currentSample !== 'Select Sample') {
+                          const current = orderForm.sampleType === 'Select Sample' ? '' : orderForm.sampleType;
+                          const samples = current ? current.split(',').map(s => s.trim()) : [];
+                          if (!samples.includes(currentSample)) {
+                            setOrderForm({ ...orderForm, sampleType: [...samples, currentSample].join(', ') });
+                          }
+                          setCurrentSample('Select Sample');
+                        }
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {orderForm.sampleType && orderForm.sampleType !== 'Select Sample' && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
+                      {orderForm.sampleType.split(',').filter(s => s.trim()).map(sample => (
+                        <div key={sample} className="sample-tag">
+                          {sample.trim()}
+                          <span 
+                            className="tag-close" 
+                            onClick={() => {
+                              const samples = orderForm.sampleType.split(',').map(s => s.trim()).filter(s => s !== sample.trim());
+                              setOrderForm({ ...orderForm, sampleType: samples.length > 0 ? samples.join(', ') : 'Select Sample' });
+                            }}
+                          >
+                            ×
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Method</label>
+                  <input
+                    className="form-input"
+                    value={orderForm.method}
+                    onChange={e => setOrderForm({ ...orderForm, method: e.target.value })}
+                    placeholder="Sample Type" 
+                  />
                 </div>
               </div>
 
@@ -436,6 +490,31 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
           display: flex;
           align-items: center;
           gap: 12px;
+        }
+
+        .sample-tag {
+          background: #f1f5f9;
+          color: #334155;
+          padding: 4px 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          border: 1px solid #e2e8f0;
+        }
+
+        .tag-close {
+          cursor: pointer;
+          font-size: 16px;
+          line-height: 1;
+          color: #94a3b8;
+          transition: color 0.2s;
+        }
+
+        .tag-close:hover {
+          color: var(--danger);
         }
 
         .section-title::after {
