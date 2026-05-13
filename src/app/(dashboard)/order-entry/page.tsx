@@ -46,6 +46,29 @@ export default function OrderEntryPage() {
   // Pat Orders State
   const [showPatOrders, setShowPatOrders] = useState(false);
   const [pastOrders, setPastOrders] = useState<any[]>([]);
+  const [originalPatientData, setOriginalPatientData] = useState<any>(null);
+  const [isModified, setIsModified] = useState(false);
+
+  // Modification tracking effect
+  useEffect(() => {
+    if (!patientId || !originalPatientData) {
+      setIsModified(false);
+      return;
+    }
+    
+    // Convert current state to a comparable object
+    const currentData = {
+      name: name.trim(),
+      age: age.toString(),
+      gender,
+      phone: phone.trim(),
+      source: source.trim()
+    };
+    
+    // Compare with original
+    const modified = JSON.stringify(currentData) !== JSON.stringify(originalPatientData);
+    setIsModified(modified);
+  }, [name, age, gender, phone, source, patientId, originalPatientData]);
 
   // Loading States
   const [isSearchingOrdersDropdown, setIsSearchingOrdersDropdown] = useState(false);
@@ -461,6 +484,50 @@ export default function OrderEntryPage() {
     }
   };
 
+  const handleUpdatePatient = async () => {
+    if (!patientId) return;
+    
+    if (!name.trim()) {
+      showToast('Patient name is required', 'error');
+      return;
+    }
+    if (!phone || phone.trim().length !== 10) {
+      showToast('Valid 10-digit phone number is required', 'error');
+      return;
+    }
+    if (!age) {
+      showToast('Age is required', 'error');
+      return;
+    }
+
+    setIsSavingEntity(true);
+    try {
+      const res = await fetch(`/api/patients/${patientId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          age,
+          gender,
+          phone: phone.trim(),
+          source: source.trim(),
+          additionalDetails: addlDetails
+        })
+      });
+      if (res.ok) {
+        const p = await res.json();
+        handleSelectPatient(p);
+        showToast('Patient updated successfully!', 'success');
+      } else {
+        showToast('Failed to update patient', 'error');
+      }
+    } catch (e) {
+      showToast('Error updating patient', 'error');
+    } finally {
+      setIsSavingEntity(false);
+    }
+  };
+
   const handleQuickAddPatient = async () => {
     if (!name.trim()) {
       showToast('Patient name is required', 'error');
@@ -540,6 +607,17 @@ export default function OrderEntryPage() {
     setPhone(p.phone || '');
     setPhoneUmr(p.umr || '');
     setSource(p.source || '');
+    
+    // Save original state for modification tracking
+    setOriginalPatientData({
+      name: p.name || '',
+      age: p.age?.toString() || '',
+      gender: p.gender || 'M',
+      phone: p.phone || '',
+      source: p.source || ''
+    });
+    setIsModified(false);
+
     if (p.additionalDetails) {
       const details = typeof p.additionalDetails === 'string'
         ? JSON.parse(p.additionalDetails)
@@ -901,9 +979,21 @@ export default function OrderEntryPage() {
               <span className="card-title">Patient Information</span>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
-                <button className="btn btn-primary btn-sm" onClick={handleQuickAddPatient} disabled={isSavingEntity}>
-                  {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Add
-                </button>
+                {patientId ? (
+                   <button 
+                    className={`btn btn-sm ${isModified ? 'btn-primary' : 'btn-outline'}`} 
+                    onClick={handleUpdatePatient} 
+                    disabled={isSavingEntity || !isModified}
+                    style={!isModified ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
+                  >
+                    {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} 
+                    {isModified ? 'Update' : 'Registered'}
+                  </button>
+                ) : (
+                  <button className="btn btn-primary btn-sm" onClick={handleQuickAddPatient} disabled={isSavingEntity}>
+                    {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Add
+                  </button>
+                )}
               </div>
             </div>
             <div className="card-body" style={{ padding: '24px 28px' }}>
