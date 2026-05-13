@@ -31,6 +31,7 @@ export default function OrderEntryPage() {
   const [phone, setPhone] = useState('');
   const [patientStatus, setPatientStatus] = useState<string | null>(null);
   const [doctor, setDoctor] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Additional Patient Details Modal
   const [showAddlDetails, setShowAddlDetails] = useState(false);
@@ -410,6 +411,56 @@ export default function OrderEntryPage() {
     showToast(`${order.orderName} added to current bill!`, 'success');
   };
 
+  const handleOpenPastOrders = async () => {
+    let targetPatientId = patientId;
+
+    if (!targetPatientId) {
+      if (!name.trim() || !phone.trim()) {
+        showToast('Patient name and phone number are required to view history', 'error');
+        return;
+      }
+      setIsLoadingPatOrders(true);
+      try {
+        const searchRes = await fetch(`/api/patients/advanced-search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name.trim(), phone: phone.trim() })
+        });
+        if (searchRes.ok) {
+          const data = await searchRes.json();
+          if (data.length > 0) {
+            targetPatientId = data[0].id;
+            handleSelectPatient(data[0]); // auto-fill and set patientId
+          } else {
+            showToast('No past orders found for this Name/Phone.', 'warning');
+            setIsLoadingPatOrders(false);
+            return;
+          }
+        }
+      } catch (e) {
+        showToast('Search failed', 'error');
+        setIsLoadingPatOrders(false);
+        return;
+      }
+    }
+
+    if (targetPatientId) {
+      setIsLoadingPatOrders(true);
+      try {
+        const res = await fetch(`/api/patients/${targetPatientId}/orders`);
+        if (res.ok) {
+          const data = await res.json();
+          setPastOrders(data);
+          setShowPatOrders(true);
+        } else {
+          showToast('Failed to load patient history', 'error');
+        }
+      } finally {
+        setIsLoadingPatOrders(false);
+      }
+    }
+  };
+
   const handleQuickAddPatient = async () => {
     if (!name.trim()) {
       showToast('Patient name is required', 'error');
@@ -450,6 +501,34 @@ export default function OrderEntryPage() {
       showToast('Error adding patient', 'error');
     } finally {
       setIsSavingEntity(false);
+    }
+  };
+
+  const handlePatientQuickSearch = async () => {
+    if (!searchQuery.trim()) {
+      showToast('Please enter Phone or UMR number', 'info');
+      return;
+    }
+    setIsSearchingPatientInfo(true);
+    try {
+      const res = await fetch(`/api/patients?search=${encodeURIComponent(searchQuery.trim())}`);
+      if (res.ok) {
+        const results = await res.json();
+        if (results.length === 1) {
+          handleSelectPatient(results[0]);
+          showToast('Patient found!', 'success');
+          setSearchQuery('');
+        } else if (results.length > 1) {
+          setDupPatients(results);
+          setShowDupPatientsModal(true);
+        } else {
+          showToast('No patient found with this Phone/UMR', 'warning');
+        }
+      }
+    } catch (e) {
+      showToast('Search error', 'error');
+    } finally {
+      setIsSearchingPatientInfo(false);
     }
   };
 
@@ -778,83 +857,53 @@ export default function OrderEntryPage() {
           <h1 className="page-title">Order Entry</h1>
           <p className="page-subtitle">Register patients and create lab orders</p>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-outline btn-sm" onClick={() => {
-            setAdvSearchState(prev => ({ ...prev, patientName: name || prev.patientName, phone: phone || prev.phone }));
-            setShowAdvSearch(true);
-          }}>
-            <Search size={14} /> Advance Search
-          </button>
-          <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
-          <button className="btn btn-primary btn-sm" onClick={handleQuickAddPatient} disabled={isSavingEntity}>
-            {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Add
-          </button>
-        </div>
       </div>
 
       <div style={{ display: 'flex', gap: 24 }}>
 
         {/* Main Form */}
         <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Patient Quick Search Section */}
+          <div className="card" style={{ marginBottom: 20, padding: '16px 24px', zIndex: 11, position: 'relative' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
+                <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Phone/UMR :</label>
+                <div style={{ position: 'relative', flex: 1, maxWidth: 300 }}>
+                  <input 
+                    className="form-input" 
+                    placeholder="Search phone or UMR..." 
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handlePatientQuickSearch()}
+                    style={{ height: 38 }}
+                  />
+                  {isSearchingPatientInfo && (
+                    <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 10, top: '50%', marginTop: -8, color: 'var(--text-muted)' }} />
+                  )}
+                </div>
+                <button className="btn btn-primary" onClick={handlePatientQuickSearch} style={{ height: 38, minWidth: 80 }}>Search</button>
+                <button className="btn btn-outline" onClick={() => setShowAdvSearch(true)} style={{ height: 38 }}>
+                  <Search size={14} /> Advance Search
+                </button>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                 <button className="btn btn-primary" onClick={handleOpenPastOrders} disabled={isLoadingPatOrders} style={{ height: 38, display: 'flex', alignItems: 'center', gap: 6 }}>
+                   {isLoadingPatOrders ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />} Pat Orders
+                 </button>
+                 <button className="btn btn-primary" onClick={() => setShowAddlDetails(true)} style={{ height: 38 }}>Addl. Details</button>
+              </div>
+            </div>
+          </div>
+
           {/* Patient Info Card */}
           <div className={`card ${patientId ? 'patient-card-selected' : ''}`} style={{ marginBottom: 20, overflow: 'visible', position: 'relative', zIndex: 10 }}>
             <div className="card-header">
               <span className="card-title">Patient Information</span>
-              <div style={{ display: 'flex', gap: 6 }}>
-
-                <button className="btn btn-success btn-sm" onClick={async () => {
-                  let targetPatientId = patientId;
-
-                  if (!targetPatientId) {
-                    if (!name.trim() || !phone.trim()) {
-                      showToast('Patient name and phone number are required', 'error');
-                      return;
-                    }
-                    setIsLoadingPatOrders(true);
-                    setIsLoadingPatOrders(true);
-                    try {
-                      const searchRes = await fetch(`/api/patients/advanced-search`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: name.trim(), phone: phone.trim() })
-                      });
-                      if (searchRes.ok) {
-                        const data = await searchRes.json();
-                        if (data.length > 0) {
-                          targetPatientId = data[0].id;
-                          handleSelectPatient(data[0]); // auto-fill and set patientId
-                        } else {
-                          showToast('No past orders found for this Name/Phone.', 'warning');
-                          setIsLoadingPatOrders(false);
-                          return;
-                        }
-                      }
-                    } catch (e) {
-                      showToast('Search failed', 'error');
-                      setIsLoadingPatOrders(false);
-                      return;
-                    }
-                  }
-
-                  if (targetPatientId) {
-                    setIsLoadingPatOrders(true);
-                    try {
-                      const res = await fetch(`/api/patients/${targetPatientId}/orders`);
-                      if (res.ok) {
-                        const data = await res.json();
-                        setPastOrders(data);
-                        setShowPatOrders(true);
-                      } else {
-                        showToast('Failed to load patient history', 'error');
-                      }
-                    } finally {
-                      setIsLoadingPatOrders(false);
-                    }
-                  }
-                }} disabled={isLoadingPatOrders}>
-                  {isLoadingPatOrders ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />} Past Orders
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
+                <button className="btn btn-primary btn-sm" onClick={handleQuickAddPatient} disabled={isSavingEntity}>
+                  {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Add
                 </button>
-                <button className="btn btn-outline btn-sm" onClick={() => setShowAddlDetails(true)}>Addl. Details</button>
               </div>
             </div>
             <div className="card-body" style={{ padding: '24px 28px' }}>
