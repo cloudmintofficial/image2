@@ -314,6 +314,10 @@ export default function OrderEntryPage() {
   };
 
   const handleCreatePatient = async () => {
+    if (!advSearchState.phone || !advSearchState.phone.trim()) {
+      showToast('Phone number is required to create a patient', 'warning');
+      return;
+    }
     setIsSearching(true);
     try {
       const res = await fetch('/api/patients', {
@@ -409,7 +413,7 @@ export default function OrderEntryPage() {
             gender,
             phone: trimmedPhone,
             source: trimmedSource,
-            additionalDetails: JSON.stringify(addlDetails)
+            additionalDetails: addlDetails
           })
         });
         if (pRes.ok) {
@@ -431,7 +435,7 @@ export default function OrderEntryPage() {
             gender,
             phone: trimmedPhone,
             source: trimmedSource,
-            additionalDetails: JSON.stringify(addlDetails)
+            additionalDetails: addlDetails
           })
         });
       }

@@ -24,6 +24,8 @@ export async function PUT(
     if (data.gender !== undefined) updateData.gender = data.gender;
     if (data.phone !== undefined) updateData.phone = data.phone;
     if (data.source !== undefined) updateData.source = data.source;
+    if (data.email !== undefined) updateData.email = data.email;
+    else if (data.additionalDetails?.email !== undefined) updateData.email = data.additionalDetails.email;
     if (data.additionalDetails !== undefined) updateData.additionalDetails = data.additionalDetails;
 
     const patient = await prisma.patient.update({

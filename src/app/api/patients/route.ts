@@ -39,6 +39,8 @@ export async function POST(request: Request) {
         gender: data.gender,
         phone: data.phone,
         source: data.source,
+        email: data.email || data.additionalDetails?.email,
+        additionalDetails: data.additionalDetails,
       }
     });
 
