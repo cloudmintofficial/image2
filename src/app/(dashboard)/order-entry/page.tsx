@@ -473,20 +473,7 @@ export default function OrderEntryPage() {
 
       // Create patient if new
       if (!finalPatientId) {
-        // Strict Duplicate Check
-        const dupRes = await fetch(`/api/patients/advanced-search`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: trimmedPhone })
-        });
-        if (dupRes.ok) {
-          const dupData = await dupRes.json();
-          if (dupData.length > 0) {
-            showToast(`Error: Patient "${dupData[0].name}" already exists with this phone number. Please select them from search.`, 'error');
-            setIsSubmittingBill(false);
-            return;
-          }
-        }
+
 
         const pRes = await fetch('/api/patients', {
           method: 'POST',
