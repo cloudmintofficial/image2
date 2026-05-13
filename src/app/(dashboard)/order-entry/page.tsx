@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { CreditCard, Search, UserPlus, FileText, Beaker, MapPin, X, FileSignature, Loader2, AlertCircle } from 'lucide-react';
+import { CreditCard, Search, UserPlus, FileText, Beaker, MapPin, X, FileSignature, Loader2, AlertCircle, Edit2, Save } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useToast } from '@/context/ToastContext';
 import { useReactToPrint } from 'react-to-print';
@@ -48,6 +48,7 @@ export default function OrderEntryPage() {
   const [pastOrders, setPastOrders] = useState<any[]>([]);
   const [originalPatientData, setOriginalPatientData] = useState<any>(null);
   const [isModified, setIsModified] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   // Modification tracking effect
   useEffect(() => {
@@ -517,6 +518,7 @@ export default function OrderEntryPage() {
       if (res.ok) {
         const p = await res.json();
         handleSelectPatient(p);
+        setIsEditing(false);
         showToast('Patient updated successfully!', 'success');
       } else {
         showToast('Failed to update patient', 'error');
@@ -617,6 +619,7 @@ export default function OrderEntryPage() {
       source: p.source || ''
     });
     setIsModified(false);
+    setIsEditing(false);
 
     if (p.additionalDetails) {
       const details = typeof p.additionalDetails === 'string'
@@ -980,15 +983,34 @@ export default function OrderEntryPage() {
               <div style={{ display: 'flex', gap: 8 }}>
                 <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
                 {patientId ? (
-                   <button 
-                    className={`btn btn-sm ${isModified ? 'btn-primary' : 'btn-outline'}`} 
-                    onClick={handleUpdatePatient} 
-                    disabled={isSavingEntity || !isModified}
-                    style={!isModified ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
-                  >
-                    {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} 
-                    {isModified ? 'Update' : 'Registered'}
-                  </button>
+                   <>
+                    {isEditing ? (
+                      <>
+                        <button className="btn btn-outline btn-sm" onClick={() => {
+                          setIsEditing(false);
+                          // Revert fields to original data
+                          if (originalPatientData) {
+                            setName(originalPatientData.name);
+                            setAge(originalPatientData.age);
+                            setGender(originalPatientData.gender);
+                            setPhone(originalPatientData.phone);
+                            setSource(originalPatientData.source);
+                          }
+                        }}>Cancel</button>
+                        <button 
+                          className="btn btn-primary btn-sm" 
+                          onClick={handleUpdatePatient} 
+                          disabled={isSavingEntity || !isModified}
+                        >
+                          {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Update
+                        </button>
+                      </>
+                    ) : (
+                      <button className="btn btn-primary btn-sm" onClick={() => setIsEditing(true)}>
+                        <Edit2 size={14} /> Edit
+                      </button>
+                    )}
+                   </>
                 ) : (
                   <button className="btn btn-primary btn-sm" onClick={handleQuickAddPatient} disabled={isSavingEntity}>
                     {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Add
@@ -1001,7 +1023,14 @@ export default function OrderEntryPage() {
                 {/* Row 1: Primary Info */}
                 <div className="form-group">
                   <label className="form-label">Name *</label>
-                  <input className={`form-input ${!name ? 'required' : ''}`} placeholder="Patient full name" value={name} onChange={e => setName(e.target.value)} style={{ height: 40 }} />
+                  <input 
+                    className={`form-input ${!name ? 'required' : ''}`} 
+                    placeholder="Patient full name" 
+                    value={name} 
+                    onChange={e => setName(e.target.value)} 
+                    readOnly={patientId ? !isEditing : false}
+                    style={{ height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }} 
+                  />
                 </div>
 
                 <div className="form-group">
@@ -1031,7 +1060,8 @@ export default function OrderEntryPage() {
                       const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                       setPhone(val);
                     }}
-                    style={{ height: 40 }}
+                    readOnly={patientId ? !isEditing : false}
+                    style={{ height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }} 
                   />
                   {patientStatus?.includes('Profile') && !patientId && (
                     <div style={{ color: 'var(--danger)', fontSize: 11, marginTop: 4, fontWeight: 500 }}>
@@ -1047,8 +1077,9 @@ export default function OrderEntryPage() {
                       className="form-input"
                       type="number"
                       placeholder="Age"
-                      style={{ width: 85, height: 40 }}
+                      style={{ width: 85, height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
                       value={age}
+                      readOnly={patientId ? !isEditing : false}
                       onChange={e => {
                         const val = e.target.value;
                         if (val === '' || (parseInt(val) >= 0 && parseInt(val) <= 120)) {
@@ -1062,8 +1093,12 @@ export default function OrderEntryPage() {
                       }}
                     />
                     <div className="form-radio-group" style={{ height: 40, display: 'flex', alignItems: 'center', flex: 1, padding: '0 4px' }}>
-                      <label style={{ marginRight: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}><input type="radio" name="gender" checked={gender === 'M'} onChange={() => setGender('M')} /> M</label>
-                      <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}><input type="radio" name="gender" checked={gender === 'F'} onChange={() => setGender('F')} /> F</label>
+                      <label style={{ marginRight: 16, cursor: (patientId && !isEditing) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <input type="radio" name="gender" checked={gender === 'M'} onChange={() => setGender('M')} disabled={patientId ? !isEditing : false} /> M
+                      </label>
+                      <label style={{ cursor: (patientId && !isEditing) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <input type="radio" name="gender" checked={gender === 'F'} onChange={() => setGender('F')} disabled={patientId ? !isEditing : false} /> F
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -1089,7 +1124,8 @@ export default function OrderEntryPage() {
                       value={source}
                       onChange={e => setSource(e.target.value)}
                       onFocus={() => { setDoctorSuggestions([]); setOrderSuggestions([]); }}
-                      style={{ paddingRight: 32, height: 40 }}
+                      readOnly={patientId ? !isEditing : false}
+                      style={{ paddingRight: 32, height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
                     />
                     {isSearchingSourcesDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -1124,7 +1160,8 @@ export default function OrderEntryPage() {
                       value={doctor}
                       onChange={e => setDoctor(e.target.value)}
                       onFocus={() => { setSourceSuggestions([]); setOrderSuggestions([]); }}
-                      style={{ paddingRight: 32, height: 40 }}
+                      readOnly={patientId ? !isEditing : false}
+                      style={{ paddingRight: 32, height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
                     />
                     {isSearchingDoctorsDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
