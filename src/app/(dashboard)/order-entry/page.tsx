@@ -136,7 +136,9 @@ export default function OrderEntryPage() {
   const [isSearching, setIsSearching] = useState(false);
 
   const totalBill = orders.reduce((sum, o) => sum + o.amount, 0);
-  const balance = totalBill - discountAmount - paidAmount;
+  const numericPaid = typeof paidAmount === 'string' ? parseFloat(paidAmount) || 0 : paidAmount;
+  const numericDiscount = typeof discountAmount === 'string' ? parseFloat(discountAmount as any) || 0 : discountAmount;
+  const balance = totalBill - numericDiscount - numericPaid;
   const today = new Date().toLocaleDateString('en-GB');
 
   // Dispatch disabled actions for TopNav
@@ -149,6 +151,11 @@ export default function OrderEntryPage() {
     }
     window.dispatchEvent(new CustomEvent('set-disabled-actions', { detail: disabled }));
   }, [name, phone, orders.length, isSubmittingBill]);
+
+  // Auto-sync paidAmount when orders or discount change
+  useEffect(() => {
+    setPaidAmount(totalBill - numericDiscount);
+  }, [totalBill, numericDiscount]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -254,13 +261,22 @@ export default function OrderEntryPage() {
   }, [source]);
 
   const addOrder = (test: any) => {
+    // Prevent duplicate orders
+    const exists = orders.find(o => o.name.toLowerCase() === (test.displayOrderName || test.name).toLowerCase());
+    if (exists) {
+      showToast(`"${test.name}" is already added`, 'warning');
+      setOrderSearch('');
+      setOrderSuggestions([]);
+      return;
+    }
+
     const displayName = (test.displayOrderName && test.displayOrderName.trim().toLowerCase() !== 'blank')
       ? test.displayOrderName
       : test.name;
 
     setOrders(prev => [
       ...prev,
-      { sno: prev.length + 1, name: displayName, date: today, amount: test.price }
+      { sno: prev.length + 1, name: displayName, date: today, amount: test.price || 0 }
     ]);
     setOrderSearch('');
     setOrderSuggestions([]);
@@ -364,6 +380,10 @@ export default function OrderEntryPage() {
       showToast('Patient age is required', 'error');
       return;
     }
+    if (phone.trim().length < 10) {
+      showToast('Phone number must be at least 10 digits', 'error');
+      return;
+    }
 
     try {
       setIsSubmittingBill(true);
@@ -462,6 +482,7 @@ export default function OrderEntryPage() {
     setSource(''); setPhone(''); setDoctor('');
     setOrders([]); setOrderSearch(''); setPaidAmount(0);
     setDiscountAmount(0); setDiscountReason('');
+    setPaymentType('Cash'); setReferenceNumber('');
   };
 
   // Listen for top nav actions
@@ -959,9 +980,29 @@ export default function OrderEntryPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Balance</label>
-                  <div style={{ fontSize: 24, fontWeight: 700, color: balance > 0 ? 'var(--danger)' : 'var(--success)' }}>
-                    ₹{balance}
+                  <div style={{ 
+                    fontSize: 24, 
+                    fontWeight: 700, 
+                    color: Math.abs(balance) > 0.01 ? 'var(--danger)' : 'var(--success)',
+                    transition: 'color 0.3s ease'
+                  }}>
+                    ₹{balance.toFixed(2)}
                   </div>
+                  {balance > 0.01 && (
+                    <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--danger)', marginTop: 4, textTransform: 'uppercase' }}>
+                      ⚠️ Payment Pending
+                    </div>
+                  )}
+                  {balance < -0.01 && (
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#2196f3', marginTop: 4, textTransform: 'uppercase' }}>
+                      ℹ️ Advance Received
+                    </div>
+                  )}
+                  {Math.abs(balance) <= 0.01 && (
+                    <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--success)', marginTop: 4, textTransform: 'uppercase' }}>
+                      ✅ Fully Paid
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

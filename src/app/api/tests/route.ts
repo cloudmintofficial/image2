@@ -14,7 +14,6 @@ export async function GET(request: Request) {
       tests = await prisma.testMaster.findMany({
         where: { 
           ...baseWhere,
-          ...baseWhere,
           OR: [
             { testName: { contains: search, mode: 'insensitive' } },
             { testCode: { contains: search, mode: 'insensitive' } },
