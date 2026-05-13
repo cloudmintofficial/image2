@@ -29,6 +29,7 @@ export default function OrderEntryPage() {
   const [gender, setGender] = useState<'M' | 'F'>('M');
   const [source, setSource] = useState('');
   const [phone, setPhone] = useState('');
+  const [patientStatus, setPatientStatus] = useState<'New' | 'Existing' | 'Checking' | null>(null);
   const [doctor, setDoctor] = useState('');
 
   // Additional Patient Details Modal
@@ -260,7 +261,13 @@ export default function OrderEntryPage() {
   // Real-time patient lookup by phone to prevent duplicates
   useEffect(() => {
     const lookupPatient = async () => {
-      if (phone.length >= 10 && !patientId) {
+      if (phone.length < 10) {
+        setPatientStatus(null);
+        return;
+      }
+      
+      if (!patientId) {
+        setPatientStatus('Checking');
         try {
           const res = await fetch(`/api/patients/advanced-search`, {
             method: 'POST',
@@ -270,16 +277,22 @@ export default function OrderEntryPage() {
           if (res.ok) {
             const results = await res.json();
             if (results.length > 0 && results[0].phone === phone.trim()) {
-              // Found a potential match, but don't auto-select unless user confirms or it's an exact single match
-              // For now, let's just show a toast or we can auto-fill if it's very confident
+              setPatientStatus('Existing');
               showToast(`Patient "${results[0].name}" already exists with this phone number.`, 'warning');
-              // handleSelectPatient(results[0]); // Optional: auto-fill
+            } else {
+              setPatientStatus('New');
             }
+          } else {
+            setPatientStatus(null);
           }
-        } catch (e) { }
+        } catch (e) {
+          setPatientStatus(null);
+        }
+      } else {
+        setPatientStatus('Existing');
       }
     };
-    const tid = setTimeout(lookupPatient, 1000);
+    const tid = setTimeout(lookupPatient, 800);
     return () => clearTimeout(tid);
   }, [phone, patientId]);
 
@@ -558,12 +571,18 @@ export default function OrderEntryPage() {
   };
 
   const handleClear = () => {
+    if (orders.length > 0) {
+      if (!confirm('You have unsaved orders. Are you sure you want to clear the form?')) {
+        return;
+      }
+    }
     setPatientId(null);
     setPhoneUmr(''); setName(''); setAge(''); setGender('M');
     setSource(''); setPhone(''); setDoctor('');
     setOrders([]); setOrderSearch(''); setPaidAmount(0);
     setDiscountAmount(0); setDiscountReason('');
     setPaymentType('Cash'); setReferenceNumber('');
+    setPatientStatus(null);
   };
 
   // Listen for top nav actions
@@ -809,20 +828,53 @@ export default function OrderEntryPage() {
                 <button className="btn btn-outline btn-sm" onClick={() => setShowAddlDetails(true)}>Addl. Details</button>
               </div>
             </div>
-            <div className="card-body">
-              <div className="form-row form-row-4">
+            <div className="card-body" style={{ padding: '24px 28px' }}>
+              <div className="form-row" style={{ gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px 32px' }}>
+                {/* Row 1: Primary Info */}
                 <div className="form-group">
                   <label className="form-label">Name *</label>
-                  <input className={`form-input ${!name ? 'required' : ''}`} placeholder="Patient full name" value={name} onChange={e => setName(e.target.value)} />
+                  <input className={`form-input ${!name ? 'required' : ''}`} placeholder="Patient full name" value={name} onChange={e => setName(e.target.value)} style={{ height: 40 }} />
                 </div>
+
+                <div className="form-group">
+                  <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Phone *</span>
+                    {patientStatus && (
+                      <span style={{ 
+                        fontSize: 9, 
+                        padding: '2px 8px', 
+                        borderRadius: 12, 
+                        background: patientStatus === 'Existing' ? 'var(--success-bg)' : patientStatus === 'New' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-tertiary)',
+                        color: patientStatus === 'Existing' ? 'var(--success)' : patientStatus === 'New' ? '#3b82f6' : 'var(--text-muted)',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        border: `1px solid ${patientStatus === 'Existing' ? 'rgba(34, 197, 94, 0.2)' : patientStatus === 'New' ? 'rgba(59, 130, 246, 0.2)' : 'var(--border)'}`
+                      }}>
+                        {patientStatus}
+                      </span>
+                    )}
+                  </label>
+                  <input 
+                    className="form-input" 
+                    placeholder="Contact number" 
+                    value={phone} 
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                      setPhone(val);
+                    }} 
+                    style={{ height: 40 }}
+                  />
+                </div>
+
                 <div className="form-group">
                   <label className="form-label">Age / Gender *</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
+                  <div style={{ display: 'flex', gap: 12 }}>
                     <input 
                       className="form-input" 
                       type="number" 
                       placeholder="Age" 
-                      style={{ width: 80 }} 
+                      style={{ width: 85, height: 40 }} 
                       value={age} 
                       onChange={e => {
                         const val = e.target.value;
@@ -836,12 +888,14 @@ export default function OrderEntryPage() {
                         }
                       }}
                     />
-                    <div className="form-radio-group">
-                      <label><input type="radio" name="gender" checked={gender === 'M'} onChange={() => setGender('M')} /> M</label>
-                      <label><input type="radio" name="gender" checked={gender === 'F'} onChange={() => setGender('F')} /> F</label>
+                    <div className="form-radio-group" style={{ height: 40, display: 'flex', alignItems: 'center', flex: 1, padding: '0 4px' }}>
+                      <label style={{ marginRight: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}><input type="radio" name="gender" checked={gender === 'M'} onChange={() => setGender('M')} /> M</label>
+                      <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}><input type="radio" name="gender" checked={gender === 'F'} onChange={() => setGender('F')} /> F</label>
                     </div>
                   </div>
                 </div>
+
+                {/* Row 2: Secondary Info */}
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Source</label>
                   <div style={{ position: 'relative' }}>
@@ -851,7 +905,7 @@ export default function OrderEntryPage() {
                       value={source}
                       onChange={e => setSource(e.target.value)}
                       onFocus={() => { setDoctorSuggestions([]); setOrderSuggestions([]); }}
-                      style={{ paddingRight: 32 }}
+                      style={{ paddingRight: 32, height: 40 }}
                     />
                     {isSearchingSourcesDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -876,20 +930,7 @@ export default function OrderEntryPage() {
                     </div>
                   )}
                 </div>
-              </div>
-              <div className="form-row form-row-3">
-                <div className="form-group">
-                  <label className="form-label">Phone *</label>
-                  <input 
-                    className="form-input" 
-                    placeholder="Contact number" 
-                    value={phone} 
-                    onChange={e => {
-                      const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
-                      setPhone(val);
-                    }} 
-                  />
-                </div>
+
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Doctor</label>
                   <div style={{ position: 'relative' }}>
@@ -899,7 +940,7 @@ export default function OrderEntryPage() {
                       value={doctor}
                       onChange={e => setDoctor(e.target.value)}
                       onFocus={() => { setSourceSuggestions([]); setOrderSuggestions([]); }}
-                      style={{ paddingRight: 32 }}
+                      style={{ paddingRight: 32, height: 40 }}
                     />
                     {isSearchingDoctorsDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -924,7 +965,6 @@ export default function OrderEntryPage() {
                     </div>
                   )}
                 </div>
-                <div />
               </div>
             </div>
           </div>
@@ -1441,7 +1481,7 @@ export default function OrderEntryPage() {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">DOB <span style={{ color: 'var(--danger)' }}>*</span></label>
+                  <label className="form-label">DOB</label>
                   <input type="date" className="form-input" value={addlDetails.dob} onChange={e => setAddlDetails({ ...addlDetails, dob: e.target.value })} />
                 </div>
                 <div className="form-group">
