@@ -483,7 +483,7 @@ export default function OrderEntryPage() {
 
       // Create patient if new
       if (!finalPatientId) {
-        // Let user know if they are creating a duplicate, but don't block them
+        // Strict Duplicate Check
         const dupRes = await fetch(`/api/patients/advanced-search`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -492,7 +492,9 @@ export default function OrderEntryPage() {
         if (dupRes.ok) {
           const dupData = await dupRes.json();
           if (dupData.length > 0) {
-            showToast(`Note: ${dupData.length} other patient(s) found with this number. Creating a new profile.`, 'info');
+            showToast(`Error: Patient "${dupData[0].name}" already exists with this phone number. Please select them from search.`, 'error');
+            setIsSubmittingBill(false);
+            return;
           }
         }
 
@@ -864,6 +866,11 @@ export default function OrderEntryPage() {
                     }} 
                     style={{ height: 40 }}
                   />
+                  {patientStatus?.includes('Profile') && !patientId && (
+                    <div style={{ color: 'var(--danger)', fontSize: 11, marginTop: 4, fontWeight: 500 }}>
+                      ⚠ This number is already registered to an existing patient.
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -1455,7 +1462,23 @@ export default function OrderEntryPage() {
                   <input className="form-input" value={name} onChange={e => setName(e.target.value)} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Patient Phone *</label>
+                  <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span>Patient Phone *</span>
+                    {patientStatus && (
+                      <span style={{ 
+                        fontSize: 9, 
+                        padding: '1px 6px', 
+                        borderRadius: 10, 
+                        background: patientStatus?.includes('Profile') ? 'var(--success-bg)' : patientStatus === 'New Patient' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-tertiary)',
+                        color: patientStatus?.includes('Profile') ? 'var(--success)' : patientStatus === 'New Patient' ? '#3b82f6' : 'var(--text-muted)',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        border: `1px solid ${patientStatus?.includes('Profile') ? 'rgba(34, 197, 94, 0.2)' : 'transparent'}`
+                      }}>
+                        {patientStatus}
+                      </span>
+                    )}
+                  </label>
                   <input 
                     className="form-input" 
                     value={phone} 
@@ -1464,6 +1487,11 @@ export default function OrderEntryPage() {
                       setPhone(val);
                     }} 
                   />
+                  {patientStatus?.includes('Profile') && !patientId && (
+                    <div style={{ color: 'var(--danger)', fontSize: 10, marginTop: 4, fontWeight: 500 }}>
+                      ⚠ Existing patient found with this number.
+                    </div>
+                  )}
                 </div>
                 <div className="form-group">
                   <label className="form-label">Email</label>
