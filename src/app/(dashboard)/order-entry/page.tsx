@@ -136,8 +136,8 @@ export default function OrderEntryPage() {
   const [isSearching, setIsSearching] = useState(false);
 
   const totalBill = orders.reduce((sum, o) => sum + o.amount, 0);
-  const numericPaid = typeof paidAmount === 'string' ? parseFloat(paidAmount) || 0 : paidAmount;
-  const numericDiscount = typeof discountAmount === 'string' ? parseFloat(discountAmount as any) || 0 : discountAmount;
+  const numericDiscount = typeof discountAmount === 'string' ? parseFloat(discountAmount) || 0 : Number(discountAmount) || 0;
+  const numericPaid = typeof paidAmount === 'string' ? parseFloat(paidAmount) || 0 : Number(paidAmount) || 0;
   const balance = totalBill - numericDiscount - numericPaid;
   const today = new Date().toLocaleDateString('en-GB');
 
@@ -152,10 +152,7 @@ export default function OrderEntryPage() {
     window.dispatchEvent(new CustomEvent('set-disabled-actions', { detail: disabled }));
   }, [name, phone, orders.length, isSubmittingBill]);
 
-  // Auto-sync paidAmount when orders or discount change
-  useEffect(() => {
-    setPaidAmount(totalBill - numericDiscount);
-  }, [totalBill, numericDiscount]);
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -947,7 +944,16 @@ export default function OrderEntryPage() {
                   </div>
                 )}
                 <div className="form-group">
-                  <label className="form-label">Paid Amount</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <label className="form-label" style={{ marginBottom: 0 }}>Paid Amount</label>
+                    <button 
+                      className="btn btn-ghost btn-sm" 
+                      style={{ padding: '0 8px', height: 20, fontSize: 10, textTransform: 'uppercase' }}
+                      onClick={() => setPaidAmount(Math.max(0, totalBill - numericDiscount))}
+                    >
+                      Pay Full
+                    </button>
+                  </div>
                   <input
                     className="form-input"
                     type="text"
@@ -960,7 +966,7 @@ export default function OrderEntryPage() {
                         val = val.replace(/^0+/, '');
                       }
                       
-                      const netTotal = totalBill - discountAmount;
+                      const netTotal = Math.max(0, totalBill - numericDiscount);
                       const numVal = parseFloat(val) || 0;
                       
                       if (numVal > netTotal) {
@@ -972,17 +978,17 @@ export default function OrderEntryPage() {
                       }
                     }}
                     onBlur={() => {
-                      const netTotal = totalBill - discountAmount;
-                      const current = Number(paidAmount) || 0;
+                      const netTotal = Math.max(0, totalBill - numericDiscount);
+                      const current = Math.max(0, Number(paidAmount) || 0);
                       setPaidAmount(current > netTotal ? netTotal : current);
                     }}
                   />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Balance</label>
-                  <div style={{ 
-                    fontSize: 24, 
-                    fontWeight: 700, 
+                  <div style={{
+                    fontSize: 24,
+                    fontWeight: 700,
                     color: Math.abs(balance) > 0.01 ? 'var(--danger)' : 'var(--success)',
                     transition: 'color 0.3s ease'
                   }}>
