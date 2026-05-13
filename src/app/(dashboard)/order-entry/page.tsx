@@ -890,6 +890,17 @@ export default function OrderEntryPage() {
                 </div>
 
                 {/* Row 2: Secondary Info */}
+                <div className="form-group">
+                  <label className="form-label">UMR NO</label>
+                  <input
+                    className="form-input"
+                    value={phoneUmr}
+                    readOnly
+                    placeholder="Auto-generated"
+                    style={{ height: 40, background: 'var(--bg-tertiary)', cursor: 'not-allowed', fontWeight: 600, color: 'var(--primary)' }}
+                  />
+                </div>
+
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Source</label>
                   <div style={{ position: 'relative' }}>
@@ -1431,7 +1442,7 @@ export default function OrderEntryPage() {
         isOpen={showPatOrders}
         onClose={() => setShowPatOrders(false)}
         pastOrders={pastOrders}
-        patientInfo={{ name, phone }}
+        patientInfo={{ name, phone, umr: phoneUmr }}
         onRepeatOrder={handleRepeatOrder}
       />
 
@@ -1463,7 +1474,11 @@ export default function OrderEntryPage() {
               <button className="modal-close" onClick={() => setShowAddlDetails(false)}>✕</button>
             </div>
             <div className="modal-body" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
-              <div className="form-row form-row-3" style={{ marginBottom: 12 }}>
+              <div className="form-row form-row-4" style={{ marginBottom: 12 }}>
+                <div className="form-group">
+                  <label className="form-label">UMR NO</label>
+                  <input className="form-input" value={phoneUmr} readOnly placeholder="Auto-generated" style={{ background: 'var(--bg-tertiary)', cursor: 'not-allowed', fontWeight: 600, color: 'var(--primary)' }} />
+                </div>
                 <div className="form-group">
                   <label className="form-label">Patient Name <span style={{ color: 'var(--danger)' }}>*</span></label>
                   <input className="form-input" value={name} onChange={e => setName(e.target.value)} />

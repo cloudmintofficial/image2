@@ -6,7 +6,7 @@ interface PastOrdersModalProps {
   isOpen: boolean;
   onClose: () => void;
   pastOrders: any[];
-  patientInfo: { name: string; phone: string };
+  patientInfo: { name: string; phone: string; umr?: string };
   onRepeatOrder: (order: any) => void;
 }
 
@@ -14,7 +14,7 @@ export default function PastOrdersModal({
   isOpen, 
   onClose, 
   pastOrders = [], 
-  patientInfo = { name: '', phone: '' }, 
+  patientInfo = { name: '', phone: '', umr: '' }, 
   onRepeatOrder 
 }: PastOrdersModalProps) {
   if (!isOpen) return null;
@@ -26,7 +26,7 @@ export default function PastOrdersModal({
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <h3 style={{ margin: 0, color: 'white', fontWeight: 600 }}>Past Patient Orders</h3>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.9)', marginTop: 4 }}>
-              For: <strong style={{ color: 'white' }}>{patientInfo?.name || 'Unknown Patient'}</strong> ({patientInfo?.phone || 'N/A'})
+              For: <strong style={{ color: 'white' }}>{patientInfo?.name || 'Unknown Patient'}</strong> ({patientInfo?.phone || 'N/A'}) {patientInfo?.umr && `• UMR: ${patientInfo.umr}`}
             </div>
           </div>
           <button className="modal-close" onClick={onClose} style={{ color: 'white' }}>✕</button>
