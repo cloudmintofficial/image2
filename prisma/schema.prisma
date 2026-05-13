@@ -8,20 +8,20 @@ datasource db {
 }
 
 model Lab {
-  id            Int          @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   labName       String
   labAddress    String
   contactPerson String?
   primaryPhone  String
   email         String?
   logo          String?
-  status        String       @default("Active")
-  createdAt     DateTime     @default(now())
+  status        String         @default("Active")
+  createdAt     DateTime       @default(now())
   bills         Bill[]
   expenses      Expense[]
+  serviceGroups ServiceGroup[]
   tests         TestMaster[]
   users         User[]
-  serviceGroups ServiceGroup[]
 }
 
 model User {
@@ -128,12 +128,12 @@ model Payment {
 }
 
 model TestMaster {
-  id                    Int             @id @default(autoincrement())
+  id                    Int                   @id @default(autoincrement())
   testName              String
-  hasComponents         Boolean         @default(false)
+  hasComponents         Boolean               @default(false)
   testCode              String?
   displayOrderName      String?
-  category              String          @default("General")
+  category              String                @default("General")
   price                 Float
   department            String?
   processTime           String?
@@ -144,57 +144,57 @@ model TestMaster {
   advice                String?
   workSheet             String?
   purpose               String?
-  orderType             String          @default("Internal")
+  orderType             String                @default("Internal")
   ipBillingCategoryType String?
-  recurring             Boolean         @default(false)
-  serviceDoctorRequired Boolean         @default(false)
+  recurring             Boolean               @default(false)
+  serviceDoctorRequired Boolean               @default(false)
   resultTemplate        String?
-  uiType                String          @default("richtext")
-  status                String          @default("Active")
+  uiType                String                @default("richtext")
+  status                String                @default("Active")
   labId                 Int
-  components            TestComponent[]
   orderTemplates        OrderDetailTemplate[]
-  serviceGroups         ServiceGroup[]  @relation("ServiceGroupTests")
   orderFont             OrderFont?
-  lab                   Lab             @relation(fields: [labId], references: [id])
+  components            TestComponent[]
+  lab                   Lab                   @relation(fields: [labId], references: [id])
+  serviceGroups         ServiceGroup[]        @relation("ServiceGroupTests")
 }
 
 model ServiceGroup {
-  id        Int      @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   groupName String
   amount    Float
-  status    String   @default("Active")
+  status    String       @default("Active")
   labId     Int
-  createdAt DateTime @default(now())
-  lab       Lab      @relation(fields: [labId], references: [id])
+  createdAt DateTime     @default(now())
+  lab       Lab          @relation(fields: [labId], references: [id])
   tests     TestMaster[] @relation("ServiceGroupTests")
 }
 
 model TestComponent {
-  id            Int        @id @default(autoincrement())
+  id            Int                  @id @default(autoincrement())
   testId        Int
-  templateId    Int?
   componentName String
-  subHeading    String?
-  machineCode   String?
-  specimenCode  String?
   unit          String?
   normalRange   String?
-  fromRange     String?
-  toRange       String?
   minMale       Float?
   maxMale       Float?
   minFemale     Float?
   maxFemale     Float?
   method        String?
-  defaultValue  String?
-  calculations  String?
-  status        String     @default("Active")
-  sortOrder     Int        @default(0)
-  fieldType     String     @default("number")
+  sortOrder     Int                  @default(0)
+  fieldType     String               @default("number")
   options       String?
-  test          TestMaster @relation(fields: [testId], references: [id])
+  calculations  String?
+  defaultValue  String?
+  fromRange     String?
+  machineCode   String?
+  specimenCode  String?
+  status        String               @default("Active")
+  subHeading    String?
+  toRange       String?
+  templateId    Int?
   template      OrderDetailTemplate? @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  test          TestMaster           @relation(fields: [testId], references: [id])
 }
 
 model Expense {
@@ -276,22 +276,20 @@ model OrderFont {
   rightSignatureFont  String?
   spaceBeforeLineFont String?
   spaceAfterLineFont  String?
-  
   test                TestMaster @relation(fields: [testId], references: [id], onDelete: Cascade)
 }
 
 model OrderDetailTemplate {
-  id            Int        @id @default(autoincrement())
-  testId        Int
-  templateName  String
-  status        String     @default("Active")
-  fromAge       Int?
-  toAge         Int?
-  fromAgeDays   Int?
-  toAgeDays     Int?
-  gender        String?    @default("Both")
-  createdAt     DateTime   @default(now())
-
-  test          TestMaster @relation(fields: [testId], references: [id], onDelete: Cascade)
-  components    TestComponent[]
+  id           Int             @id @default(autoincrement())
+  testId       Int
+  templateName String
+  status       String          @default("Active")
+  fromAge      Int?
+  toAge        Int?
+  fromAgeDays  Int?
+  toAgeDays    Int?
+  gender       String?         @default("Both")
+  createdAt    DateTime        @default(now())
+  test         TestMaster      @relation(fields: [testId], references: [id], onDelete: Cascade)
+  components   TestComponent[]
 }

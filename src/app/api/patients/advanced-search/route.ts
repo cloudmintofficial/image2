@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
+  console.log("EXECUTING ADVANCED SEARCH v3 - EXPLICIT SELECT");
   try {
     const data = await request.json();
-    const { name, umr, phone, ageRange, gender, doctor, source } = data;
+    const { name, umr, phone, gender, source } = data;
 
     const whereClause: any = {};
 
@@ -19,6 +20,20 @@ export async function POST(request: Request) {
 
     const patients = await prisma.patient.findMany({
       where: whereClause,
+      select: {
+        id: true,
+        umr: true,
+        name: true,
+        age: true,
+        gender: true,
+        phone: true,
+        source: true,
+        externalId: true,
+        email: true,
+        photoUrl: true,
+        additionalDetails: true,
+        createdAt: true
+      },
       take: 20,
       orderBy: { id: 'desc' }
     });

@@ -68,6 +68,8 @@ export default function OrderEntryPage() {
 
   // Add Order Modals
   const [showAddOrderModal, setShowAddOrderModal] = useState(false);
+  const [showDupPatientsModal, setShowDupPatientsModal] = useState(false);
+  const [dupPatients, setDupPatients] = useState<any[]>([]);
 
   const printRef = useRef<HTMLDivElement>(null);
   const handlePreviewPrint = useReactToPrint({
@@ -81,6 +83,7 @@ export default function OrderEntryPage() {
   const [docType, setDocType] = useState('Referral');
   const [docPercentage, setDocPercentage] = useState('');
   const [docAddress, setDocAddress] = useState('');
+  const lastCheckedPhone = useRef('');
   const [docPhone, setDocPhone] = useState('');
   const [docEmail, setDocEmail] = useState('');
   const [docDepartment, setDocDepartment] = useState('');
@@ -252,34 +255,40 @@ export default function OrderEntryPage() {
   // Real-time patient lookup by phone to prevent duplicates
   useEffect(() => {
     const lookupPatient = async () => {
-      if (phone.length < 10) {
-        setPatientStatus(null);
+      const trimmedPhone = phone.trim();
+      if (trimmedPhone.length < 10) {
+        setPatientStatus(trimmedPhone.length > 0 ? 'Entering...' : null);
+        lastCheckedPhone.current = '';
         return;
       }
-
-      if (!patientId) {
+      
+      if (!patientId && trimmedPhone !== lastCheckedPhone.current) {
         setPatientStatus('Checking...');
         try {
           const res = await fetch(`/api/patients/advanced-search`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: phone.trim() })
+            body: JSON.stringify({ phone: trimmedPhone })
           });
           if (res.ok) {
             const results = await res.json();
-            const matches = results.filter((r: any) => r.phone === phone.trim());
+            // Filter for exact matches on phone
+            const matches = results.filter((r: any) => r.phone === trimmedPhone);
             if (matches.length > 0) {
               setPatientStatus(`${matches.length} Profile${matches.length > 1 ? 's' : ''}`);
+              setDupPatients(matches);
+              setShowDupPatientsModal(true);
             } else {
               setPatientStatus('New Patient');
             }
+            lastCheckedPhone.current = trimmedPhone;
           } else {
             setPatientStatus(null);
           }
         } catch (e) {
           setPatientStatus(null);
         }
-      } else {
+      } else if (patientId) {
         setPatientStatus('Profile Selected');
       }
     };
@@ -1781,6 +1790,76 @@ export default function OrderEntryPage() {
         </div>
       )}
 
+      {showDupPatientsModal && (
+        <div className="modal-overlay" onClick={() => setShowDupPatientsModal(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 850, width: '95%' }}>
+            <div className="modal-header" style={{ background: '#f97316' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff' }}>Duplicate Patients Found</h3>
+              <button className="modal-close" onClick={() => setShowDupPatientsModal(false)} style={{ color: '#fff' }}>✕</button>
+            </div>
+            <div className="modal-body" style={{ padding: '24px' }}>
+              <p style={{ color: '#475569', fontSize: '14px', marginBottom: '24px', fontWeight: 500 }}>
+                There are some patient(s) matching with entered details. Please select the patient or continue adding new patient.
+              </p>
+              
+              <div style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden', background: '#fff' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid #fee2e2' }}>
+                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Patient Name</th>
+                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>UMR</th>
+                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Card No.</th>
+                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone No.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dupPatients.map((p, idx) => (
+                      <tr 
+                        key={idx} 
+                        onClick={() => {
+                          handleSelectPatient(p);
+                          setShowDupPatientsModal(false);
+                        }}
+                        style={{ 
+                          borderBottom: '1px solid #f1f5f9', 
+                          cursor: 'pointer', 
+                          transition: 'all 0.2s',
+                          background: idx % 2 === 0 ? '#fff' : '#fafafa'
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.background = '#fff1f2')}
+                        onMouseLeave={e => (e.currentTarget.style.background = idx % 2 === 0 ? '#fff' : '#fafafa')}
+                      >
+                        <td style={{ padding: '14px 20px', fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{p.name}</td>
+                        <td style={{ padding: '14px 20px', fontSize: '14px', color: '#475569', fontFamily: 'monospace', fontWeight: 500 }}>{p.umr}</td>
+                        <td style={{ padding: '14px 20px', fontSize: '14px', color: '#64748b' }}>{p.additionalDetails?.cardNumber || '--'}</td>
+                        <td style={{ padding: '14px 20px', fontSize: '14px', color: '#475569', fontWeight: 500 }}>{p.phone}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => setShowDupPatientsModal(false)}
+                  style={{ 
+                    padding: '12px 28px', 
+                    fontSize: '14px', 
+                    fontWeight: 700, 
+                    borderRadius: '10px',
+                    boxShadow: '0 4px 12px rgba(249, 115, 22, 0.2)',
+                    background: '#f97316',
+                    borderColor: '#f97316'
+                  }}
+                >
+                  Add New Patient
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {showManageSources && (
         <div className="modal-overlay" onClick={() => { setShowManageSources(false); setEditingSourceId(null); }}>
           <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 800, width: '90%', height: '80vh', display: 'flex', flexDirection: 'column' }}>

@@ -14,6 +14,20 @@ export async function GET(request: Request) {
           { umr: { contains: search, mode: 'insensitive' } }
         ]
       },
+      select: {
+        id: true,
+        umr: true,
+        name: true,
+        age: true,
+        gender: true,
+        phone: true,
+        source: true,
+        externalId: true,
+        email: true,
+        photoUrl: true,
+        additionalDetails: true,
+        createdAt: true
+      },
       take: 10
     });
 
