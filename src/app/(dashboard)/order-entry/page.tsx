@@ -437,8 +437,13 @@ export default function OrderEntryPage() {
       showToast('Phone number is required', 'error');
       return;
     }
-    if (!age || !age.trim()) {
+    if (!age || age.toString().trim() === '') {
       showToast('Patient age is required', 'error');
+      return;
+    }
+    const parsedAge = parseInt(age.toString());
+    if (isNaN(parsedAge) || parsedAge < 0 || parsedAge > 120) {
+      showToast('Please enter a valid age between 0 and 120', 'error');
       return;
     }
     if (phone.trim().length !== 10) {
@@ -813,7 +818,24 @@ export default function OrderEntryPage() {
                 <div className="form-group">
                   <label className="form-label">Age / Gender *</label>
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <input className="form-input" type="number" placeholder="Age" style={{ width: 80 }} value={age} onChange={e => setAge(e.target.value)} />
+                    <input 
+                      className="form-input" 
+                      type="number" 
+                      placeholder="Age" 
+                      style={{ width: 80 }} 
+                      value={age} 
+                      onChange={e => {
+                        const val = e.target.value;
+                        if (val === '' || (parseInt(val) >= 0 && parseInt(val) <= 120)) {
+                          setAge(val);
+                        }
+                      }}
+                      onBlur={e => {
+                        if (e.target.value) {
+                          setAge(parseInt(e.target.value).toString());
+                        }
+                      }}
+                    />
                     <div className="form-radio-group">
                       <label><input type="radio" name="gender" checked={gender === 'M'} onChange={() => setGender('M')} /> M</label>
                       <label><input type="radio" name="gender" checked={gender === 'F'} onChange={() => setGender('F')} /> F</label>
