@@ -410,6 +410,49 @@ export default function OrderEntryPage() {
     showToast(`${order.orderName} added to current bill!`, 'success');
   };
 
+  const handleQuickAddPatient = async () => {
+    if (!name.trim()) {
+      showToast('Patient name is required', 'error');
+      return;
+    }
+    if (!phone || phone.trim().length !== 10) {
+      showToast('Valid 10-digit phone number is required', 'error');
+      return;
+    }
+    if (!age) {
+      showToast('Age is required', 'error');
+      return;
+    }
+
+    setIsSavingEntity(true);
+    try {
+      const res = await fetch('/api/patients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          age,
+          gender,
+          phone: phone.trim(),
+          source: source.trim(),
+          additionalDetails: addlDetails
+        })
+      });
+      if (res.ok) {
+        const p = await res.json();
+        handleSelectPatient(p);
+        showToast('Patient added successfully!', 'success');
+      } else {
+        const err = await res.json();
+        showToast(err.error || 'Failed to add patient', 'error');
+      }
+    } catch (e) {
+      showToast('Error adding patient', 'error');
+    } finally {
+      setIsSavingEntity(false);
+    }
+  };
+
   const handleSelectPatient = (p: any) => {
     setPatientId(p.id);
     setName(p.name);
@@ -743,11 +786,8 @@ export default function OrderEntryPage() {
             <Search size={14} /> Advance Search
           </button>
           <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
-          <button className="btn btn-primary btn-sm" onClick={() => {
-            if (!name.trim() || !phone.trim()) showToast('Patient name and phone number are required', 'error');
-            else showToast('Patient added', 'success');
-          }}>
-            <UserPlus size={14} /> Add
+          <button className="btn btn-primary btn-sm" onClick={handleQuickAddPatient} disabled={isSavingEntity}>
+            {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Add
           </button>
         </div>
       </div>
