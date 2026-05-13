@@ -7,7 +7,7 @@ import { useTheme } from '@/context/ThemeContext';
 
 // Context-sensitive top navigation actions per module
 const moduleActions: Record<string, string[]> = {
-  '/order-entry': ['Submit', 'Clear', 'Enter Results', 'Discount', 'Bill Details', 'Add Doctor', 'Add Order', 'Add Expense'],
+  '/order-entry': ['Submit', 'Clear', 'Discount', 'Bill Details', 'Add Doctor', 'Add Order', 'Add Expense'],
   '/in-process': ['Non Financial Report', 'Non Financial Status Report', 'Online Request Sample Status', 'WorkSheet'],
   '/previous-bills': ['ShiftCollectionDetailed', 'ShiftCollection', 'SummaryReport'],
   '/work-sheet': ['Get Report', 'Clear'],

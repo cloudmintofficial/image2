@@ -135,7 +135,7 @@ export default function OrderEntryPage() {
   const [advSearchResults, setAdvSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  const totalBill = orders.reduce((sum, o) => sum + o.amount, 0);
+  const totalBill = orders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
   const numericDiscount = typeof discountAmount === 'string' ? parseFloat(discountAmount) || 0 : Number(discountAmount) || 0;
   const numericPaid = typeof paidAmount === 'string' ? parseFloat(paidAmount) || 0 : Number(paidAmount) || 0;
   const balance = totalBill - numericDiscount - numericPaid;
@@ -147,7 +147,6 @@ export default function OrderEntryPage() {
     // Disable Submit and Enter Results if form is incomplete
     if (!name || !phone || orders.length === 0 || isSubmittingBill) {
       disabled.push('Submit');
-      disabled.push('Enter Results');
     }
     window.dispatchEvent(new CustomEvent('set-disabled-actions', { detail: disabled }));
   }, [name, phone, orders.length, isSubmittingBill]);
@@ -257,6 +256,32 @@ export default function OrderEntryPage() {
     return () => clearTimeout(timeoutId);
   }, [source]);
 
+  // Real-time patient lookup by phone to prevent duplicates
+  useEffect(() => {
+    const lookupPatient = async () => {
+      if (phone.length >= 10 && !patientId) {
+        try {
+          const res = await fetch(`/api/patients/advanced-search`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone: phone.trim() })
+          });
+          if (res.ok) {
+            const results = await res.json();
+            if (results.length > 0 && results[0].phone === phone.trim()) {
+              // Found a potential match, but don't auto-select unless user confirms or it's an exact single match
+              // For now, let's just show a toast or we can auto-fill if it's very confident
+              showToast(`Patient "${results[0].name}" found with this phone number.`, 'info');
+              // handleSelectPatient(results[0]); // Optional: auto-fill
+            }
+          }
+        } catch (e) { }
+      }
+    };
+    const tid = setTimeout(lookupPatient, 1000);
+    return () => clearTimeout(tid);
+  }, [phone, patientId]);
+
   const addOrder = (test: any) => {
     // Prevent duplicate orders
     const exists = orders.find(o => o.name.toLowerCase() === (test.displayOrderName || test.name).toLowerCase());
@@ -314,10 +339,21 @@ export default function OrderEntryPage() {
   };
 
   const handleCreatePatient = async () => {
+    // If phone is missing, don't call the API yet. Instead, populate the main form 
+    // and let the user complete the registration there.
     if (!advSearchState.phone || !advSearchState.phone.trim()) {
-      showToast('Phone number is required to create a patient', 'warning');
+      setName(advSearchState.patientName || '');
+      setAge(advSearchState.age || '');
+      setGender(advSearchState.gender as any || 'M');
+      setPhone(advSearchState.phone || '');
+      setSource(advSearchState.source || '');
+      setDoctor(advSearchState.doctor || '');
+      setPatientId(null);
+      setShowAdvSearch(false);
+      showToast('Patient details populated. Please enter phone number to continue.', 'info');
       return;
     }
+
     setIsSearching(true);
     try {
       const res = await fetch('/api/patients', {
@@ -381,8 +417,14 @@ export default function OrderEntryPage() {
       showToast('Patient age is required', 'error');
       return;
     }
-    if (phone.trim().length < 10) {
-      showToast('Phone number must be at least 10 digits', 'error');
+    if (phone.trim().length !== 10) {
+      showToast('Mobile number must be exactly 10 digits.', 'error');
+      return;
+    }
+
+    if (!addlDetails.dob) {
+      showToast('Date of Birth is required to proceed.', 'warning');
+      setShowAddlDetails(true);
       return;
     }
 
@@ -493,7 +535,6 @@ export default function OrderEntryPage() {
       switch (action) {
         case 'Submit': handleSubmit(); break;
         case 'Clear': handleClear(); break;
-        case 'Enter Results': window.location.href = '/in-process'; break;
         case 'Add Doctor': setShowAddDoctor(true); break;
         case 'Add Expense': setShowAddExpense(true); break;
         case 'Discount': setShowDiscount(true); break;
@@ -711,7 +752,6 @@ export default function OrderEntryPage() {
 
                   if (targetPatientId) {
                     setIsLoadingPatOrders(true);
-                    setIsLoadingPatOrders(true);
                     try {
                       const res = await fetch(`/api/patients/${targetPatientId}/orders`);
                       if (res.ok) {
@@ -785,7 +825,15 @@ export default function OrderEntryPage() {
               <div className="form-row form-row-3">
                 <div className="form-group">
                   <label className="form-label">Phone *</label>
-                  <input className="form-input" placeholder="Contact number" value={phone} onChange={e => setPhone(e.target.value)} />
+                  <input 
+                    className="form-input" 
+                    placeholder="Contact number" 
+                    value={phone} 
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                      setPhone(val);
+                    }} 
+                  />
                 </div>
                 <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Doctor</label>
@@ -923,7 +971,7 @@ export default function OrderEntryPage() {
               <div className="form-row" style={{ gridTemplateColumns: `repeat(${4 + (discountAmount > 0 ? 1 : 0) + (paymentType === 'Cheque' ? 1 : 0)}, 1fr)` }}>
                 <div className="form-group">
                   <label className="form-label">Total Bill</label>
-                  <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--primary)' }}>₹{totalBill}</div>
+                  <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--primary)' }}>₹{Number(totalBill).toFixed(2)}</div>
                 </div>
                 {discountAmount > 0 && (
                   <div className="form-group">
@@ -1052,7 +1100,15 @@ export default function OrderEntryPage() {
               <input className="form-input" value={docAddress} onChange={e => setDocAddress(e.target.value)} placeholder="Address" />
 
               <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Phone Number:</label>
-              <input className="form-input" value={docPhone} onChange={e => setDocPhone(e.target.value)} placeholder="Phone Number" />
+              <input 
+                className="form-input" 
+                value={docPhone} 
+                onChange={e => {
+                  const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                  setDocPhone(val);
+                }} 
+                placeholder="10 digit phone number" 
+              />
 
               <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Email:</label>
               <input className="form-input" value={docEmail} onChange={e => setDocEmail(e.target.value)} placeholder="Email" />
@@ -1343,8 +1399,15 @@ export default function OrderEntryPage() {
                   <input className="form-input" value={name} onChange={e => setName(e.target.value)} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Patient Phone</label>
-                  <input className="form-input" value={phone} onChange={e => setPhone(e.target.value)} />
+                  <label className="form-label">Patient Phone *</label>
+                  <input 
+                    className="form-input" 
+                    value={phone} 
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                      setPhone(val);
+                    }} 
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Email</label>
@@ -1415,7 +1478,12 @@ export default function OrderEntryPage() {
                           {sourceSuggestions.map((src, idx) => (
                             <div
                               key={idx}
-                              onClick={() => { setSource(src.name); setSourceSuggestions([]); }}
+                              onMouseDown={(e) => {
+                                e.preventDefault();
+                                sourceSelected.current = true;
+                                setSource(src.name);
+                                setSourceSuggestions([]);
+                              }}
                               style={{
                                 padding: '10px 14px', cursor: 'pointer',
                                 borderBottom: '1px solid var(--border)',
@@ -1494,7 +1562,13 @@ export default function OrderEntryPage() {
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" onClick={() => setShowAddlDetails(false)}>Save Details</button>
+              <button className="btn btn-primary" onClick={() => {
+                if (!name.trim()) return showToast('Patient Name is required', 'warning');
+                if (!phone.trim()) return showToast('Phone Number is required', 'warning');
+                if (phone.trim().length !== 10) return showToast('Phone Number must be exactly 10 digits', 'warning');
+                if (!addlDetails.dob) return showToast('Date of Birth is required', 'warning');
+                setShowAddlDetails(false);
+              }}>Save Details</button>
               <button className="btn btn-ghost" onClick={() => setShowAddlDetails(false)}>Cancel</button>
             </div>
           </div>
@@ -1530,7 +1604,16 @@ export default function OrderEntryPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Phone</label>
-                  <input className="form-input" placeholder="Search by phone" value={advSearchState.phone} onChange={e => setAdvSearchState({ ...advSearchState, phone: e.target.value })} onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} />
+                  <input 
+                    className="form-input" 
+                    placeholder="Search by phone" 
+                    value={advSearchState.phone} 
+                    onChange={e => {
+                      const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                      setAdvSearchState({ ...advSearchState, phone: val });
+                    }} 
+                    onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} 
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">UMR</label>
