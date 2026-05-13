@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     if (phone) whereClause.phone = { contains: phone, mode: 'insensitive' };
     if (gender) whereClause.gender = gender;
     if (source) whereClause.source = { contains: source, mode: 'insensitive' };
-    
+
     // Note: ageRange and doctor would need to be handled according to schema structure
     // Since doctor is handled as additionalDetails string or specific relation, we'll keep it simple
 

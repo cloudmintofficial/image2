@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { CreditCard, Search, UserPlus, FileText, Beaker, MapPin, X, FileSignature, Loader2 } from 'lucide-react';
+import { CreditCard, Search, UserPlus, FileText, Beaker, MapPin, X, FileSignature, Loader2, AlertCircle } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useToast } from '@/context/ToastContext';
 import { useReactToPrint } from 'react-to-print';
@@ -35,7 +35,7 @@ export default function OrderEntryPage() {
   // Additional Patient Details Modal
   const [showAddlDetails, setShowAddlDetails] = useState(false);
   const [addlDetails, setAddlDetails] = useState({
-    category: '', dob: '', cardNumber: '', civilId: '', hasInsurance: 'No',
+    category: '', cardNumber: '', civilId: '', hasInsurance: 'No',
     passportNumber: '', designation: '', email: '', notes: '',
     tastesAndPreferences: '', familyDetails: '', address: '', prescriptionUrl: ''
   });
@@ -136,6 +136,7 @@ export default function OrderEntryPage() {
   const [advSearchSelectedIndex, setAdvSearchSelectedIndex] = useState(-1);
   const [advSearchResults, setAdvSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const totalBill = orders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
   const numericDiscount = Math.min(totalBill, typeof discountAmount === 'string' ? parseFloat(discountAmount) || 0 : Number(discountAmount) || 0);
@@ -155,17 +156,7 @@ export default function OrderEntryPage() {
 
 
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        setAdvSearchState(prev => ({ ...prev, patientName: name || prev.patientName, phone: phone || prev.phone }));
-        setShowAdvSearch(true);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [name, phone]);
+
 
   // Autocomplete for orders
   useEffect(() => {
@@ -265,7 +256,7 @@ export default function OrderEntryPage() {
         setPatientStatus(null);
         return;
       }
-      
+
       if (!patientId) {
         setPatientStatus('Checking...');
         try {
@@ -279,7 +270,6 @@ export default function OrderEntryPage() {
             const matches = results.filter((r: any) => r.phone === phone.trim());
             if (matches.length > 0) {
               setPatientStatus(`${matches.length} Profile${matches.length > 1 ? 's' : ''}`);
-              showToast(`${matches.length} patient(s) found with this number.`, 'info');
             } else {
               setPatientStatus('New Patient');
             }
@@ -420,22 +410,22 @@ export default function OrderEntryPage() {
     setPhoneUmr(p.umr || '');
     setSource(p.source || '');
     if (p.additionalDetails) {
-      try {
-        setAddlDetails(JSON.parse(p.additionalDetails));
-      } catch (e) { }
+      const details = typeof p.additionalDetails === 'string'
+        ? JSON.parse(p.additionalDetails)
+        : p.additionalDetails;
+      setAddlDetails(prev => ({
+        ...prev,
+        ...details
+      }));
     } else {
       setAddlDetails({
-        category: '', dob: '', cardNumber: '', civilId: '', hasInsurance: 'No',
+        category: '', cardNumber: '', civilId: '', hasInsurance: 'No',
         passportNumber: '', designation: '', email: '', notes: '',
         tastesAndPreferences: '', familyDetails: '', address: '', prescriptionUrl: ''
       });
     }
     setAdvSearchResults([]);
     setShowAdvSearch(false);
-  };
-
-  const handleDOBChange = (val: string) => {
-    setAddlDetails(prev => ({ ...prev, dob: val }));
   };
 
   const handleSubmit = async () => {
@@ -573,10 +563,13 @@ export default function OrderEntryPage() {
 
   const handleClear = () => {
     if (orders.length > 0) {
-      if (!confirm('You have unsaved orders. Are you sure you want to clear the form?')) {
-        return;
-      }
+      setShowClearConfirm(true);
+      return;
     }
+    performClear();
+  };
+
+  const performClear = () => {
     setPatientId(null);
     setPhoneUmr(''); setName(''); setAge(''); setGender('M');
     setSource(''); setPhone(''); setDoctor('');
@@ -584,6 +577,7 @@ export default function OrderEntryPage() {
     setDiscountAmount(0); setDiscountReason('');
     setPaymentType('Cash'); setReferenceNumber('');
     setPatientStatus(null);
+    setShowClearConfirm(false);
   };
 
   // Listen for top nav actions
@@ -746,7 +740,10 @@ export default function OrderEntryPage() {
           <p className="page-subtitle">Register patients and create lab orders</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-outline btn-sm" onClick={() => setShowAdvSearch(!showAdvSearch)}>
+          <button className="btn btn-outline btn-sm" onClick={() => {
+            setAdvSearchState(prev => ({ ...prev, patientName: name || prev.patientName, phone: phone || prev.phone }));
+            setShowAdvSearch(true);
+          }}>
             <Search size={14} /> Advance Search
           </button>
           <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
@@ -768,12 +765,7 @@ export default function OrderEntryPage() {
             <div className="card-header">
               <span className="card-title">Patient Information</span>
               <div style={{ display: 'flex', gap: 6 }}>
-                <button className="btn btn-primary btn-sm" onClick={() => {
-                  setAdvSearchState(prev => ({ ...prev, patientName: name || prev.patientName, phone: phone || prev.phone }));
-                  setShowAdvSearch(true);
-                }}>
-                  <Search size={14} /> Search (Ctrl+K)
-                </button>
+
                 <button className="btn btn-success btn-sm" onClick={async () => {
                   let targetPatientId = patientId;
 
@@ -841,10 +833,10 @@ export default function OrderEntryPage() {
                   <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>Phone *</span>
                     {patientStatus && (
-                      <span style={{ 
-                        fontSize: 9, 
-                        padding: '2px 8px', 
-                        borderRadius: 12, 
+                      <span style={{
+                        fontSize: 9,
+                        padding: '2px 8px',
+                        borderRadius: 12,
                         background: patientStatus?.includes('Profile') ? 'var(--success-bg)' : patientStatus === 'New Patient' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-tertiary)',
                         color: patientStatus?.includes('Profile') ? 'var(--success)' : patientStatus === 'New Patient' ? '#3b82f6' : 'var(--text-muted)',
                         fontWeight: 700,
@@ -856,14 +848,14 @@ export default function OrderEntryPage() {
                       </span>
                     )}
                   </label>
-                  <input 
-                    className="form-input" 
-                    placeholder="Contact number" 
-                    value={phone} 
+                  <input
+                    className="form-input"
+                    placeholder="Contact number"
+                    value={phone}
                     onChange={e => {
                       const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                       setPhone(val);
-                    }} 
+                    }}
                     style={{ height: 40 }}
                   />
                   {patientStatus?.includes('Profile') && !patientId && (
@@ -876,12 +868,12 @@ export default function OrderEntryPage() {
                 <div className="form-group">
                   <label className="form-label">Age / Gender *</label>
                   <div style={{ display: 'flex', gap: 12 }}>
-                    <input 
-                      className="form-input" 
-                      type="number" 
-                      placeholder="Age" 
-                      style={{ width: 85, height: 40 }} 
-                      value={age} 
+                    <input
+                      className="form-input"
+                      type="number"
+                      placeholder="Age"
+                      style={{ width: 85, height: 40 }}
+                      value={age}
                       onChange={e => {
                         const val = e.target.value;
                         if (val === '' || (parseInt(val) >= 0 && parseInt(val) <= 120)) {
@@ -1099,8 +1091,8 @@ export default function OrderEntryPage() {
                 <div className="form-group">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                     <label className="form-label" style={{ marginBottom: 0 }}>Paid Amount</label>
-                    <button 
-                      className="btn btn-ghost btn-sm" 
+                    <button
+                      className="btn btn-ghost btn-sm"
                       style={{ padding: '0 8px', height: 20, fontSize: 10, textTransform: 'uppercase' }}
                       onClick={() => setPaidAmount(Math.max(0, totalBill - numericDiscount))}
                     >
@@ -1118,10 +1110,10 @@ export default function OrderEntryPage() {
                       if (val.startsWith('0') && val.length > 1 && val[1] !== '.') {
                         val = val.replace(/^0+/, '');
                       }
-                      
+
                       const netTotal = Math.max(0, totalBill - numericDiscount);
                       const numVal = parseFloat(val) || 0;
-                      
+
                       if (numVal > netTotal) {
                         setPaidAmount(netTotal);
                       } else if (val === '') {
@@ -1201,14 +1193,14 @@ export default function OrderEntryPage() {
               <input className="form-input" value={docAddress} onChange={e => setDocAddress(e.target.value)} placeholder="Address" />
 
               <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Phone Number:</label>
-              <input 
-                className="form-input" 
-                value={docPhone} 
+              <input
+                className="form-input"
+                value={docPhone}
                 onChange={e => {
                   const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                   setDocPhone(val);
-                }} 
-                placeholder="10 digit phone number" 
+                }}
+                placeholder="10 digit phone number"
               />
 
               <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Email:</label>
@@ -1447,6 +1439,25 @@ export default function OrderEntryPage() {
         onRepeatOrder={handleRepeatOrder}
       />
 
+      {/* Nice Clear Confirmation Modal */}
+      {showClearConfirm && (
+        <div className="modal-overlay" style={{ zIndex: 1000 }} onClick={() => setShowClearConfirm(false)}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 400, padding: '32px 24px', textAlign: 'center', borderRadius: 16, border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+            <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', width: 56, height: 56, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <AlertCircle size={28} />
+            </div>
+            <h3 style={{ marginBottom: 12, fontSize: '1.2rem', fontWeight: 700 }}>Discard Unsaved Orders?</h3>
+            <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontSize: 13, lineHeight: 1.6 }}>
+              You have active orders in the list. Clearing the form will remove all selected tests. This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button className="btn btn-ghost" style={{ flex: 1, height: 40 }} onClick={() => setShowClearConfirm(false)}>Cancel</button>
+              <button className="btn" style={{ flex: 1, height: 40, background: 'var(--danger)', color: 'white', border: 'none', fontWeight: 600 }} onClick={performClear}>Clear All</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Additional Patient Details Modal */}
       {showAddlDetails && (
         <div className="modal-overlay" onClick={() => setShowAddlDetails(false)}>
@@ -1465,10 +1476,10 @@ export default function OrderEntryPage() {
                   <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>Patient Phone *</span>
                     {patientStatus && (
-                      <span style={{ 
-                        fontSize: 9, 
-                        padding: '1px 6px', 
-                        borderRadius: 10, 
+                      <span style={{
+                        fontSize: 9,
+                        padding: '1px 6px',
+                        borderRadius: 10,
                         background: patientStatus?.includes('Profile') ? 'var(--success-bg)' : patientStatus === 'New Patient' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-tertiary)',
                         color: patientStatus?.includes('Profile') ? 'var(--success)' : patientStatus === 'New Patient' ? '#3b82f6' : 'var(--text-muted)',
                         fontWeight: 700,
@@ -1479,13 +1490,13 @@ export default function OrderEntryPage() {
                       </span>
                     )}
                   </label>
-                  <input 
-                    className="form-input" 
-                    value={phone} 
+                  <input
+                    className="form-input"
+                    value={phone}
                     onChange={e => {
                       const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                       setPhone(val);
-                    }} 
+                    }}
                   />
                   {patientStatus?.includes('Profile') && !patientId && (
                     <div style={{ color: 'var(--danger)', fontSize: 10, marginTop: 4, fontWeight: 500 }}>
@@ -1508,8 +1519,19 @@ export default function OrderEntryPage() {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">DOB</label>
-                  <input type="date" className="form-input" value={addlDetails.dob} onChange={e => setAddlDetails({ ...addlDetails, dob: e.target.value })} />
+                  <label className="form-label">Patient Age *</label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    placeholder="Age"
+                    value={age}
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (val === '' || (parseInt(val) >= 0 && parseInt(val) <= 120)) {
+                        setAge(val);
+                      }
+                    }}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Has Insurance</label>
@@ -1650,7 +1672,6 @@ export default function OrderEntryPage() {
                 if (!name.trim()) return showToast('Patient Name is required', 'warning');
                 if (!phone.trim()) return showToast('Phone Number is required', 'warning');
                 if (phone.trim().length !== 10) return showToast('Phone Number must be exactly 10 digits', 'warning');
-                if (!addlDetails.dob) return showToast('Date of Birth is required', 'warning');
                 setShowAddlDetails(false);
               }}>Save Details</button>
               <button className="btn btn-ghost" onClick={() => setShowAddlDetails(false)}>Cancel</button>
@@ -1688,15 +1709,15 @@ export default function OrderEntryPage() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Phone</label>
-                  <input 
-                    className="form-input" 
-                    placeholder="Search by phone" 
-                    value={advSearchState.phone} 
+                  <input
+                    className="form-input"
+                    placeholder="Search by phone"
+                    value={advSearchState.phone}
                     onChange={e => {
                       const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                       setAdvSearchState({ ...advSearchState, phone: val });
-                    }} 
-                    onKeyDown={e => e.key === 'Enter' && handleAdvSearch()} 
+                    }}
+                    onKeyDown={e => e.key === 'Enter' && handleAdvSearch()}
                   />
                 </div>
                 <div className="form-group">

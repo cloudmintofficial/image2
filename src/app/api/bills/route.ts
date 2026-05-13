@@ -4,20 +4,20 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { 
-      patientId, 
-      doctorId, 
-      doctorName, 
-      totalBill, 
-      discount, 
-      discountReason, 
-      paidAmount, 
-      balance, 
-      paymentType, 
-      referenceNumber, 
-      orders, 
-      createdBy, 
-      labId 
+    const {
+      patientId,
+      doctorId,
+      doctorName,
+      totalBill,
+      discount,
+      discountReason,
+      paidAmount,
+      balance,
+      paymentType,
+      referenceNumber,
+      orders,
+      createdBy,
+      labId
     } = body;
 
     // Basic Validation
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
 
     const result = await prisma.$transaction(async (tx) => {
       let finalDoctorId = doctorId ? parseInt(doctorId.toString()) : null;
-      
+
       if (!finalDoctorId && doctorName) {
         const matched = await tx.doctor.findFirst({
           where: { name: { equals: doctorName.trim(), mode: 'insensitive' } }
@@ -78,13 +78,13 @@ export async function POST(request: Request) {
         }
       });
     });
-    
+
     return NextResponse.json(result);
   } catch (error: any) {
     console.error('Error creating bill:', error);
-    return NextResponse.json({ 
-      error: 'Failed to create bill', 
-      details: error.message || 'Unknown error' 
+    return NextResponse.json({
+      error: 'Failed to create bill',
+      details: error.message || 'Unknown error'
     }, { status: 500 });
   }
 }

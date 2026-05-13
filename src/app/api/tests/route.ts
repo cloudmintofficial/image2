@@ -65,16 +65,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Order Name is required' }, { status: 400 });
     }
 
-    // Only verify testCode uniqueness if explicitly provided
-    if (testCode && testCode.trim() !== '') {
-      const existingCode = await prisma.testMaster.findFirst({
-        where: { testCode: { equals: testCode.trim(), mode: 'insensitive' } }
-      });
 
-      if (existingCode) {
-        return NextResponse.json({ error: 'An order with this test code already exists' }, { status: 400 });
-      }
-    }
 
     const test = await prisma.testMaster.create({
       data: {
