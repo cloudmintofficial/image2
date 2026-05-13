@@ -29,7 +29,7 @@ export default function OrderEntryPage() {
   const [gender, setGender] = useState<'M' | 'F'>('M');
   const [source, setSource] = useState('');
   const [phone, setPhone] = useState('');
-  const [patientStatus, setPatientStatus] = useState<'New' | 'Existing' | 'Checking' | null>(null);
+  const [patientStatus, setPatientStatus] = useState<string | null>(null);
   const [doctor, setDoctor] = useState('');
 
   // Additional Patient Details Modal
@@ -138,9 +138,9 @@ export default function OrderEntryPage() {
   const [isSearching, setIsSearching] = useState(false);
 
   const totalBill = orders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0);
-  const numericDiscount = typeof discountAmount === 'string' ? parseFloat(discountAmount) || 0 : Number(discountAmount) || 0;
-  const numericPaid = typeof paidAmount === 'string' ? parseFloat(paidAmount) || 0 : Number(paidAmount) || 0;
-  const balance = totalBill - numericDiscount - numericPaid;
+  const numericDiscount = Math.min(totalBill, typeof discountAmount === 'string' ? parseFloat(discountAmount) || 0 : Number(discountAmount) || 0);
+  const numericPaid = Math.min(totalBill - numericDiscount, typeof paidAmount === 'string' ? parseFloat(paidAmount) || 0 : Number(paidAmount) || 0);
+  const balance = Math.max(0, totalBill - numericDiscount - numericPaid);
   const today = new Date().toLocaleDateString('en-GB');
 
   // Dispatch disabled actions for TopNav
@@ -267,7 +267,7 @@ export default function OrderEntryPage() {
       }
       
       if (!patientId) {
-        setPatientStatus('Checking');
+        setPatientStatus('Checking...');
         try {
           const res = await fetch(`/api/patients/advanced-search`, {
             method: 'POST',
@@ -276,11 +276,12 @@ export default function OrderEntryPage() {
           });
           if (res.ok) {
             const results = await res.json();
-            if (results.length > 0 && results[0].phone === phone.trim()) {
-              setPatientStatus('Existing');
-              showToast(`Patient "${results[0].name}" already exists with this phone number.`, 'warning');
+            const matches = results.filter((r: any) => r.phone === phone.trim());
+            if (matches.length > 0) {
+              setPatientStatus(`${matches.length} Profile${matches.length > 1 ? 's' : ''}`);
+              showToast(`${matches.length} patient(s) found with this number.`, 'info');
             } else {
-              setPatientStatus('New');
+              setPatientStatus('New Patient');
             }
           } else {
             setPatientStatus(null);
@@ -289,7 +290,7 @@ export default function OrderEntryPage() {
           setPatientStatus(null);
         }
       } else {
-        setPatientStatus('Existing');
+        setPatientStatus('Profile Selected');
       }
     };
     const tid = setTimeout(lookupPatient, 800);
@@ -482,7 +483,7 @@ export default function OrderEntryPage() {
 
       // Create patient if new
       if (!finalPatientId) {
-        // Strict Duplicate Check
+        // Let user know if they are creating a duplicate, but don't block them
         const dupRes = await fetch(`/api/patients/advanced-search`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -491,9 +492,7 @@ export default function OrderEntryPage() {
         if (dupRes.ok) {
           const dupData = await dupRes.json();
           if (dupData.length > 0) {
-            showToast(`Error: Patient "${dupData[0].name}" already exists with this phone number. Please select them from search.`, 'error');
-            setIsSubmittingBill(false);
-            return;
+            showToast(`Note: ${dupData.length} other patient(s) found with this number. Creating a new profile.`, 'info');
           }
         }
 
@@ -844,8 +843,8 @@ export default function OrderEntryPage() {
                         fontSize: 9, 
                         padding: '2px 8px', 
                         borderRadius: 12, 
-                        background: patientStatus === 'Existing' ? 'var(--success-bg)' : patientStatus === 'New' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-tertiary)',
-                        color: patientStatus === 'Existing' ? 'var(--success)' : patientStatus === 'New' ? '#3b82f6' : 'var(--text-muted)',
+                        background: patientStatus?.includes('Profile') ? 'var(--success-bg)' : patientStatus === 'New Patient' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-tertiary)',
+                        color: patientStatus?.includes('Profile') ? 'var(--success)' : patientStatus === 'New Patient' ? '#3b82f6' : 'var(--text-muted)',
                         fontWeight: 700,
                         textTransform: 'uppercase',
                         letterSpacing: '0.05em',
