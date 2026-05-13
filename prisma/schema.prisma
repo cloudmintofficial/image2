@@ -45,7 +45,7 @@ model Patient {
   name              String
   age               Int?
   gender            String   @default("M")
-  phone             String?
+  phone             String?  @unique
   source            String?
   externalId        String?
   email             String?

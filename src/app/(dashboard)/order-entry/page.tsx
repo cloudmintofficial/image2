@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { useToast } from '@/context/ToastContext';
 import { useReactToPrint } from 'react-to-print';
 import AddOrderModal from '@/components/modals/AddOrderModal';
+import PastOrdersModal from '@/components/modals/PastOrdersModal';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
 
@@ -271,7 +272,7 @@ export default function OrderEntryPage() {
             if (results.length > 0 && results[0].phone === phone.trim()) {
               // Found a potential match, but don't auto-select unless user confirms or it's an exact single match
               // For now, let's just show a toast or we can auto-fill if it's very confident
-              showToast(`Patient "${results[0].name}" found with this phone number.`, 'info');
+              showToast(`Patient "${results[0].name}" already exists with this phone number.`, 'warning');
               // handleSelectPatient(results[0]); // Optional: auto-fill
             }
           }
@@ -377,6 +378,25 @@ export default function OrderEntryPage() {
     }
   };
 
+  const handleRepeatOrder = (order: any) => {
+    // Prevent duplicate orders
+    const exists = orders.find(o => o.name.toLowerCase() === order.orderName.toLowerCase());
+    if (exists) {
+      showToast('This test is already in the current bill', 'warning');
+      return;
+    }
+
+    setOrders(prev => [...prev, {
+      sno: prev.length + 1,
+      name: order.orderName,
+      date: new Date().toISOString().split('T')[0],
+      amount: Number(order.amount) || 0,
+      testId: order.testId || null
+    }]);
+    setShowPatOrders(false);
+    showToast(`${order.orderName} added to current bill!`, 'success');
+  };
+
   const handleSelectPatient = (p: any) => {
     setPatientId(p.id);
     setName(p.name);
@@ -398,6 +418,10 @@ export default function OrderEntryPage() {
     }
     setAdvSearchResults([]);
     setShowAdvSearch(false);
+  };
+
+  const handleDOBChange = (val: string) => {
+    setAddlDetails(prev => ({ ...prev, dob: val }));
   };
 
   const handleSubmit = async () => {
@@ -422,12 +446,6 @@ export default function OrderEntryPage() {
       return;
     }
 
-    if (!addlDetails.dob) {
-      showToast('Date of Birth is required to proceed.', 'warning');
-      setShowAddlDetails(true);
-      return;
-    }
-
     try {
       setIsSubmittingBill(true);
 
@@ -446,6 +464,21 @@ export default function OrderEntryPage() {
 
       // Create patient if new
       if (!finalPatientId) {
+        // Strict Duplicate Check
+        const dupRes = await fetch(`/api/patients/advanced-search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: trimmedPhone })
+        });
+        if (dupRes.ok) {
+          const dupData = await dupRes.json();
+          if (dupData.length > 0) {
+            showToast(`Error: Patient "${dupData[0].name}" already exists with this phone number. Please select them from search.`, 'error');
+            setIsSubmittingBill(false);
+            return;
+          }
+        }
+
         const pRes = await fetch('/api/patients', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -766,7 +799,7 @@ export default function OrderEntryPage() {
                     }
                   }
                 }} disabled={isLoadingPatOrders}>
-                  {isLoadingPatOrders ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />} Pat Orders
+                  {isLoadingPatOrders ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />} Past Orders
                 </button>
                 <button className="btn btn-outline btn-sm" onClick={() => setShowAddlDetails(true)}>Addl. Details</button>
               </div>
@@ -1338,51 +1371,13 @@ export default function OrderEntryPage() {
 
       {/* Pat Orders Slide-in Panel */}
       {/* Pat Orders Center Modal */}
-      {showPatOrders && (
-        <div className="modal-overlay" onClick={() => setShowPatOrders(false)}>
-          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 600 }}>
-            <div className="modal-header">
-              <h3>Past Patient Orders</h3>
-              <button className="modal-close" onClick={() => setShowPatOrders(false)}>✕</button>
-            </div>
-            <div className="modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-              {pastOrders.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
-                  No previous orders found for this patient.
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {pastOrders.map((order, idx) => (
-                    <div key={idx} className="card" style={{ padding: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s', cursor: 'pointer', border: '1px solid var(--border)' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'} onClick={() => {
-                      // One-Click Repeat Order
-                      setOrders(prev => [...prev, {
-                        sno: prev.length + 1,
-                        name: order.orderName,
-                        date: new Date().toISOString().split('T')[0],
-                        amount: order.amount,
-                        testId: order.testId
-                      }]);
-                      setShowPatOrders(false);
-                      showToast(`${order.orderName} added to current bill!`, 'success');
-                    }}>
-                      <div>
-                        <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 15 }}>{order.orderName}</div>
-                        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-                          Ordered: {new Date(order.orderDate).toLocaleDateString()} • Status: {order.status}
-                        </div>
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-                        <div style={{ fontWeight: 700, color: 'var(--primary)', fontSize: 15 }}>₹{order.amount}</div>
-                        <button type="button" className="btn btn-outline btn-sm" style={{ fontSize: 12, padding: '4px 12px' }}>Repeat</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <PastOrdersModal
+        isOpen={showPatOrders}
+        onClose={() => setShowPatOrders(false)}
+        pastOrders={pastOrders}
+        patientInfo={{ name, phone }}
+        onRepeatOrder={handleRepeatOrder}
+      />
 
       {/* Additional Patient Details Modal */}
       {showAddlDetails && (
