@@ -261,7 +261,7 @@ export default function OrderEntryPage() {
         lastCheckedPhone.current = '';
         return;
       }
-      
+
       if (!patientId && trimmedPhone !== lastCheckedPhone.current) {
         setPatientStatus('Checking...');
         try {
@@ -1801,7 +1801,7 @@ export default function OrderEntryPage() {
               <p style={{ color: '#475569', fontSize: '14px', marginBottom: '24px', fontWeight: 500 }}>
                 There are some patient(s) matching with entered details. Please select the patient or continue adding new patient.
               </p>
-              
+
               <div style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden', background: '#fff' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
@@ -1814,15 +1814,15 @@ export default function OrderEntryPage() {
                   </thead>
                   <tbody>
                     {dupPatients.map((p, idx) => (
-                      <tr 
-                        key={idx} 
+                      <tr
+                        key={idx}
                         onClick={() => {
                           handleSelectPatient(p);
                           setShowDupPatientsModal(false);
                         }}
-                        style={{ 
-                          borderBottom: '1px solid #f1f5f9', 
-                          cursor: 'pointer', 
+                        style={{
+                          borderBottom: '1px solid #f1f5f9',
+                          cursor: 'pointer',
                           transition: 'all 0.2s',
                           background: idx % 2 === 0 ? '#fff' : '#fafafa'
                         }}
@@ -1840,13 +1840,13 @@ export default function OrderEntryPage() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
-                <button 
-                  className="btn btn-primary" 
+                <button
+                  className="btn btn-primary"
                   onClick={() => setShowDupPatientsModal(false)}
-                  style={{ 
-                    padding: '12px 28px', 
-                    fontSize: '14px', 
-                    fontWeight: 700, 
+                  style={{
+                    padding: '12px 28px',
+                    fontSize: '14px',
+                    fontWeight: 700,
                     borderRadius: '10px',
                     boxShadow: '0 4px 12px rgba(249, 115, 22, 0.2)',
                     background: '#f97316',
