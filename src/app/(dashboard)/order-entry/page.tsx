@@ -86,6 +86,8 @@ export default function OrderEntryPage() {
   const [orderSuggestions, setOrderSuggestions] = useState<any[]>([]);
   const [doctorSuggestions, setDoctorSuggestions] = useState<any[]>([]);
   const [sourceSuggestions, setSourceSuggestions] = useState<any[]>([]);
+  const doctorRef = useRef<HTMLInputElement>(null);
+  const sourceRef = useRef<HTMLInputElement>(null);
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [paymentType, setPaymentType] = useState('Cash');
   const [referenceNumber, setReferenceNumber] = useState('');
@@ -145,6 +147,17 @@ export default function OrderEntryPage() {
   const [editingSourceName, setEditingSourceName] = useState('');
   const [editingSourceStatus, setEditingSourceStatus] = useState('Active');
   const [isUpdatingSource, setIsUpdatingSource] = useState(false);
+
+  // Global click-outside listener for dropdowns
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setOrderSuggestions([]);
+      setDoctorSuggestions([]);
+      setSourceSuggestions([]);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (showManageSources) {
@@ -628,6 +641,9 @@ export default function OrderEntryPage() {
     });
     setIsModified(false);
     setIsEditing(false);
+
+    // Focus Source field next
+    setTimeout(() => sourceRef.current?.focus(), 100);
 
     if (p.additionalDetails) {
       const details = typeof p.additionalDetails === 'string'
@@ -1127,12 +1143,14 @@ export default function OrderEntryPage() {
                   <label className="form-label">Source</label>
                   <div style={{ position: 'relative' }}>
                     <input
+                      ref={sourceRef}
                       className="form-input"
                       placeholder="Referral source"
                       value={source}
                       onChange={e => setSource(e.target.value)}
                       onFocus={() => { setDoctorSuggestions([]); setOrderSuggestions([]); }}
-                      style={{ paddingRight: 32, height: 40 }}
+                      readOnly={patientId ? !isEditing : false}
+                      style={{ paddingRight: 32, height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
                     />
                     {isSearchingSourcesDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -1149,6 +1167,8 @@ export default function OrderEntryPage() {
                             sourceSelected.current = true;
                             setSource(src.name);
                             setSourceSuggestions([]);
+                            // Focus Doctor next
+                            setTimeout(() => doctorRef.current?.focus(), 100);
                           }}
                         >
                           <div className="name">{src.name}</div>
@@ -1175,6 +1195,7 @@ export default function OrderEntryPage() {
                   <label className="form-label">Doctor</label>
                   <div style={{ position: 'relative' }}>
                     <input
+                      ref={doctorRef}
                       className="form-input"
                       placeholder="Referring doctor"
                       value={doctor}
@@ -1197,6 +1218,8 @@ export default function OrderEntryPage() {
                             doctorSelected.current = true;
                             setDoctor(doc.name);
                             setDoctorSuggestions([]);
+                            // Focus Order Name next
+                            setTimeout(() => orderSearchRef.current?.focus(), 100);
                           }}
                         >
                           <div className="name">{doc.name}</div>
