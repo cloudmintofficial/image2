@@ -31,6 +31,8 @@ export default function InProcessPage() {
   const [resultDoctor, setResultDoctor] = useState('');
   const [resultAdvice, setResultAdvice] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+  const [templateCache, setTemplateCache] = useState<Record<string, any>>({});
 
   // Template-driven result entry
   const [testTemplate, setTestTemplate] = useState<any>(null);
@@ -91,19 +93,34 @@ export default function InProcessPage() {
   const printRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: 'Diagnostic_Report'
+    documentTitle: 'Diagnostic_Report',
+    onBeforePrint: () => new Promise((resolve) => setTimeout(resolve, 500))
   });
 
-  // Fetch test template when order is selected for result entry
+  // Fetch test template when order is selected for result entry with Caching & Skeleton Support
   useEffect(() => {
-    if (selectedOrder && viewMode === 'result') {
-      fetch(`/api/tests/template?orderName=${encodeURIComponent(selectedOrder.orderName)}`)
-        .then(res => res.json())
-        .then(tmpl => {
+    const fetchTmpl = async () => {
+      if (!selectedOrder || viewMode !== 'result') return;
+      
+      const cacheKey = selectedOrder.orderName;
+      if (templateCache[cacheKey]) {
+        setTestTemplate(templateCache[cacheKey]);
+        return;
+      }
+
+      setIsLoadingTemplate(true);
+      try {
+        const res = await fetch(`/api/tests/template?orderName=${encodeURIComponent(selectedOrder.orderName)}`);
+        const tmpl = await res.json();
+        
+        if (tmpl) {
           setTestTemplate(tmpl);
+          setTemplateCache(prev => ({ ...prev, [cacheKey]: tmpl }));
+          
           if (tmpl.method && !resultMethod) setResultMethod(tmpl.method);
           if (tmpl.advice && !resultAdvice) setResultAdvice(tmpl.advice);
-          // Restore saved panel results if they exist
+          
+          // Restore saved results
           if (tmpl.uiType === 'panel' && selectedOrder.resultData) {
             try { setPanelResults(JSON.parse(selectedOrder.resultData)); } catch { setPanelResults({}); }
           }
@@ -127,13 +144,18 @@ export default function InProcessPage() {
               setImmunoTiter(d.titer || '');
             } catch { /* ignore */ }
           }
-          // Load radiology template if no existing data
           if (tmpl.uiType === 'richtext' && !selectedOrder.resultData && tmpl.resultTemplate) {
             setResultInput(tmpl.resultTemplate);
           }
-        })
-        .catch(console.error);
-    }
+        }
+      } catch (error) {
+        console.error('Error fetching template:', error);
+      } finally {
+        setIsLoadingTemplate(false);
+      }
+    };
+
+    fetchTmpl();
   }, [selectedOrder, viewMode]);
 
   const updatePanelField = (compName: string, field: string, value: any) => {
@@ -320,8 +342,6 @@ export default function InProcessPage() {
       if (allOk) {
         await fetchBills();
         alert('All results authorized successfully.');
-      } else {
-        alert('Some orders failed to authorize.');
       }
     } catch (e) {
       alert('Error during authorization');
@@ -958,7 +978,8 @@ export default function InProcessPage() {
               padding: '20px 24px',
               boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
               position: 'relative',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              flexShrink: 0
             }}>
               <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 4, background: 'var(--primary)' }} />
               
@@ -990,22 +1011,46 @@ export default function InProcessPage() {
               </div>
             </div>
 
-            {/* Diagnostic Workspace */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Diagnostic Workspace - Independently Scrollable */}
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: 24, 
+              flex: 1, 
+              overflowY: 'auto', 
+              paddingBottom: 100, // Room for sticky footer
+              scrollbarWidth: 'thin'
+            }}>
 
               {/* Main Editor Section */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
-                {/* UI Type Badge */}
-                {testTemplate && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <span style={{ padding: '4px 12px', borderRadius: 6, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', background: testTemplate.uiType === 'panel' ? '#dbeafe' : testTemplate.uiType === 'single' ? '#dcfce7' : testTemplate.uiType === 'microbiology' ? '#fef3c7' : '#f3e8ff', color: testTemplate.uiType === 'panel' ? '#1e40af' : testTemplate.uiType === 'single' ? '#166534' : testTemplate.uiType === 'microbiology' ? '#92400e' : '#7c3aed' }}>
-                      {testTemplate.uiType === 'panel' ? '📊 Panel Test' : testTemplate.uiType === 'single' ? '🔢 Single Value' : testTemplate.uiType === 'microbiology' ? '🦠 Microbiology' : '📝 Report'}
-                    </span>
-                    {testTemplate.sampleType && <span style={{ fontSize: 12, color: '#64748b' }}>Sample: {testTemplate.sampleType}</span>}
-                    {testTemplate.department && <span style={{ fontSize: 12, color: '#64748b' }}>Dept: {testTemplate.department}</span>}
+                {/* Loading Skeleton */}
+                {isLoadingTemplate ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    <div style={{ height: 40, width: 200, background: '#f1f5f9', borderRadius: 8, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                    <div style={{ height: 300, width: '100%', background: '#f1f5f9', borderRadius: 16, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                    <div style={{ height: 100, width: '100%', background: '#f1f5f9', borderRadius: 16, animation: 'pulse 1.5s infinite ease-in-out' }} />
+                    <style>{`
+                      @keyframes pulse {
+                        0% { opacity: 1; }
+                        50% { opacity: 0.5; }
+                        100% { opacity: 1; }
+                      }
+                    `}</style>
                   </div>
-                )}
+                ) : (
+                  <>
+                    {/* UI Type Badge */}
+                    {testTemplate && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span style={{ padding: '4px 12px', borderRadius: 6, fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', background: testTemplate.uiType === 'panel' ? '#dbeafe' : testTemplate.uiType === 'single' ? '#dcfce7' : testTemplate.uiType === 'microbiology' ? '#fef3c7' : '#f3e8ff', color: testTemplate.uiType === 'panel' ? '#1e40af' : testTemplate.uiType === 'single' ? '#166534' : testTemplate.uiType === 'microbiology' ? '#92400e' : '#7c3aed' }}>
+                          {testTemplate.uiType === 'panel' ? '📊 Panel Test' : testTemplate.uiType === 'single' ? '🔢 Single Value' : testTemplate.uiType === 'microbiology' ? '🦠 Microbiology' : '📝 Report'}
+                        </span>
+                        {testTemplate.sampleType && <span style={{ fontSize: 12, color: '#64748b' }}>Sample: {testTemplate.sampleType}</span>}
+                        {testTemplate.department && <span style={{ fontSize: 12, color: '#64748b' }}>Dept: {testTemplate.department}</span>}
+                      </div>
+                    )}
 
                 {/* === PANEL TABLE UI === */}
                 {testTemplate?.uiType === 'panel' && testTemplate.components?.length > 0 && (
@@ -1421,10 +1466,27 @@ export default function InProcessPage() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </>
+            )}
 
                   <div style={{ height: 1, background: '#f1f5f9' }} />
 
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+                  {/* Sticky Footer for Clinical Actions */}
+                  <div style={{ 
+                    position: 'absolute', 
+                    bottom: 0, 
+                    left: 0, 
+                    right: 0, 
+                    background: 'rgba(255, 255, 255, 0.95)', 
+                    backdropFilter: 'blur(8px)',
+                    borderTop: '1px solid #e2e8f0',
+                    padding: '20px 40px',
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    gap: 12,
+                    zIndex: 10
+                  }}>
                     <button 
                       className="btn" 
                       style={{ background: '#fff', border: '1px solid #e2e8f0', color: '#475569', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} 
@@ -1457,14 +1519,13 @@ export default function InProcessPage() {
                     </button>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Hidden Printable Area - Using visibility: hidden for maximum react-to-print compatibility */}
-      <div style={{ visibility: 'hidden', height: 0, overflow: 'hidden' }}>
+      {/* Hidden Printable Area - Using Off-screen positioning for maximum react-to-print compatibility in Turbopack */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '210mm' }}>
         <div ref={printRef} style={{ padding: '60px 40px', fontFamily: '"Arial", sans-serif', color: '#000', backgroundColor: '#fff', minHeight: '100vh', boxSizing: 'border-box' }}>
           {/* Top Thin Line */}
           <div style={{ borderTop: '1px solid #000', marginBottom: '24px', width: '100%' }}></div>
@@ -1496,11 +1557,15 @@ export default function InProcessPage() {
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
                 {/* Optimized High-Fidelity Barcode */}
                 <div style={{ textAlign: 'right' }}>
-                  <img
-                    src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${selectedBill?.billNo || '0000'}&scale=3&rotate=N&includetext=false`}
-                    alt="Barcode"
-                    style={{ height: '40px', maxWidth: '220px' }}
-                  />
+                  {selectedBill?.billNo ? (
+                    <img
+                      src={`https://barcode.tec-it.com/barcode.ashx?data=${selectedBill.billNo}&code=Code128&dpi=300&imagewidth=400&imageheight=60&includetext=0`}
+                      alt="Barcode"
+                      style={{ height: '32px', width: '240px', objectFit: 'contain', display: 'block', marginLeft: 'auto' }}
+                    />
+                  ) : (
+                    <div style={{ height: '32px', width: '240px', background: '#f8fafc', border: '1px dashed #cbd5e1', marginLeft: 'auto' }} />
+                  )}
                 </div>
               </div>
               <div style={{ display: 'flex' }}>
@@ -1538,7 +1603,7 @@ export default function InProcessPage() {
                   <tr style={{ borderBottom: '1px solid #000' }}>
                     <th style={{ textAlign: 'left', padding: '10px 0', width: '25%', fontSize: 13 }}>Component</th>
                     <th style={{ textAlign: 'center', padding: '10px 0', width: '20%', fontSize: 13 }}>Result</th>
-                    <th style={{ textAlign: 'center', padding: '10px 0', width: '25%', fontSize: 13 }}>Reference Range</th>
+                    <th style={{ textAlign: 'left', padding: '10px 12px', width: '30%', fontSize: 13 }}>Reference Range</th>
                     <th style={{ textAlign: 'center', padding: '10px 0', width: '15%', fontSize: 13 }}>Units</th>
                     <th style={{ textAlign: 'right', padding: '10px 0', width: '15%', fontSize: 13 }}>Method</th>
                   </tr>
@@ -1548,7 +1613,7 @@ export default function InProcessPage() {
                     <tr key={c.id}>
                       <td style={{ padding: '10px 0', fontWeight: 700, fontSize: 12 }}>{c.name}</td>
                       <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{panelResults[c.name]?.value || ''}</td>
-                      <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 11, color: '#000', lineHeight: 1.4 }}>{c.normalRange || ''}</td>
+                      <td style={{ textAlign: 'left', padding: '10px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{c.normalRange || ''}</td>
                       <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{c.unit || ''}</td>
                       <td style={{ textAlign: 'right', padding: '10px 0', fontSize: 11, fontStyle: 'italic' }}>{panelResults[c.name]?.method || c.method || resultMethod || ''}</td>
                     </tr>
@@ -1601,15 +1666,19 @@ export default function InProcessPage() {
           {/* Footer Signature Block */}
           <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             {/* Dynamic QR Code for Report Verification */}
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ width: '60px', height: '60px', padding: '4px', border: '1px solid #eee', marginBottom: '4px' }}>
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=https://medfileshared2.bharathcloud.com/lab/InProcess/OrderResultsEntry?billid=${selectedBill?.id}`}
-                  alt="QR Code"
-                  style={{ width: '100%', height: '100%' }}
-                />
-              </div>
-              <div style={{ fontSize: '8px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Verify Report</div>
+            <div style={{ textAlign: 'center', flexShrink: 0 }}>
+              {selectedBill?.id ? (
+                <div style={{ width: '90px', height: '90px', padding: '6px', border: '1px solid #e2e8f0', marginBottom: '6px', background: '#fff', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=${encodeURIComponent(`https://medfile.lab/verify/report/${selectedBill.id}`)}&ecc=M`}
+                    alt="QR Code"
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                </div>
+              ) : (
+                <div style={{ width: '90px', height: '90px', background: '#f1f5f9', marginBottom: '6px', border: '1px dashed #cbd5e1' }} />
+              )}
+              <div style={{ fontSize: '9px', color: '#000', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 800 }}>Verify Report</div>
             </div>
 
             {/* Signature Block - Right Aligned */}
