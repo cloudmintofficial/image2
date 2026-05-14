@@ -665,19 +665,19 @@ export default function InProcessPage() {
           </div>
 
           {showDispatchModal && (
-            <div className="modal-overlay">
-              <div className="modal" style={{ maxWidth: 400 }}>
-                <div className="modal-header" style={{ background: '#d35400', color: '#fff' }}>
-                  <h3 style={{ color: '#fff', margin: 0, fontSize: 16 }}>Bill Payment</h3>
+            <div className="modal-overlay" onClick={() => setShowDispatchModal(false)}>
+              <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 450 }}>
+                <div className="modal-header" style={{ background: 'var(--primary-gradient)', color: '#fff' }}>
+                  <h3 style={{ color: '#fff', margin: 0, fontSize: 16 }}>Dispatch Details</h3>
                   <button className="modal-close" style={{ color: '#fff' }} onClick={() => setShowDispatchModal(false)}>✕</button>
                 </div>
-                <div className="modal-body" style={{ padding: 32, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
+                <div className="modal-body" style={{ padding: 32, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
                   <strong style={{ color: 'var(--text-primary)' }}>Bill Date:</strong>
                   <input type="date" className="form-input" style={{ width: 140 }} value={dispatchDate} onChange={e => setDispatchDate(e.target.value)} />
                   <input type="text" className="form-input" style={{ width: 100 }} value={dispatchTime} onChange={e => setDispatchTime(e.target.value)} />
                 </div>
-                <div className="modal-footer" style={{ justifyContent: 'center' }}>
-                  <button className="btn" style={{ background: '#d35400', color: '#fff' }} onClick={handleDispatch}>Submit</button>
+                <div className="modal-footer" style={{ justifyContent: 'center', gap: 12 }}>
+                  <button className="btn btn-primary" onClick={handleDispatch}>Submit</button>
                   <button className="btn btn-outline" onClick={() => setShowDispatchModal(false)}>Close</button>
                 </div>
               </div>
@@ -685,19 +685,19 @@ export default function InProcessPage() {
           )}
 
           {showEditDatesModal && (
-            <div className="modal-overlay">
-              <div className="modal" style={{ maxWidth: 400 }}>
-                <div className="modal-header" style={{ background: '#d35400', color: '#fff' }}>
-                  <h3 style={{ color: '#fff', margin: 0, fontSize: 16 }}>Bill Payment</h3>
+            <div className="modal-overlay" onClick={() => setShowEditDatesModal(false)}>
+              <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 450 }}>
+                <div className="modal-header" style={{ background: 'var(--primary-gradient)', color: '#fff' }}>
+                  <h3 style={{ color: '#fff', margin: 0, fontSize: 16 }}>Edit Order Dates</h3>
                   <button className="modal-close" style={{ color: '#fff' }} onClick={() => setShowEditDatesModal(false)}>✕</button>
                 </div>
-                <div className="modal-body" style={{ padding: 32, display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
+                <div className="modal-body" style={{ padding: 32, display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center', justifyContent: 'center' }}>
                   <strong style={{ color: 'var(--text-primary)' }}>Bill Date:</strong>
                   <input type="date" className="form-input" style={{ width: 140 }} value={editDate} onChange={e => setEditDate(e.target.value)} />
                   <input type="text" className="form-input" style={{ width: 100 }} value={editTime} onChange={e => setEditTime(e.target.value)} />
                 </div>
-                <div className="modal-footer" style={{ justifyContent: 'center' }}>
-                  <button className="btn" style={{ background: '#d35400', color: '#fff' }} onClick={handleUpdateDates}>Submit</button>
+                <div className="modal-footer" style={{ justifyContent: 'center', gap: 12 }}>
+                  <button className="btn btn-primary" onClick={handleUpdateDates}>Update Dates</button>
                   <button className="btn btn-outline" onClick={() => setShowEditDatesModal(false)}>Close</button>
                 </div>
               </div>
@@ -853,21 +853,19 @@ export default function InProcessPage() {
                         <div style={{ position: 'absolute', right: 12, top: 12 }}><Loader2 size={16} className="animate-spin text-gray-400" /></div>
                       )}
                       {doctorSuggestions.length > 0 && (
-                        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid var(--border-color)', borderRadius: 8, zIndex: 50, maxHeight: 200, overflowY: 'auto', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', marginTop: 4 }}>
+                        <div className="suggestion-dropdown">
                           {doctorSuggestions.map((doc, idx) => (
                             <div
                               key={idx}
-                              style={{ padding: '10px 16px', fontSize: 14, cursor: 'pointer', borderBottom: idx < doctorSuggestions.length - 1 ? '1px solid #f1f5f9' : 'none', transition: 'background 0.2s' }}
-                              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f8fafc'}
-                              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#fff'}
+                              className="suggestion-item"
                               onClick={() => {
                                 setDoctorSearchText(doc.name);
                                 setEditPatientForm({ ...editPatientForm, doctorId: doc.id });
                                 setDoctorSuggestions([]);
                               }}
                             >
-                              <div style={{ fontWeight: 500, color: '#0f172a' }}>{doc.name}</div>
-                              {doc.specialization && <div style={{ fontSize: 12, color: '#64748b' }}>{doc.specialization}</div>}
+                              <div className="name">{doc.name}</div>
+                              {doc.specialization && <div className="sub">{doc.specialization}</div>}
                             </div>
                           ))}
                         </div>
@@ -1374,7 +1372,7 @@ export default function InProcessPage() {
                   <div>
                     <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Service Doctor</label>
                     <select
-                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}
+                      className="form-input form-select"
                       value={resultDoctor}
                       onChange={e => setResultDoctor(e.target.value)}
                     >
@@ -1388,7 +1386,7 @@ export default function InProcessPage() {
                   <div>
                     <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Signature</label>
                     <select 
-                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}
+                      className="form-input form-select"
                       value={signatureId}
                       onChange={e => setSignatureId(e.target.value)}
                     >
