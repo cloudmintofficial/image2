@@ -62,30 +62,58 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string, compId: string }> }
 ) {
-  const { compId: paramCompId } = await params;
-  const compId = parseInt(paramCompId);
-  if (isNaN(compId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
-
   try {
-    const deleted = await prisma.testComponent.delete({
+    const { id: paramId, compId: paramCompId } = await params;
+    const testId = parseInt(paramId);
+    const compId = parseInt(paramCompId);
+
+    console.log(`[API DELETE] Attempting to delete component ${compId} from test ${testId}`);
+
+    if (isNaN(compId)) {
+      return NextResponse.json({ error: 'Invalid Component ID' }, { status: 400 });
+    }
+
+    // First check if the component exists and belongs to the test
+    const component = await prisma.testComponent.findFirst({
+      where: { id: compId, testId: testId }
+    });
+
+    if (!component) {
+      console.warn(`[API DELETE] Component ${compId} not found for test ${testId}`);
+      return NextResponse.json({ error: 'Component not found' }, { status: 404 });
+    }
+
+    // Perform the deletion
+    await prisma.testComponent.delete({
       where: { id: compId }
     });
 
+    console.log(`[API DELETE] Successfully deleted component ${compId}`);
+
     // Check remaining components for this test
     const remaining = await prisma.testComponent.count({
-      where: { testId: deleted.testId }
+      where: { testId: testId }
     });
 
+    // Update the TestMaster flag if no components left
     if (remaining === 0) {
       await prisma.testMaster.update({
-        where: { id: deleted.testId },
+        where: { id: testId },
         data: { hasComponents: false }
       });
+      console.log(`[API DELETE] Test ${testId} now has 0 components. Flag updated.`);
     }
 
-    return NextResponse.json({ message: 'Component deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting component:', error);
-    return NextResponse.json({ error: 'Failed to delete component' }, { status: 500 });
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Component deleted successfully',
+      remainingCount: remaining
+    });
+  } catch (error: any) {
+    console.error('[API DELETE] Error deleting component:', error);
+    return NextResponse.json({ 
+      error: 'Failed to delete component', 
+      details: error.message 
+    }, { status: 500 });
   }
 }

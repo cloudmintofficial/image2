@@ -975,7 +975,7 @@ export default function InProcessPage() {
             </div>
 
             {/* Diagnostic Workspace */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 24, alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
               {/* Main Editor Section */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -1334,116 +1334,123 @@ export default function InProcessPage() {
                   </div>
                 )}
 
-                {/* Advice Section */}
-                <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 12 }}>Clinical Advice</label>
-                  <textarea
-                    style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, resize: 'vertical', outline: 'none', transition: 'border-color 0.2s' }}
-                    rows={3}
-                    placeholder="Enter patient advice or follow-up instructions..."
-                    value={resultAdvice}
-                    onChange={e => setResultAdvice(e.target.value)}
-                    onFocus={e => e.currentTarget.style.borderColor = '#f97316'}
-                    onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'}
-                  />
-                </div>
-              </div>
+                {/* Combined Advice & Metadata Footer */}
+                <div style={{ 
+                  background: '#fff', 
+                  borderRadius: 16, 
+                  border: '1px solid #e2e8f0', 
+                  padding: '24px', 
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+                  display: 'grid',
+                  gridTemplateColumns: '2fr 1fr 1fr 1fr',
+                  gap: 32,
+                  alignItems: 'start'
+                }}>
+                  {/* Advice column */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 12 }}>Clinical Advice</label>
+                    <textarea
+                      style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, resize: 'none', outline: 'none', transition: 'border-color 0.2s', height: 100 }}
+                      placeholder="Enter patient advice or follow-up instructions..."
+                      value={resultAdvice}
+                      onChange={e => setResultAdvice(e.target.value)}
+                      onFocus={e => e.currentTarget.style.borderColor = '#f97316'}
+                      onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'}
+                    />
+                  </div>
 
-              {/* Sidebar Controls */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-                <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-                  <h3 style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 20 }}>Report Metadata</h3>
+                  {/* Metadata columns */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Methodology</label>
+                    <input
+                      type="text"
+                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none' }}
+                      placeholder="e.g. Automated"
+                      value={resultMethod}
+                      onChange={e => setResultMethod(e.target.value)}
+                    />
+                  </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Methodology</label>
-                      <input
-                        type="text"
-                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none' }}
-                        placeholder="e.g. Automated"
-                        value={resultMethod}
-                        onChange={e => setResultMethod(e.target.value)}
-                      />
-                    </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Service Doctor</label>
+                    <select
+                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}
+                      value={resultDoctor}
+                      onChange={e => setResultDoctor(e.target.value)}
+                    >
+                      <option value="">Select Doctor</option>
+                      {doctorsList.map(doc => (
+                        <option key={doc.id} value={doc.name}>{doc.name}</option>
+                      ))}
+                    </select>
+                  </div>
 
-                    <div>
-                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Service Doctor</label>
-                      <select
-                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}
-                        value={resultDoctor}
-                        onChange={e => setResultDoctor(e.target.value)}
-                      >
-                        <option value="">Select Doctor</option>
-                        {doctorsList.map(doc => (
-                          <option key={doc.id} value={doc.name}>{doc.name}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Authorized Signature</label>
-                      <select 
-                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}
-                        value={signatureId}
-                        onChange={e => setSignatureId(e.target.value)}
-                      >
-                        {signaturesList.map(sig => (
-                          <option key={sig.id} value={sig.id}>{sig.label}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div style={{ marginTop: 8 }}>
-                      <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Attachments</label>
-                      <button 
-                        onClick={() => alert('Attachments feature coming soon!')}
-                        style={{ width: '100%', padding: '10px', background: '#f8fafc', color: '#475569', border: '1px dashed #cbd5e1', borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
-                      >
-                        + Add Result Files
-                      </button>
-                    </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Signature</label>
+                    <select 
+                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none', background: '#fff' }}
+                      value={signatureId}
+                      onChange={e => setSignatureId(e.target.value)}
+                    >
+                      {signaturesList.map(sig => (
+                        <option key={sig.id} value={sig.id}>{sig.label}</option>
+                      ))}
+                    </select>
+                    
+                    <button 
+                      onClick={() => alert('Attachments feature coming soon!')}
+                      style={{ width: '100%', marginTop: 12, padding: '8px', background: '#f8fafc', color: '#475569', border: '1px dashed #cbd5e1', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+                    >
+                      + Add Files
+                    </button>
                   </div>
                 </div>
 
-                {/* Final Actions */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {/* Final Horizontal Actions Bar */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginTop: 8 }}>
                   <button
-                    onClick={() => handleSaveResult(true)}
-                    disabled={isSaving}
-                    style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px rgba(234, 88, 12, 0.2)', transition: 'transform 0.2s, opacity 0.2s', opacity: isSaving ? 0.7 : 1 }}
-                    onMouseEnter={e => !isSaving && (e.currentTarget.style.transform = 'translateY(-2px)')}
-                    onMouseLeave={e => !isSaving && (e.currentTarget.style.transform = 'translateY(0)')}
+                    style={{ padding: '12px 24px', background: 'transparent', color: '#64748b', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+                    onClick={() => setViewMode('bill')}
                   >
-                    {isSaving ? 'Finalizing...' : 'Verify & Complete'}
+                    Discard Changes
                   </button>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  
+                  <div style={{ display: 'flex', gap: 12 }}>
                     <button
                       onClick={() => handleSaveResult(false)}
                       disabled={isSaving}
-                      style={{ padding: '12px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
-                      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
-                      onMouseLeave={e => e.currentTarget.style.background = '#fff'}
+                      style={{ padding: '12px 24px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', minWidth: 120 }}
                     >
                       Save Draft
                     </button>
                     <button 
                       onClick={handlePrint}
-                      style={{ padding: '12px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
-                      onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
-                      onMouseLeave={e => e.currentTarget.style.background = '#fff'}
+                      style={{ padding: '12px 24px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', minWidth: 100 }}
                     >
                       Print
                     </button>
+                    <button
+                      onClick={() => handleSaveResult(true)}
+                      disabled={isSaving}
+                      style={{ 
+                        padding: '12px 32px', 
+                        background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', 
+                        color: '#fff', 
+                        border: 'none', 
+                        borderRadius: 12, 
+                        fontSize: 14, 
+                        fontWeight: 700, 
+                        cursor: 'pointer', 
+                        boxShadow: '0 4px 12px rgba(234, 88, 12, 0.2)',
+                        minWidth: 180,
+                        opacity: isSaving ? 0.7 : 1
+                      }}
+                    >
+                      {isSaving ? 'Finalizing...' : 'Verify & Complete'}
+                    </button>
                   </div>
-                  <button
-                    style={{ width: '100%', padding: '12px', background: 'transparent', color: '#64748b', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
-                    onClick={() => setViewMode('bill')}
-                  >
-                    Discard Changes
-                  </button>
                 </div>
               </div>
-
             </div>
           </div>
         </div>

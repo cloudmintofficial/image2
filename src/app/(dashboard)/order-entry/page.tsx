@@ -1151,7 +1151,19 @@ export default function OrderEntryPage() {
                   )}
                 </div>
 
-                <div className="form-group" style={{ position: 'relative' }}>
+
+              </div>
+            </div>
+          </div>
+
+          {/* Order Section */}
+          <div className="card" style={{ marginBottom: 20, overflow: 'visible', position: 'relative', zIndex: 9 }}>
+            <div className="card-header">
+              <span className="card-title">Orders</span>
+            </div>
+            <div className="card-body">
+              {/* Doctor and Order Name */}
+              <div className="form-group" style={{ position: 'relative' }}>
                   <label className="form-label">Doctor</label>
                   <div style={{ position: 'relative' }}>
                     <input
@@ -1185,54 +1197,44 @@ export default function OrderEntryPage() {
                       ))}
                     </div>
                   )}
-                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Order Section */}
-          <div className="card" style={{ marginBottom: 20, overflow: 'visible', position: 'relative', zIndex: 9 }}>
-            <div className="card-header">
-              <span className="card-title">Orders</span>
-            </div>
-            <div className="card-body">
-              {/* Order search */}
               <div className="form-group" style={{ position: 'relative' }}>
                 <label className="form-label">Order Name</label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    ref={orderSearchRef}
-                    className="form-input"
-                    placeholder="Type to search tests/procedures..."
-                    value={orderSearch}
-                    onChange={e => setOrderSearch(e.target.value)}
-                    onFocus={() => { setDoctorSuggestions([]); setSourceSuggestions([]); }}
-                    style={{ paddingRight: 32 }}
-                  />
-                  {isSearchingOrdersDropdown && (
-                    <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      ref={orderSearchRef}
+                      className="form-input"
+                      placeholder="Type to search tests/procedures..."
+                      value={orderSearch}
+                      onChange={e => setOrderSearch(e.target.value)}
+                      onFocus={() => { setDoctorSuggestions([]); setSourceSuggestions([]); }}
+                      style={{ paddingRight: 32, height: 40 }}
+                    />
+                    {isSearchingOrdersDropdown && (
+                      <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                    )}
+                  </div>
+                  {orderSuggestions.length > 0 && (
+                    <div className="suggestion-dropdown">
+                      {orderSuggestions.map((test, i) => (
+                        <div
+                          key={i}
+                          className="suggestion-item"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            orderSelected.current = true;
+                            addOrder(test);
+                          }}
+                        >
+                          <div className="name">{test.name}</div>
+                          <div className="sub">{test.category}</div>
+                          <span style={{ fontWeight: 600, color: 'var(--primary)' }}>₹{test.price}</span>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
-                {orderSuggestions.length > 0 && (
-                  <div className="suggestion-dropdown">
-                    {orderSuggestions.map((test, i) => (
-                      <div
-                        key={i}
-                        className="suggestion-item"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          orderSelected.current = true;
-                          addOrder(test);
-                        }}
-                      >
-                        <div className="name">{test.name}</div>
-                        <div className="sub">{test.category}</div>
-                        <span style={{ fontWeight: 600, color: 'var(--primary)' }}>₹{test.price}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
 
               {/* Order Table */}
               <div className="data-table-container" style={{ marginTop: 12 }}>

@@ -9,9 +9,15 @@ export default function OrderComponentsPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const testId = params.id;
+  const [testId, setTestId] = useState<string>('');
   const templateId = searchParams.get('templateId');
   const { showToast } = useToast();
+
+  useEffect(() => {
+    if (params?.id) {
+      setTestId(params.id as string);
+    }
+  }, [params]);
 
   const [test, setTest] = useState<any>(null);
   const [currentTemplate, setCurrentTemplate] = useState<any>(null);
@@ -33,6 +39,7 @@ export default function OrderComponentsPage() {
   });
   const [isSavingFont, setIsSavingFont] = useState(false);
   const [currentDate, setCurrentDate] = useState('');
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   useEffect(() => {
     setCurrentDate(new Date().toLocaleString());
@@ -203,20 +210,35 @@ export default function OrderComponentsPage() {
     setShowAddComponentModal(true);
   };
 
-  const handleDeleteComponent = async (compId: number) => {
-    if (!confirm('Are you sure you want to delete this component?')) return;
+  const handleDeleteComponent = async (targetCompId: number) => {
+    if (!targetCompId) return;
+    if (!testId) {
+      showToast('Error: Test ID not initialized', 'error');
+      return;
+    }
+    
     try {
-      const res = await fetch(`/api/tests/${testId}/components/${compId}`, { method: 'DELETE' });
+      setLoading(true);
+      console.log(`[DEBUG] Executing DELETE: /api/tests/${testId}/components/${targetCompId}`);
+      
+      const res = await fetch(`/api/tests/${testId}/components/${targetCompId}`, { 
+        method: 'DELETE',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      
       if (res.ok) {
         showToast('Component deleted successfully', 'success');
-        fetchDetails();
+        setConfirmDeleteId(null);
+        await fetchDetails();
       } else {
         const errorData = await res.json().catch(() => ({}));
         showToast(errorData.error || 'Failed to delete component', 'error');
-        fetchDetails();
       }
     } catch (err) {
-      showToast('Error deleting component', 'error');
+      console.error('[DEBUG] Delete operation crashed:', err);
+      showToast('System error deleting component', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -392,11 +414,40 @@ export default function OrderComponentsPage() {
                     </span>
                   </td>
                   <td style={{ padding: '12px 24px', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                      <button className="btn btn-ghost btn-sm" style={{ color: '#e25838', backgroundColor: '#fff', border: '1px solid #e25838' }}>Values</button>
-                      <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-secondary)' }} onClick={() => handleEditComponent(comp)}><Edit size={16} /></button>
-                      <button className="btn btn-ghost btn-sm" style={{ color: 'var(--danger)' }} onClick={() => handleDeleteComponent(comp.id)}><Trash2 size={16} /></button>
-                    </div>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        {confirmDeleteId === comp.id ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--danger-light)', padding: '2px 8px', borderRadius: '8px', border: '1px solid var(--danger)' }}>
+                            <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--danger)' }}>Delete?</span>
+                            <button 
+                              className="btn btn-sm" 
+                              style={{ padding: '2px 8px', fontSize: '10px', background: 'var(--danger)', color: '#fff', border: 'none' }}
+                              onClick={() => handleDeleteComponent(comp.id)}
+                            >
+                              Yes
+                            </button>
+                            <button 
+                              className="btn btn-sm" 
+                              style={{ padding: '2px 8px', fontSize: '10px', background: '#fff', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
+                              onClick={() => setConfirmDeleteId(null)}
+                            >
+                              No
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <button className="btn btn-ghost btn-sm" style={{ color: '#e25838', backgroundColor: '#fff', border: '1px solid #e25838' }}>Values</button>
+                            <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-secondary)' }} onClick={() => handleEditComponent(comp)}><Edit size={16} /></button>
+                            <button 
+                              className="btn btn-ghost btn-sm" 
+                              style={{ color: 'var(--danger)', padding: '8px' }} 
+                              title="Delete Component"
+                              onClick={() => setConfirmDeleteId(comp.id)}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </>
+                        )}
+                      </div>
                   </td>
                 </tr>
               ))
