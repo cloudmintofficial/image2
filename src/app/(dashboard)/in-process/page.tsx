@@ -101,62 +101,80 @@ export default function InProcessPage() {
   useEffect(() => {
     const fetchTmpl = async () => {
       if (!selectedOrder || viewMode !== 'result') return;
-      
-      const cacheKey = selectedOrder.orderName;
+
+      // Reset all result state when switching orders to prevent data bleed-through
+      setResultInput('');
+      setMicroOrganism('');
+      setMicroGrowth('No Growth');
+      setMicroColonyCount('');
+      setMicroSensitivity({});
+      setImmunoResult('');
+      setImmunoMethod('');
+      setImmunoTiter('');
+      setSingleResult('');
+      setPanelResults({});
+
+      // Use orderId-based cache key (not orderName) to avoid cross-bill data collisions
+      const cacheKey = `${selectedOrder.id}`;
       if (templateCache[cacheKey]) {
-        setTestTemplate(templateCache[cacheKey]);
+        const tmpl = templateCache[cacheKey];
+        setTestTemplate(tmpl);
+        // Restore already-saved results from the order
+        restoreSavedResults(tmpl, selectedOrder);
         return;
       }
 
       setIsLoadingTemplate(true);
       try {
         const res = await fetch(`/api/tests/template?orderName=${encodeURIComponent(selectedOrder.orderName)}`);
+        if (!res.ok) throw new Error(`Template fetch failed: ${res.status}`);
         const tmpl = await res.json();
-        
+
         if (tmpl) {
           setTestTemplate(tmpl);
           setTemplateCache(prev => ({ ...prev, [cacheKey]: tmpl }));
-          
-          if (tmpl.method && !resultMethod) setResultMethod(tmpl.method);
-          if (tmpl.advice && !resultAdvice) setResultAdvice(tmpl.advice);
-          
-          // Restore saved results
-          if (tmpl.uiType === 'panel' && selectedOrder.resultData) {
-            try { setPanelResults(JSON.parse(selectedOrder.resultData)); } catch { setPanelResults({}); }
-          }
-          if (tmpl.uiType === 'single' && selectedOrder.resultData) {
-            setSingleResult(selectedOrder.resultData);
-          }
-          if (tmpl.uiType === 'microbiology' && selectedOrder.resultData) {
-            try {
-              const d = JSON.parse(selectedOrder.resultData);
-              setMicroOrganism(d.organism || '');
-              setMicroGrowth(d.growth || 'No Growth');
-              setMicroColonyCount(d.colonyCount || '');
-              setMicroSensitivity(d.sensitivity || {});
-            } catch { /* ignore */ }
-          }
-          if (tmpl.uiType === 'immunology' && selectedOrder.resultData) {
-            try {
-              const d = JSON.parse(selectedOrder.resultData);
-              setImmunoResult(d.result || '');
-              setImmunoMethod(d.method || '');
-              setImmunoTiter(d.titer || '');
-            } catch { /* ignore */ }
-          }
-          if (tmpl.uiType === 'richtext' && !selectedOrder.resultData && tmpl.resultTemplate) {
-            setResultInput(tmpl.resultTemplate);
-          }
+          if (tmpl.method && !selectedOrder.resultMethod) setResultMethod(tmpl.method);
+          if (tmpl.advice && !selectedOrder.resultAdvice) setResultAdvice(tmpl.advice);
+          restoreSavedResults(tmpl, selectedOrder);
         }
       } catch (error) {
         console.error('Error fetching template:', error);
+        setTestTemplate(null);
       } finally {
         setIsLoadingTemplate(false);
       }
     };
 
     fetchTmpl();
-  }, [selectedOrder, viewMode]);
+  }, [selectedOrder?.id, viewMode]);
+
+  // Helper: restore saved results from order data into the correct state fields
+  const restoreSavedResults = (tmpl: any, order: any) => {
+    if (!order.resultData) return;
+    try {
+      if (tmpl.uiType === 'panel') {
+        setPanelResults(JSON.parse(order.resultData));
+      } else if (tmpl.uiType === 'single') {
+        setSingleResult(order.resultData);
+      } else if (tmpl.uiType === 'microbiology') {
+        const d = JSON.parse(order.resultData);
+        setMicroOrganism(d.organism || '');
+        setMicroGrowth(d.growth || 'No Growth');
+        setMicroColonyCount(d.colonyCount || '');
+        setMicroSensitivity(d.sensitivity || {});
+      } else if (tmpl.uiType === 'immunology') {
+        const d = JSON.parse(order.resultData);
+        setImmunoResult(d.result || '');
+        setImmunoMethod(d.method || '');
+        setImmunoTiter(d.titer || '');
+      } else if (tmpl.uiType === 'richtext') {
+        setResultInput(order.resultData || (tmpl.resultTemplate ?? ''));
+      }
+    } catch {
+      // Malformed saved data - start fresh
+      console.warn('Could not parse saved resultData for order:', order.id);
+    }
+  };
 
   const updatePanelField = (compName: string, field: string, value: any) => {
     setPanelResults(prev => {
@@ -274,8 +292,6 @@ export default function InProcessPage() {
 
   const handleSaveResult = async (markComplete: boolean) => {
     if (!selectedOrder) return;
-    setIsSaving(true);
-    const newStatus = markComplete ? 'Completed' : 'Entered';
 
     // Build resultData based on template type
     let finalResultData = resultInput;
@@ -288,6 +304,15 @@ export default function InProcessPage() {
     } else if (testTemplate?.uiType === 'immunology') {
       finalResultData = JSON.stringify({ result: immunoResult, method: immunoMethod, titer: immunoTiter });
     }
+
+    // Guard: require at least some data before marking complete
+    if (markComplete && !finalResultData?.trim()) {
+      alert('Please enter result data before marking as complete.');
+      return;
+    }
+
+    setIsSaving(true);
+    const newStatus = markComplete ? 'Completed' : 'Entered';
 
     try {
       const res = await fetch(`/api/orders/${selectedOrder.id}/result`, {
@@ -309,9 +334,12 @@ export default function InProcessPage() {
         } else {
           alert('Saved as draft.');
         }
+      } else {
+        const errBody = await res.json().catch(() => ({}));
+        alert(`Failed to save result: ${errBody?.error || res.statusText}`);
       }
     } catch (e) {
-      alert('Failed to save result');
+      alert('Network error: Failed to save result. Please check your connection.');
     } finally {
       setIsSaving(false);
     }
@@ -633,12 +661,27 @@ export default function InProcessPage() {
                             className="btn btn-primary"
                             style={{ padding: '6px 16px', background: isCompleted ? '#22c55e' : '#f97316', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 12, boxShadow: isCompleted ? '0 4px 12px rgba(34,197,94,0.2)' : '0 4px 12px rgba(249,115,22,0.2)' }}
                             onClick={() => {
-                              setSelectedOrder(o);
-                              setResultInput(o.resultData || '');
+                              // Reset all result fields before entering new order to prevent stale data bleed
+                              setResultInput('');
+                              setResultMethod('');
+                              setResultDoctor('');
+                              setResultAdvice('');
+                              setPanelResults({});
+                              setSingleResult('');
+                              setMicroOrganism('');
+                              setMicroGrowth('No Growth');
+                              setMicroColonyCount('');
+                              setMicroSensitivity({});
+                              setImmunoResult('');
+                              setImmunoMethod('');
+                              setImmunoTiter('');
+                              setTestTemplate(null);
+                              // Now set saved values from the order record
                               setResultMethod(o.resultMethod || '');
-                              setResultDoctor(o.resultDoctor || 'Select Service Doctor');
+                              setResultDoctor(o.resultDoctor || '');
                               setResultAdvice(o.resultAdvice || '');
                               setSignatureId(o.signatureId || 'default');
+                              setSelectedOrder(o);
                               setViewMode('result');
                             }}
                           >
@@ -986,9 +1029,9 @@ export default function InProcessPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
                 <div>
                   <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Patient Details</div>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>{selectedBill.patientObj.name}</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>{selectedBill?.patientObj?.name || '—'}</div>
                   <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>
-                    {selectedBill.patientObj.age}Y / {selectedBill.patientObj.gender === 'M' ? 'Male' : 'Female'}
+                    {selectedBill?.patientObj?.age || '?'}Y / {selectedBill?.patientObj?.gender === 'M' ? 'Male' : selectedBill?.patientObj?.gender === 'F' ? 'Female' : 'Other'}
                   </div>
                 </div>
                 <div>
