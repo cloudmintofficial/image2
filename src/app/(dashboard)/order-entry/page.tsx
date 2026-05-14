@@ -56,7 +56,7 @@ export default function OrderEntryPage() {
       setIsModified(false);
       return;
     }
-    
+
     // Convert current state to a comparable object
     const currentData = {
       name: name.trim(),
@@ -65,7 +65,7 @@ export default function OrderEntryPage() {
       phone: phone.trim(),
       source: source.trim()
     };
-    
+
     // Compare with original
     const modified = JSON.stringify(currentData) !== JSON.stringify(originalPatientData);
     setIsModified(modified);
@@ -487,7 +487,7 @@ export default function OrderEntryPage() {
 
   const handleUpdatePatient = async () => {
     if (!patientId) return;
-    
+
     if (!name.trim()) {
       showToast('Patient name is required', 'error');
       return;
@@ -609,7 +609,7 @@ export default function OrderEntryPage() {
     setPhone(p.phone || '');
     setPhoneUmr(p.umr || '');
     setSource(p.source || '');
-    
+
     // Save original state for modification tracking
     setOriginalPatientData({
       name: p.name || '',
@@ -950,9 +950,9 @@ export default function OrderEntryPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1 }}>
                 <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Phone/UMR :</label>
                 <div style={{ position: 'relative', flex: 1, maxWidth: 300 }}>
-                  <input 
-                    className="form-input" 
-                    placeholder="Search phone or UMR..." 
+                  <input
+                    className="form-input"
+                    placeholder="Search phone or UMR..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handlePatientQuickSearch()}
@@ -968,10 +968,10 @@ export default function OrderEntryPage() {
                 </button>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                 <button className="btn btn-primary" onClick={handleOpenPastOrders} disabled={isLoadingPatOrders} style={{ height: 38, display: 'flex', alignItems: 'center', gap: 6 }}>
-                   {isLoadingPatOrders ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />} Pat Orders
-                 </button>
-                 <button className="btn btn-primary" onClick={() => setShowAddlDetails(true)} style={{ height: 38 }}>Addl. Details</button>
+                <button className="btn btn-primary" onClick={handleOpenPastOrders} disabled={isLoadingPatOrders} style={{ height: 38, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  {isLoadingPatOrders ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />} Pat Orders
+                </button>
+                <button className="btn btn-primary" onClick={() => setShowAddlDetails(true)} style={{ height: 38 }}>Addl. Details</button>
               </div>
             </div>
           </div>
@@ -983,7 +983,7 @@ export default function OrderEntryPage() {
               <div style={{ display: 'flex', gap: 8 }}>
                 <button className="btn btn-outline btn-sm" onClick={handleClear}>Clear</button>
                 {patientId ? (
-                   <>
+                  <>
                     {isEditing ? (
                       <>
                         <button className="btn btn-outline btn-sm" onClick={() => {
@@ -997,9 +997,9 @@ export default function OrderEntryPage() {
                             setSource(originalPatientData.source);
                           }
                         }}>Cancel</button>
-                        <button 
-                          className="btn btn-primary btn-sm" 
-                          onClick={handleUpdatePatient} 
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={handleUpdatePatient}
                           disabled={isSavingEntity || !isModified}
                         >
                           {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Update
@@ -1010,7 +1010,7 @@ export default function OrderEntryPage() {
                         <Edit2 size={14} /> Edit
                       </button>
                     )}
-                   </>
+                  </>
                 ) : (
                   <button className="btn btn-primary btn-sm" onClick={handleQuickAddPatient} disabled={isSavingEntity}>
                     {isSavingEntity ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />} Add
@@ -1023,13 +1023,13 @@ export default function OrderEntryPage() {
                 {/* Row 1: Primary Info */}
                 <div className="form-group">
                   <label className="form-label">Name *</label>
-                  <input 
-                    className={`form-input ${!name ? 'required' : ''}`} 
-                    placeholder="Patient full name" 
-                    value={name} 
-                    onChange={e => setName(e.target.value)} 
+                  <input
+                    className={`form-input ${!name ? 'required' : ''}`}
+                    placeholder="Patient full name"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
                     readOnly={patientId ? !isEditing : false}
-                    style={{ height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }} 
+                    style={{ height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
                   />
                 </div>
 
@@ -1061,7 +1061,7 @@ export default function OrderEntryPage() {
                       setPhone(val);
                     }}
                     readOnly={patientId ? !isEditing : false}
-                    style={{ height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }} 
+                    style={{ height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
                   />
                   {patientStatus?.includes('Profile') && !patientId && (
                     <div style={{ color: 'var(--danger)', fontSize: 11, marginTop: 4, fontWeight: 500 }}>
@@ -1162,8 +1162,9 @@ export default function OrderEntryPage() {
               <span className="card-title">Orders</span>
             </div>
             <div className="card-body">
-              {/* Doctor and Order Name */}
-              <div className="form-group" style={{ position: 'relative' }}>
+              {/* Doctor and Order Name row */}
+              <div className="form-row" style={{ gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+                <div className="form-group" style={{ position: 'relative', marginBottom: 0 }}>
                   <label className="form-label">Doctor</label>
                   <div style={{ position: 'relative' }}>
                     <input
@@ -1197,10 +1198,10 @@ export default function OrderEntryPage() {
                       ))}
                     </div>
                   )}
-              </div>
+                </div>
 
-              <div className="form-group" style={{ position: 'relative' }}>
-                <label className="form-label">Order Name</label>
+                <div className="form-group" style={{ position: 'relative', marginBottom: 0 }}>
+                  <label className="form-label">Order Name</label>
                   <div style={{ position: 'relative' }}>
                     <input
                       ref={orderSearchRef}
@@ -1235,6 +1236,7 @@ export default function OrderEntryPage() {
                     </div>
                   )}
                 </div>
+              </div>
 
               {/* Order Table */}
               <div className="data-table-container" style={{ marginTop: 12 }}>
@@ -2025,8 +2027,8 @@ export default function OrderEntryPage() {
 
       {showDupPatientsModal && (
         <div className="modal-overlay" onClick={() => setShowDupPatientsModal(false)}>
-          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 850, width: '95%' }}>
-            <div className="modal-header" style={{ background: '#f97316' }}>
+          <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 850, width: '95%', border: 'none', borderRadius: 'var(--radius-xl)' }}>
+            <div className="modal-header" style={{ background: 'var(--primary-gradient)' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#fff' }}>Duplicate Patients Found</h3>
               <button className="modal-close" onClick={() => setShowDupPatientsModal(false)} style={{ color: '#fff' }}>✕</button>
             </div>
@@ -2035,14 +2037,14 @@ export default function OrderEntryPage() {
                 There are some patient(s) matching with entered details. Please select the patient or continue adding new patient.
               </p>
 
-              <div style={{ border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden', background: '#fff' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <div className="data-table-container" style={{ border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
+                <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
-                    <tr style={{ borderBottom: '2px solid #fee2e2' }}>
-                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Patient Name</th>
-                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>UMR</th>
-                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Card No.</th>
-                      <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: '#dc2626', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone No.</th>
+                    <tr>
+                      <th style={{ color: 'var(--primary)', fontWeight: 700 }}>Patient Name</th>
+                      <th>UMR</th>
+                      <th>Card No.</th>
+                      <th>Phone No.</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2053,38 +2055,23 @@ export default function OrderEntryPage() {
                           handleSelectPatient(p);
                           setShowDupPatientsModal(false);
                         }}
-                        style={{
-                          borderBottom: '1px solid #f1f5f9',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          background: idx % 2 === 0 ? '#fff' : '#fafafa'
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.background = '#fff1f2')}
-                        onMouseLeave={e => (e.currentTarget.style.background = idx % 2 === 0 ? '#fff' : '#fafafa')}
+                        style={{ cursor: 'pointer' }}
                       >
-                        <td style={{ padding: '14px 20px', fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>{p.name}</td>
-                        <td style={{ padding: '14px 20px', fontSize: '14px', color: '#475569', fontFamily: 'monospace', fontWeight: 500 }}>{p.umr}</td>
-                        <td style={{ padding: '14px 20px', fontSize: '14px', color: '#64748b' }}>{p.additionalDetails?.cardNumber || '--'}</td>
-                        <td style={{ padding: '14px 20px', fontSize: '14px', color: '#475569', fontWeight: 500 }}>{p.phone}</td>
+                        <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.name}</td>
+                        <td style={{ fontFamily: 'monospace', fontWeight: 600, color: 'var(--text-secondary)' }}>{p.umr}</td>
+                        <td>{p.additionalDetails?.cardNumber || '--'}</td>
+                        <td style={{ fontWeight: 600 }}>{p.phone}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '28px' }}>
                 <button
                   className="btn btn-primary"
                   onClick={() => setShowDupPatientsModal(false)}
-                  style={{
-                    padding: '12px 28px',
-                    fontSize: '14px',
-                    fontWeight: 700,
-                    borderRadius: '10px',
-                    boxShadow: '0 4px 12px rgba(249, 115, 22, 0.2)',
-                    background: '#f97316',
-                    borderColor: '#f97316'
-                  }}
+                  style={{ padding: '10px 24px', fontSize: '14px', fontWeight: 700 }}
                 >
                   Add New Patient
                 </button>
