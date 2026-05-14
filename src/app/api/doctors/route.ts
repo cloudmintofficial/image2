@@ -7,11 +7,13 @@ export async function GET(request: Request) {
 
   try {
     const status = searchParams.get('status');
+    const type = searchParams.get('type');
     const all = searchParams.get('all') === 'true';
 
     const doctors = await prisma.doctor.findMany({
       where: {
         ...(status ? { status } : {}),
+        ...(type ? { type } : {}),
         name: { contains: search, mode: 'insensitive' }
       },
       orderBy: { name: 'asc' },

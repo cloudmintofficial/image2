@@ -57,15 +57,21 @@ export default function InProcessPage() {
   const [doctorSearchText, setDoctorSearchText] = useState('');
   const [doctorSuggestions, setDoctorSuggestions] = useState<any[]>([]);
   const [isSearchingDoctor, setIsSearchingDoctor] = useState(false);
-  const [doctorsList, setDoctorsList] = useState<any[]>([]);
+  const [referralDoctors, setReferralDoctors] = useState<any[]>([]);
+  const [serviceDoctors, setServiceDoctors] = useState<any[]>([]);
   const [signaturesList, setSignaturesList] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/doctors')
+    fetch('/api/doctors?all=true')
       .then(res => res.json())
-      .then(data => Array.isArray(data) ? setDoctorsList(data) : setDoctorsList([]))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setReferralDoctors(data.filter(d => d.type === 'Referral'));
+          setServiceDoctors(data.filter(d => d.type === 'Service Provider' || d.type === 'Service'));
+        }
+      })
       .catch(console.error);
-      
+
     fetch('/api/signatures')
       .then(res => res.json())
       .then(data => {
@@ -209,7 +215,7 @@ export default function InProcessPage() {
       if (doctorSearchText.length >= 2) {
         setIsSearchingDoctor(true);
         try {
-          const res = await fetch(`/api/doctors?search=${encodeURIComponent(doctorSearchText)}`);
+          const res = await fetch(`/api/doctors?type=Referral&search=${encodeURIComponent(doctorSearchText)}`);
           if (res.ok) {
             const data = await res.json();
             setDoctorSuggestions(data);
@@ -411,9 +417,9 @@ export default function InProcessPage() {
               />
             </div>
           </div>
-          
+
           {(() => {
-            const filteredData = data.filter(row => 
+            const filteredData = data.filter(row =>
               (row.patient && row.patient.toLowerCase().includes(searchQuery.toLowerCase())) ||
               (row.orders && row.orders.toLowerCase().includes(searchQuery.toLowerCase())) ||
               (row.billNo && row.billNo.toString().includes(searchQuery)) ||
@@ -421,74 +427,74 @@ export default function InProcessPage() {
             );
 
             return (
-          <div className="card">
-            <div className="card-header" style={{ padding: 12 }}>
-              <span style={{ fontWeight: 600 }}>Active Orders</span>
-            </div>
-            <div className="data-table-container">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: 120 }}></th>
-                    <th>Bill Number</th>
-                    <th>Bill Date</th>
-                    <th>Patient Name</th>
-                    <th>Phone Number</th>
-                    <th>Age/Gender</th>
-                    <th>Orders</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredData.map(row => {
-                    const allVerified = row.rawOrders?.every((o: any) => o.resultStatus === 'Verified');
-                    const allCompleted = row.isCompleted;
-                    const statusLabel = allVerified ? 'AUTHORIZED' : allCompleted ? 'COMPLETED' : 'IN PROCESS';
-                    const statusColor = allVerified ? '#16a34a' : allCompleted ? '#2563eb' : '#f97316';
-                    const statusBg = allVerified ? '#f0fdf4' : allCompleted ? '#eff6ff' : '#fff7ed';
-                    return (
-                    <tr key={row.billNo}>
-                      <td>
-                        <button
-                          className={`btn btn-sm ${row.isCompleted ? 'btn-success' : 'btn-danger'}`}
-                          style={{ padding: '4px 12px', background: row.isCompleted ? '#27ae60' : '#e74c3c', color: '#fff', border: 'none' }}
-                          onClick={() => { setSelectedBill(row); setViewMode('bill'); }}
-                        >
-                          Orders List
-                        </button>
-                      </td>
-                      <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.billNo}</td>
-                      <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.date}</td>
-                      <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.patient}</td>
-                      <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.phone}</td>
-                      <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.ageGender}</td>
-                      <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.orders}</td>
-                      <td>
-                        <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: statusBg, color: statusColor, letterSpacing: '0.5px' }}>
-                          {statusLabel}
-                        </span>
-                      </td>
-                    </tr>
-                    );
-                  })}
-                  {filteredData.length === 0 && !loading && (
-                    <tr>
-                      <td colSpan={8} style={{ textAlign: 'center', padding: '32px' }}>
-                        {searchQuery ? `No orders found for "${searchQuery}"` : 'No active orders'}
-                      </td>
-                    </tr>
-                  )}
-                  {loading && data.length === 0 && (
-                    <tr>
-                      <td colSpan={8} style={{ textAlign: 'center', padding: '32px' }}><Loader2 className="animate-spin" /></td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          );
-        })()}
+              <div className="card">
+                <div className="card-header" style={{ padding: 12 }}>
+                  <span style={{ fontWeight: 600 }}>Active Orders</span>
+                </div>
+                <div className="data-table-container">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: 120 }}></th>
+                        <th>Bill Number</th>
+                        <th>Bill Date</th>
+                        <th>Patient Name</th>
+                        <th>Phone Number</th>
+                        <th>Age/Gender</th>
+                        <th>Orders</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredData.map(row => {
+                        const allVerified = row.rawOrders?.every((o: any) => o.resultStatus === 'Verified');
+                        const allCompleted = row.isCompleted;
+                        const statusLabel = allVerified ? 'AUTHORIZED' : allCompleted ? 'COMPLETED' : 'IN PROCESS';
+                        const statusColor = allVerified ? '#16a34a' : allCompleted ? '#2563eb' : '#f97316';
+                        const statusBg = allVerified ? '#f0fdf4' : allCompleted ? '#eff6ff' : '#fff7ed';
+                        return (
+                          <tr key={row.billNo}>
+                            <td>
+                              <button
+                                className={`btn btn-sm ${row.isCompleted ? 'btn-success' : 'btn-danger'}`}
+                                style={{ padding: '4px 12px', background: row.isCompleted ? '#27ae60' : '#e74c3c', color: '#fff', border: 'none' }}
+                                onClick={() => { setSelectedBill(row); setViewMode('bill'); }}
+                              >
+                                Orders List
+                              </button>
+                            </td>
+                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.billNo}</td>
+                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.date}</td>
+                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.patient}</td>
+                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.phone}</td>
+                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.ageGender}</td>
+                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.orders}</td>
+                            <td>
+                              <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: statusBg, color: statusColor, letterSpacing: '0.5px' }}>
+                                {statusLabel}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      {filteredData.length === 0 && !loading && (
+                        <tr>
+                          <td colSpan={8} style={{ textAlign: 'center', padding: '32px' }}>
+                            {searchQuery ? `No orders found for "${searchQuery}"` : 'No active orders'}
+                          </td>
+                        </tr>
+                      )}
+                      {loading && data.length === 0 && (
+                        <tr>
+                          <td colSpan={8} style={{ textAlign: 'center', padding: '32px' }}><Loader2 className="animate-spin" /></td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })()}
         </>
       )}
 
@@ -578,8 +584,8 @@ export default function InProcessPage() {
                 <div style={{ marginTop: 4, fontSize: 14, fontWeight: 600, color: '#f97316' }}>{selectedBill.patientObj?.umr || '—'}</div>
               </div>
               <div>
-                <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Assigned Doctor</span>
-                <div style={{ marginTop: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.doctor?.name || 'No Doctor Assigned'}</div>
+                <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Refer Doctor</span>
+                <div style={{ marginTop: 4, fontSize: 14, fontWeight: 500, color: 'var(--text-primary)' }}>{selectedBill.doctor?.name || 'Self'}</div>
               </div>
               <div>
                 <span style={{ fontSize: 12, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Source</span>
@@ -623,9 +629,9 @@ export default function InProcessPage() {
                         <td style={{ borderBottom: '1px solid #f1f5f9', padding: '12px 16px', fontWeight: 500, color: 'var(--text-primary)' }}>{o.orderName}</td>
                         <td style={{ display: 'flex', gap: 12, alignItems: 'center', borderBottom: '1px solid #f1f5f9', padding: '12px 16px', color: 'var(--text-secondary)' }}>
                           {new Date(o.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
-                          <button 
-                            style={{ padding: '4px 10px', background: '#e2e8f0', color: '#475569', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }} 
-                            onMouseEnter={e => e.currentTarget.style.background = '#cbd5e1'} 
+                          <button
+                            style={{ padding: '4px 10px', background: '#e2e8f0', color: '#475569', border: 'none', borderRadius: 6, fontSize: 11, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s' }}
+                            onMouseEnter={e => e.currentTarget.style.background = '#cbd5e1'}
                             onMouseLeave={e => e.currentTarget.style.background = '#e2e8f0'}
                             onClick={() => {
                               const orderDate = new Date(o.createdAt);
@@ -633,7 +639,7 @@ export default function InProcessPage() {
                               const month = (orderDate.getMonth() + 1).toString().padStart(2, '0');
                               const day = orderDate.getDate().toString().padStart(2, '0');
                               setEditDate(`${year}-${month}-${day}`);
-                              
+
                               let hours = orderDate.getHours();
                               const ampm = hours >= 12 ? 'pm' : 'am';
                               hours = hours % 12;
@@ -651,8 +657,8 @@ export default function InProcessPage() {
                             const s = o.resultStatus;
                             const cfg = s === 'Verified' ? { label: 'AUTHORIZED', color: '#16a34a', bg: '#f0fdf4' }
                               : s === 'Completed' ? { label: 'COMPLETED', color: '#2563eb', bg: '#eff6ff' }
-                              : s === 'Entered' ? { label: 'ENTERED', color: '#7c3aed', bg: '#f5f3ff' }
-                              : { label: 'PENDING', color: '#dc2626', bg: '#fef2f2' };
+                                : s === 'Entered' ? { label: 'ENTERED', color: '#7c3aed', bg: '#f5f3ff' }
+                                  : { label: 'PENDING', color: '#dc2626', bg: '#fef2f2' };
                             return <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 10, fontWeight: 700, background: cfg.bg, color: cfg.color, letterSpacing: '0.5px' }}>{cfg.label}</span>;
                           })()}
                         </td>
@@ -835,7 +841,7 @@ export default function InProcessPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Assigned Doctor</label>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Refer Doctor</label>
                   {isEditingPatient ? (
                     <div style={{ position: 'relative' }}>
                       <input
@@ -895,79 +901,91 @@ export default function InProcessPage() {
             justifyContent: 'space-between',
             alignItems: 'center',
             background: '#ffffff',
-            padding: '12px 32px',
-            borderBottom: '1px solid #e2e8f0',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+            padding: '8px 24px',
+            borderBottom: '1px solid var(--border-color)',
             position: 'sticky',
             top: 0,
             zIndex: 100
           }}>
-            <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-              <button
-                onClick={() => setViewMode('bill')}
-                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600, transition: 'color 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.color = '#f97316'}
-                onMouseLeave={e => e.currentTarget.style.color = '#64748b'}
-              >
-                <ArrowLeft size={16} /> Bill Orders
-              </button>
-              <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
-              <button
-                onClick={fetchBills}
-                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 600 }}
-              >
-                <RefreshCw size={14} /> Refresh
-              </button>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 700 }}>
-                IO
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+                <button
+                  onClick={() => setViewMode('bill')}
+                  style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#0f172a', padding: '6px 16px', borderRadius: 6, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, transition: 'all 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#e2e8f0'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#f1f5f9'}
+                >
+                  <ArrowLeft size={16} /> Bill Orders
+                </button>
+                <div style={{ width: 1, height: 20, background: '#e2e8f0' }} />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    style={{ background: 'none', border: 'none', color: '#0f172a', cursor: 'pointer', padding: '6px 12px', fontSize: 13, fontWeight: 700, borderRadius: 6, transition: 'all 0.2s' }}
+                    onClick={handlePrint}
+                    onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                  >
+                    Preview
+                  </button>
+                  <button
+                    disabled
+                    style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'not-allowed', padding: '6px 12px', fontSize: 13, fontWeight: 700 }}
+                  >
+                    Edit Order
+                  </button>
+                  <button
+                    onClick={fetchBills}
+                    style={{ background: 'none', border: 'none', color: '#0f172a', cursor: 'pointer', padding: '6px 12px', fontSize: 13, fontWeight: 700, borderRadius: 6, transition: 'all 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'none'}
+                  >
+                    Refresh Order
+                  </button>
+                </div>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>IMAGEE OWNER</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Reporting Mode</span>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 8px rgba(34, 197, 94, 0.4)' }} />
+              </div>
             </div>
           </div>
 
-          <div style={{ padding: '24px 32px' }}>
-            {/* Patient Context Card */}
+          <div style={{ padding: '16px 20px' }}>
             <div style={{
               background: '#ffffff',
-              borderRadius: 16,
+              borderRadius: 12,
               border: '1px solid #e2e8f0',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
-              marginBottom: 24,
+              padding: '20px 24px',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+              position: 'relative',
               overflow: 'hidden'
             }}>
-              <div style={{ background: '#f8fafc', padding: '16px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div style={{ background: '#f97316', color: '#fff', padding: '4px 12px', borderRadius: 6, fontSize: 11, fontWeight: 800, textTransform: 'uppercase' }}>Active Order</div>
-                  <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: 0 }}>{selectedOrder.orderName}</h2>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#16a34a' }} />
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#16a34a' }}>Sample Received</span>
-                </div>
-              </div>
-
-              <div style={{ padding: '24px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 4, background: 'var(--primary)' }} />
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>Bill Information</label>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>#{selectedBill.billNo}</div>
-                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{selectedOrder.department || 'RADIOLOGY'}</div>
+                  <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Patient Details</div>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: '#0f172a' }}>{selectedBill.patientObj.name}</div>
+                  <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>
+                    {selectedBill.patientObj.age}Y / {selectedBill.patientObj.gender === 'M' ? 'Male' : 'Female'}
+                  </div>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>Patient Details</label>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{selectedBill.patient}</div>
-                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{selectedBill.patientObj?.age}Y / {selectedBill.patientObj?.gender}</div>
+                  <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Bill Information</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>Bill No: {selectedBill.billNo}</div>
+                  <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>
+                    UMR: <span style={{ color: '#f97316', fontWeight: 600 }}>{selectedBill.patientObj.umr}</span>
+                  </div>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>UMR (Card)</label>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#f97316' }}>{selectedBill.patientObj?.umr || '—'}</div>
-                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{selectedBill.phone}</div>
+                  <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Order Details</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>{selectedOrder.orderName}</div>
+                  <div style={{ fontSize: 12, color: '#22c55e', fontWeight: 600, marginTop: 2 }}>{selectedBill.status}</div>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 6 }}>Referring Doctor</label>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>{selectedBill.doctor?.name || 'SELF'}</div>
-                  <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>Source: {selectedBill.patientObj?.source || 'Direct'}</div>
+                  <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Clinical Context</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>{selectedBill.doctor?.name || 'Self'}</div>
+                  <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>Dept: {selectedOrder.department || 'Radiology'}</div>
                 </div>
               </div>
             </div>
@@ -1013,20 +1031,20 @@ export default function InProcessPage() {
                             const resObj = panelResults[comp.name] || {};
                             const val = resObj.value || '';
                             const manualAbnormal = resObj.abnormal ?? false;
-                            
+
                             const gender = selectedBill?.patientObj?.gender;
                             const autoAbnormal = (() => {
                               if (!val) return false;
                               const num = parseFloat(val);
                               if (isNaN(num)) return false;
-                              
+
                               if (gender === 'M' && comp.minMale != null && comp.maxMale != null) {
                                 return num < comp.minMale || num > comp.maxMale;
                               }
                               if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) {
                                 return num < comp.minFemale || num > comp.maxFemale;
                               }
-                              
+
                               if (!comp.normalRange) return false;
                               const rangeMatch = comp.normalRange.match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)/);
                               if (rangeMatch) return num < parseFloat(rangeMatch[1]) || num > parseFloat(rangeMatch[2]);
@@ -1051,9 +1069,9 @@ export default function InProcessPage() {
                                   />
                                 </td>
                                 <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                                  <input 
-                                    type="checkbox" 
-                                    checked={isAbnormal} 
+                                  <input
+                                    type="checkbox"
+                                    checked={isAbnormal}
                                     onChange={e => updatePanelField(comp.name, 'abnormal', e.target.checked)}
                                     style={{ width: 16, height: 16, cursor: 'pointer' }}
                                   />
@@ -1119,11 +1137,11 @@ export default function InProcessPage() {
                           <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Reference Range</label>
                           <div style={{ padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, fontWeight: 600, color: '#475569', textAlign: 'center' }}>
                             {(() => {
-                               const comp = testTemplate.components[0];
-                               const gender = selectedBill?.patientObj?.gender;
-                               if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
-                               if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
-                               return comp.normalRange;
+                              const comp = testTemplate.components[0];
+                              const gender = selectedBill?.patientObj?.gender;
+                              if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
+                              if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
+                              return comp.normalRange;
                             })()}
                           </div>
                         </div>
@@ -1247,15 +1265,19 @@ export default function InProcessPage() {
                 {/* === RICH TEXT (RADIOLOGY / GENERAL) UI === */}
                 {(!testTemplate || testTemplate?.uiType === 'richtext') && (
                   <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
-                    <div style={{ display: 'flex', background: '#f8fafc', padding: '0 16px', borderBottom: '1px solid #e2e8f0' }}>
-                      <div 
+                    <div style={{ display: 'flex', background: '#f8fafc', padding: '10px 16px', borderBottom: '1px solid #e2e8f0', gap: 8 }}>
+                      <div
                         onClick={() => setRichTextTab('report')}
-                        style={{ padding: '12px 24px', color: richTextTab === 'report' ? '#f97316' : '#94a3b8', fontSize: 13, fontWeight: richTextTab === 'report' ? 700 : 600, borderBottom: richTextTab === 'report' ? '2px solid #f97316' : 'none', cursor: 'pointer', transition: 'color 0.2s' }}>
-                        Diagnostic Report
+                        style={{ padding: '6px 16px', background: richTextTab === 'report' ? '#e67e22' : '#bdc3c7', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 4, cursor: 'pointer' }}>
+                        Page 1
                       </div>
-                      <div 
+                      <div
+                        style={{ padding: '6px 16px', background: '#bdc3c7', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 4, cursor: 'pointer' }}>
+                        Page 2
+                      </div>
+                      <div
                         onClick={() => setRichTextTab('templates')}
-                        style={{ padding: '12px 24px', color: richTextTab === 'templates' ? '#f97316' : '#94a3b8', fontSize: 13, fontWeight: richTextTab === 'templates' ? 700 : 600, borderBottom: richTextTab === 'templates' ? '2px solid #f97316' : 'none', cursor: 'pointer', transition: 'color 0.2s' }}>
+                        style={{ padding: '6px 16px', background: richTextTab === 'templates' ? '#34495e' : '#bdc3c7', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 4, cursor: 'pointer' }}>
                         Templates
                       </div>
                     </div>
@@ -1288,9 +1310,9 @@ export default function InProcessPage() {
                       ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                           <h4 style={{ margin: 0, fontSize: 14, color: '#475569' }}>Available Templates</h4>
-                          
+
                           {testTemplate?.resultTemplate ? (
-                            <div 
+                            <div
                               style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}
                               onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
                               onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
@@ -1306,7 +1328,7 @@ export default function InProcessPage() {
                             </div>
                           ) : null}
 
-                          <div 
+                          <div
                             style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}
                             onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
                             onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
@@ -1320,7 +1342,7 @@ export default function InProcessPage() {
                             <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: 4 }}>Normal Study (Generic)</div>
                             <div style={{ fontSize: 12, color: '#64748b' }}>A simple "Normal Study" layout.</div>
                           </div>
-                          
+
                           {!testTemplate?.resultTemplate && (
                             <div style={{ padding: '16px', textAlign: 'center', color: '#94a3b8', fontSize: 13, fontStyle: 'italic' }}>
                               No specific template is assigned to this test in the master database.
@@ -1333,118 +1355,105 @@ export default function InProcessPage() {
                 )}
 
                 {/* Combined Advice & Metadata Footer */}
-                <div style={{ 
-                  background: '#fff', 
-                  borderRadius: 16, 
-                  border: '1px solid #e2e8f0', 
-                  padding: '24px', 
+                <div style={{
+                  background: '#fff',
+                  borderRadius: 16,
+                  border: '1px solid #e2e8f0',
+                  padding: '24px',
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
-                  display: 'grid',
-                  gridTemplateColumns: '2fr 1fr 1fr 1fr',
-                  gap: 32,
-                  alignItems: 'start'
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 24
                 }}>
-                  {/* Advice column */}
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 12 }}>Clinical Advice</label>
-                    <textarea
-                      style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, resize: 'none', outline: 'none', transition: 'border-color 0.2s', height: 100 }}
-                      placeholder="Enter patient advice or follow-up instructions..."
-                      value={resultAdvice}
-                      onChange={e => setResultAdvice(e.target.value)}
-                      onFocus={e => e.currentTarget.style.borderColor = '#f97316'}
-                      onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'}
-                    />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Method:</span>
+                        <input
+                          type="text"
+                          className="form-input"
+                          style={{ maxWidth: 300 }}
+                          value={resultMethod}
+                          onChange={e => setResultMethod(e.target.value)}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Service Doctor:</span>
+                        <select
+                          className="form-input form-select"
+                          style={{ maxWidth: 300 }}
+                          value={resultDoctor}
+                          onChange={e => setResultDoctor(e.target.value)}
+                        >
+                          <option value="">Select Service Doctor</option>
+                          {serviceDoctors.map(doc => (
+                            <option key={doc.id} value={doc.name}>{doc.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>ADVICE:</span>
+                        <textarea
+                          style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'none', outline: 'none', height: 100 }}
+                          value={resultAdvice}
+                          onChange={e => setResultAdvice(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
+                        <span style={{ fontSize: 13, color: '#64748b' }}>Upload Result File:</span>
+                        <button className="btn btn-primary" style={{ padding: '8px 20px', borderRadius: 6, background: 'var(--primary)' }}>Add Attachments</button>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
+                        <span style={{ fontSize: 13, color: '#64748b' }}>Signature:</span>
+                        <select
+                          className="form-input form-select"
+                          style={{ maxWidth: 250 }}
+                          value={signatureId}
+                          onChange={e => setSignatureId(e.target.value)}
+                        >
+                          {signaturesList.map(sig => (
+                            <option key={sig.id} value={sig.id}>{sig.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Metadata columns */}
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Methodology</label>
-                    <input
-                      type="text"
-                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 13, outline: 'none' }}
-                      placeholder="e.g. Automated"
-                      value={resultMethod}
-                      onChange={e => setResultMethod(e.target.value)}
-                    />
-                  </div>
+                  <div style={{ height: 1, background: '#f1f5f9' }} />
 
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Service Doctor</label>
-                    <select
-                      className="form-input form-select"
-                      value={resultDoctor}
-                      onChange={e => setResultDoctor(e.target.value)}
-                    >
-                      <option value="">Select Doctor</option>
-                      {doctorsList.map(doc => (
-                        <option key={doc.id} value={doc.name}>{doc.name}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Signature</label>
-                    <select 
-                      className="form-input form-select"
-                      value={signatureId}
-                      onChange={e => setSignatureId(e.target.value)}
-                    >
-                      {signaturesList.map(sig => (
-                        <option key={sig.id} value={sig.id}>{sig.label}</option>
-                      ))}
-                    </select>
-                    
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
                     <button 
-                      onClick={() => alert('Attachments feature coming soon!')}
-                      style={{ width: '100%', marginTop: 12, padding: '8px', background: '#f8fafc', color: '#475569', border: '1px dashed #cbd5e1', borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+                      className="btn" 
+                      style={{ background: '#fff', border: '1px solid #e2e8f0', color: '#475569', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} 
+                      onClick={() => setViewMode('bill')}
                     >
-                      + Add Files
+                      Back
                     </button>
-                  </div>
-                </div>
-
-                {/* Final Horizontal Actions Bar */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginTop: 8 }}>
-                  <button
-                    style={{ padding: '12px 24px', background: 'transparent', color: '#64748b', border: 'none', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
-                    onClick={() => setViewMode('bill')}
-                  >
-                    Discard Changes
-                  </button>
-                  
-                  <div style={{ display: 'flex', gap: 12 }}>
-                    <button
-                      onClick={() => handleSaveResult(false)}
+                    <button 
+                      className="btn" 
+                      style={{ background: '#fff', border: '1px solid #e2e8f0', color: '#0f172a', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} 
+                      onClick={handlePrint}
+                    >
+                      Print
+                    </button>
+                    <button 
+                      className="btn" 
+                      style={{ background: '#fff', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} 
+                      onClick={() => handleSaveResult(false)} 
                       disabled={isSaving}
-                      style={{ padding: '12px 24px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', minWidth: 120 }}
                     >
                       Save Draft
                     </button>
                     <button 
-                      onClick={handlePrint}
-                      style={{ padding: '12px 24px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', minWidth: 100 }}
-                    >
-                      Print
-                    </button>
-                    <button
-                      onClick={() => handleSaveResult(true)}
+                      className="btn" 
+                      style={{ background: 'var(--primary)', border: 'none', color: '#fff', padding: '10px 32px', borderRadius: 8, fontWeight: 700, fontSize: 14, boxShadow: '0 4px 12px rgba(232, 117, 26, 0.3)', transition: 'all 0.2s' }} 
+                      onClick={() => handleSaveResult(true)} 
                       disabled={isSaving}
-                      style={{ 
-                        padding: '12px 32px', 
-                        background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', 
-                        color: '#fff', 
-                        border: 'none', 
-                        borderRadius: 12, 
-                        fontSize: 14, 
-                        fontWeight: 700, 
-                        cursor: 'pointer', 
-                        boxShadow: '0 4px 12px rgba(234, 88, 12, 0.2)',
-                        minWidth: 180,
-                        opacity: isSaving ? 0.7 : 1
-                      }}
                     >
-                      {isSaving ? 'Finalizing...' : 'Verify & Complete'}
+                      Save & Complete
                     </button>
                   </div>
                 </div>
@@ -1454,159 +1463,176 @@ export default function InProcessPage() {
         </div>
       )}
 
-        {/* Hidden Printable Area */}
-        <div style={{ display: 'none' }}>
-          <div ref={printRef} style={{ padding: '60px 40px', fontFamily: '"Arial", sans-serif', color: '#000', backgroundColor: '#fff', minHeight: '100vh', boxSizing: 'border-box' }}>
-            {/* Top Thick Line */}
-            <div style={{ borderTop: '4px solid #000', marginBottom: '24px', width: '100%' }}></div>
-            
-            {/* Header section */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
-              
-              {/* Left Column */}
-              <div style={{ fontSize: 13, lineHeight: 1.8 }}>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ width: 100 }}>Name</div>
-                  <div style={{ padding: '0 8px' }}>:</div>
-                  <div><strong>{selectedBill?.patientObj?.name?.toUpperCase() || ''}</strong></div>
-                </div>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ width: 100 }}>Age/Gender</div>
-                  <div style={{ padding: '0 8px' }}>:</div>
-                  <div><strong>{selectedBill?.patientObj?.age || ''}YEARS/{selectedBill?.patientObj?.gender === 'M' ? 'MALE' : 'FEMALE'}</strong></div>
-                </div>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ width: 100 }}>Reff By</div>
-                  <div style={{ padding: '0 8px' }}>:</div>
-                  <div><strong>{selectedBill?.doctor?.name?.toUpperCase() || 'SELF'}</strong></div>
-                </div>
+      {/* Hidden Printable Area - Using visibility: hidden for maximum react-to-print compatibility */}
+      <div style={{ visibility: 'hidden', height: 0, overflow: 'hidden' }}>
+        <div ref={printRef} style={{ padding: '60px 40px', fontFamily: '"Arial", sans-serif', color: '#000', backgroundColor: '#fff', minHeight: '100vh', boxSizing: 'border-box' }}>
+          {/* Top Thin Line */}
+          <div style={{ borderTop: '1px solid #000', marginBottom: '24px', width: '100%' }}></div>
+
+          {/* Header section */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+
+            {/* Left Column */}
+            <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 100 }}>Name</div>
+                <div style={{ padding: '0 8px' }}>:</div>
+                <div><strong>{selectedBill?.patientObj?.name?.toUpperCase() || ''}</strong></div>
               </div>
-
-              {/* Right Column */}
-              <div style={{ fontSize: 13, lineHeight: 1.8 }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
-                  {/* Optimized High-Fidelity Barcode */}
-                  <div style={{ textAlign: 'right' }}>
-                    <img 
-                      src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${selectedBill?.billNo || '0000'}&scale=3&rotate=N&includetext=false`} 
-                      alt="Barcode" 
-                      style={{ height: '40px', maxWidth: '220px' }}
-                    />
-                  </div>
-                </div>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ width: 100 }}>Bill Number</div>
-                  <div style={{ padding: '0 8px' }}>:</div>
-                  <div><strong>{selectedBill?.billNo || ''}</strong></div>
-                </div>
-                <div style={{ display: 'flex' }}>
-                  <div style={{ width: 100 }}>Reporting Date</div>
-                  <div style={{ padding: '0 8px' }}>:</div>
-                  <div>{new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</div>
-                </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 100 }}>Age/Gender</div>
+                <div style={{ padding: '0 8px' }}>:</div>
+                <div><strong>{selectedBill?.patientObj?.age || ''}YEARS/{selectedBill?.patientObj?.gender === 'M' ? 'MALE' : 'FEMALE'}</strong></div>
               </div>
-
-            </div>
-            
-            {/* Test Title */}
-            <h2 style={{ textAlign: 'center', fontSize: 15, fontWeight: 800, margin: '0 0 32px 0', textTransform: 'uppercase' }}>
-              {selectedOrder?.orderName}
-            </h2>
-
-            {/* Test Content */}
-            <div style={{ fontSize: 14, lineHeight: 1.6 }}>
-              {testTemplate?.uiType === 'richtext' || !testTemplate ? (
-                <div dangerouslySetInnerHTML={{ __html: resultInput }} />
-              ) : testTemplate?.uiType === 'single' ? (
-                <div style={{ display: 'flex', gap: 20 }}>
-                  <div><strong>Result:</strong> {singleResult}</div>
-                  <div><strong>Units:</strong> {testTemplate.components?.[0]?.unit || ''}</div>
-                  <div><strong>Reference Range:</strong> {testTemplate.components?.[0]?.normalRange || ''}</div>
-                </div>
-              ) : testTemplate?.uiType === 'panel' ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
-                   <thead>
-                      <tr style={{ borderBottom: '1px solid #000' }}>
-                         <th style={{ textAlign: 'left', padding: '8px 0' }}>Component</th>
-                         <th style={{ textAlign: 'center', padding: '8px 0' }}>Result</th>
-                         <th style={{ textAlign: 'center', padding: '8px 0' }}>Range</th>
-                         <th style={{ textAlign: 'center', padding: '8px 0' }}>Units</th>
-                      </tr>
-                   </thead>
-                   <tbody>
-                      {testTemplate.components?.map((c: any) => (
-                         <tr key={c.id}>
-                           <td style={{ padding: '8px 0' }}>{c.name}</td>
-                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{panelResults[c.name]?.value || ''}</td>
-                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.normalRange || ''}</td>
-                           <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.unit || ''}</td>
-                         </tr>
-                      ))}
-                   </tbody>
-                </table>
-              ) : testTemplate?.uiType === 'microbiology' ? (
-                <div>
-                  <p><strong>Organism Isolated:</strong> {microOrganism}</p>
-                  <p><strong>Growth:</strong> {microGrowth}</p>
-                  <p><strong>Colony Count:</strong> {microColonyCount}</p>
-                  <h4 style={{ marginTop: 20 }}>Antibiotic Sensitivity:</h4>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <tbody>
-                      {Object.entries(microSensitivity).map(([drug, result]) => (
-                        <tr key={drug}>
-                          <td style={{ padding: '4px 0' }}>{drug}</td>
-                          <td style={{ padding: '4px 0' }}>{result as string}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : testTemplate?.uiType === 'immunology' ? (
-                <div>
-                  <p><strong>Result:</strong> {immunoResult}</p>
-                  <p><strong>Method:</strong> {immunoMethod}</p>
-                  <p><strong>Value:</strong> {immunoTiter}</p>
-                </div>
-              ) : null}
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 100 }}>Reff By</div>
+                <div style={{ padding: '0 8px' }}>:</div>
+                <div><strong>{selectedBill?.doctor?.name?.toUpperCase() || 'SELF'}</strong></div>
+              </div>
             </div>
 
-            {/* Footer Signature Block */}
-            <div style={{ marginTop: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '80px' }}>
-              {/* Dynamic QR Code for Report Verification */}
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ width: '80px', height: '80px', padding: '4px', border: '1px solid #eee', marginBottom: '4px' }}>
-                  <img 
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=https://medfileshared2.bharathcloud.com/lab/InProcess/OrderResultsEntry?billid=${selectedBill?.id}`} 
-                    alt="QR Code" 
-                    style={{ width: '100%', height: '100%' }}
+            {/* Right Column */}
+            <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+                {/* Optimized High-Fidelity Barcode */}
+                <div style={{ textAlign: 'right' }}>
+                  <img
+                    src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${selectedBill?.billNo || '0000'}&scale=3&rotate=N&includetext=false`}
+                    alt="Barcode"
+                    style={{ height: '40px', maxWidth: '220px' }}
                   />
                 </div>
-                <div style={{ fontSize: '9px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Verify Report</div>
               </div>
-
-              {/* Signature */}
-              {(() => {
-                const sig = signaturesList.find(s => s.id === signatureId) || signaturesList[0];
-                if (!sig) return null;
-                return (
-                  <div style={{ textAlign: 'center', fontSize: 13, lineHeight: 1.4 }}>
-                    {sig.imageData ? (
-                      <div style={{ marginBottom: 8, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-                        <img src={sig.imageData} alt="Signature" style={{ maxHeight: 60, maxWidth: 200, objectFit: 'contain' }} />
-                      </div>
-                    ) : (
-                      <div style={{ fontFamily: '"Brush Script MT", cursive', fontSize: 32, marginBottom: 8, color: '#1e3a8a', transform: 'rotate(-5deg)' }}>
-                        {sig.signText}
-                      </div>
-                    )}
-                    <strong>{sig.name}</strong><br/>
-                    <span style={{ fontWeight: 800, whiteSpace: 'pre-line' }}>{sig.title}</span>
-                  </div>
-                );
-              })()}
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 100 }}>Bill Number</div>
+                <div style={{ padding: '0 8px' }}>:</div>
+                <div><strong>{selectedBill?.billNo || ''}</strong></div>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 100 }}>Reporting Date</div>
+                <div style={{ padding: '0 8px' }}>:</div>
+                <div>{new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</div>
+              </div>
             </div>
+
+          </div>
+
+          {/* Test Title */}
+          <h2 style={{ textAlign: 'center', fontSize: 16, fontWeight: 800, margin: '0 0 32px 0', textTransform: 'uppercase', textDecoration: 'underline' }}>
+            {selectedOrder?.orderName}
+          </h2>
+
+          {/* Test Content */}
+          <div style={{ fontSize: 14, lineHeight: 1.6 }}>
+            {testTemplate?.uiType === 'richtext' || !testTemplate ? (
+              <div dangerouslySetInnerHTML={{ __html: resultInput }} />
+            ) : testTemplate?.uiType === 'single' ? (
+              <div style={{ display: 'flex', gap: 20 }}>
+                <div><strong>Result:</strong> {singleResult}</div>
+                <div><strong>Units:</strong> {testTemplate.components?.[0]?.unit || ''}</div>
+                <div><strong>Reference Range:</strong> {testTemplate.components?.[0]?.normalRange || ''}</div>
+              </div>
+            ) : testTemplate?.uiType === 'panel' ? (
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #000' }}>
+                    <th style={{ textAlign: 'left', padding: '8px 0' }}>Component</th>
+                    <th style={{ textAlign: 'center', padding: '8px 0' }}>Result</th>
+                    <th style={{ textAlign: 'center', padding: '8px 0' }}>Range</th>
+                    <th style={{ textAlign: 'center', padding: '8px 0' }}>Units</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {testTemplate.components?.map((c: any) => (
+                    <tr key={c.id}>
+                      <td style={{ padding: '8px 0' }}>{c.name}</td>
+                      <td style={{ textAlign: 'center', padding: '8px 0' }}>{panelResults[c.name]?.value || ''}</td>
+                      <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.normalRange || ''}</td>
+                      <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.unit || ''}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : testTemplate?.uiType === 'microbiology' ? (
+              <div>
+                <p><strong>Organism Isolated:</strong> {microOrganism}</p>
+                <p><strong>Growth:</strong> {microGrowth}</p>
+                <p><strong>Colony Count:</strong> {microColonyCount}</p>
+                <h4 style={{ marginTop: 20 }}>Antibiotic Sensitivity:</h4>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <tbody>
+                    {Object.entries(microSensitivity).map(([drug, result]) => (
+                      <tr key={drug}>
+                        <td style={{ padding: '4px 0' }}>{drug}</td>
+                        <td style={{ padding: '4px 0' }}>{result as string}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : testTemplate?.uiType === 'immunology' ? (
+              <div>
+                <p><strong>Result:</strong> {immunoResult}</p>
+                <p><strong>Method:</strong> {immunoMethod}</p>
+                <p><strong>Value:</strong> {immunoTiter}</p>
+              </div>
+            ) : null}
+          </div>
+
+          {/* Metadata: Method & Advice */}
+          {(resultMethod || resultAdvice) && (
+            <div style={{ marginTop: 32, fontSize: 13, borderTop: '1px dashed #eee', paddingTop: 16 }}>
+              {resultMethod && (
+                <div style={{ marginBottom: 12 }}>
+                  <strong>Method:</strong> {resultMethod}
+                </div>
+              )}
+              {resultAdvice && (
+                <div>
+                  <strong style={{ display: 'block', marginBottom: 4 }}>ADVICE:</strong>
+                  <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{resultAdvice}</div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Footer Signature Block */}
+          <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            {/* Dynamic QR Code for Report Verification */}
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ width: '60px', height: '60px', padding: '4px', border: '1px solid #eee', marginBottom: '4px' }}>
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=https://medfileshared2.bharathcloud.com/lab/InProcess/OrderResultsEntry?billid=${selectedBill?.id}`}
+                  alt="QR Code"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </div>
+              <div style={{ fontSize: '8px', color: '#666', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Verify Report</div>
+            </div>
+
+            {/* Signature Block - Right Aligned */}
+            {(() => {
+              const sig = signaturesList.find(s => s.id === signatureId) || signaturesList[0];
+              if (!sig) return null;
+              return (
+                <div style={{ textAlign: 'right', fontSize: 13, lineHeight: 1.4, minWidth: 250 }}>
+                  {sig.imageData ? (
+                    <div style={{ marginBottom: 4, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                      <img src={sig.imageData} alt="Signature" style={{ maxHeight: 50, maxWidth: 180, objectFit: 'contain' }} />
+                    </div>
+                  ) : (
+                    <div style={{ fontFamily: '"Brush Script MT", cursive', fontSize: 28, marginBottom: 4, color: '#1e3a8a', transform: 'rotate(-3deg)' }}>
+                      {sig.signText}
+                    </div>
+                  )}
+                  <div style={{ fontWeight: 700 }}>{sig.name}</div>
+                  <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase' }}>{sig.title}</div>
+                </div>
+              );
+            })()}
           </div>
         </div>
+      </div>
     </div>
   );
 }
