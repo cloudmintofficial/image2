@@ -6,11 +6,13 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useReactToPrint } from 'react-to-print';
 import 'react-quill-new/dist/quill.snow.css';
+import { useToast } from '@/context/ToastContext';
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 export default function InProcessPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [data, setData] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -113,6 +115,10 @@ export default function InProcessPage() {
       setImmunoTiter('');
       setSingleResult('');
       setPanelResults({});
+      setResultMethod('');
+      setResultDoctor('');
+      setResultAdvice('');
+      setSignatureId('default');
 
       // Use orderId-based cache key (not orderName) to avoid cross-bill data collisions
       const cacheKey = `${selectedOrder.id}`;
@@ -170,6 +176,12 @@ export default function InProcessPage() {
       } else if (tmpl.uiType === 'richtext') {
         setResultInput(order.resultData || (tmpl.resultTemplate ?? ''));
       }
+
+      // Restore Clinical Metadata
+      if (order.resultMethod) setResultMethod(order.resultMethod);
+      if (order.resultDoctor) setResultDoctor(order.resultDoctor);
+      if (order.resultAdvice) setResultAdvice(order.resultAdvice);
+      if (order.signatureId) setSignatureId(order.signatureId);
     } catch {
       // Malformed saved data - start fresh
       console.warn('Could not parse saved resultData for order:', order.id);
@@ -307,7 +319,7 @@ export default function InProcessPage() {
 
     // Guard: require at least some data before marking complete
     if (markComplete && !finalResultData?.trim()) {
-      alert('Please enter result data before marking as complete.');
+      showToast('Please enter result data before marking as complete.', 'warning');
       return;
     }
 
@@ -329,17 +341,14 @@ export default function InProcessPage() {
       });
       if (res.ok) {
         await fetchBills();
-        if (markComplete) {
-          setViewMode('bill');
-        } else {
-          alert('Saved as draft.');
-        }
+        showToast(markComplete ? 'Result completed successfully' : 'Draft saved successfully', 'success');
+        setViewMode('bill');
       } else {
         const errBody = await res.json().catch(() => ({}));
-        alert(`Failed to save result: ${errBody?.error || res.statusText}`);
+        showToast(`Failed to save result: ${errBody?.error || res.statusText}`, 'error');
       }
     } catch (e) {
-      alert('Network error: Failed to save result. Please check your connection.');
+      showToast('Network error: Failed to save result. Please check your connection.', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -353,7 +362,7 @@ export default function InProcessPage() {
         (o: any) => o.resultStatus !== 'Completed' && o.resultStatus !== 'Verified'
       );
       if (incompleteOrders.length > 0) {
-        alert(`${incompleteOrders.length} order(s) still pending result entry. Complete all results before authorizing.`);
+        showToast(`${incompleteOrders.length} order(s) still pending result entry. Complete all results before authorizing.`, 'warning');
         setIsSaving(false);
         return;
       }
@@ -369,10 +378,10 @@ export default function InProcessPage() {
       const allOk = results.every(r => r.ok);
       if (allOk) {
         await fetchBills();
-        alert('All results authorized successfully.');
+        showToast('All results authorized successfully.', 'success');
       }
     } catch (e) {
-      alert('Error during authorization');
+      showToast('Error during authorization', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -546,8 +555,15 @@ export default function InProcessPage() {
         </>
       )}
 
-      {viewMode === 'bill' && selectedBill && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {viewMode === 'bill' && (
+        !selectedBill ? (
+          <div style={{ padding: '40px', textAlign: 'center', background: '#fff', borderRadius: 12, margin: '20px', border: '1px solid #e2e8f0' }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>Bill Not Found</h2>
+            <p style={{ color: '#64748b', marginBottom: 20 }}>This bill may have been completed, authorized, or moved from the in-process queue.</p>
+            <button className="btn btn-primary" onClick={() => setViewMode('list')}>Return to In-Process List</button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Local Top Nav for Bill Orders */}
           <div style={{ display: 'flex', gap: 12, background: 'var(--bg-card)', padding: '12px 16px', borderRadius: 8, boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
             <button className="btn btn-ghost btn-sm" onClick={() => setViewMode('list')}><ArrowLeft size={14} /> Back To Bills</button>
@@ -772,7 +788,8 @@ export default function InProcessPage() {
               </div>
             </div>
           )}
-        </div>
+          </div>
+        )
       )}
 
       {viewMode === 'edit' && selectedBill && (
@@ -956,8 +973,15 @@ export default function InProcessPage() {
         </div>
       )}
 
-      {viewMode === 'result' && selectedOrder && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, margin: '-24px', background: '#f8fafc', minHeight: 'calc(100vh - 64px)' }}>
+      {viewMode === 'result' && (
+        !selectedOrder ? (
+          <div style={{ padding: '40px', textAlign: 'center', background: '#fff', borderRadius: 12, margin: '20px', border: '1px solid #e2e8f0' }}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>Order Not Found</h2>
+            <p style={{ color: '#64748b', marginBottom: 20 }}>The order or its parent bill is no longer in the in-process queue.</p>
+            <button className="btn btn-primary" onClick={() => setViewMode('list')}>Return to In-Process List</button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0, margin: '-24px', background: '#f8fafc', minHeight: 'calc(100vh - 64px)' }}>
           {/* Diagnostic Toolbar */}
           <div style={{
             display: 'flex',
@@ -1513,59 +1537,58 @@ export default function InProcessPage() {
               </>
             )}
 
-                  <div style={{ height: 1, background: '#f1f5f9' }} />
+            </div>{/* end Main Editor Section */}
+          </div>{/* end Diagnostic Workspace scrollable */}
+        </div>{/* end padding wrapper */}
 
-                  {/* Sticky Footer for Clinical Actions */}
-                  <div style={{ 
-                    position: 'absolute', 
-                    bottom: 0, 
-                    left: 0, 
-                    right: 0, 
-                    background: 'rgba(255, 255, 255, 0.95)', 
-                    backdropFilter: 'blur(8px)',
-                    borderTop: '1px solid #e2e8f0',
-                    padding: '20px 40px',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    gap: 12,
-                    zIndex: 10
-                  }}>
-                    <button 
-                      className="btn" 
-                      style={{ background: '#fff', border: '1px solid #e2e8f0', color: '#475569', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} 
-                      onClick={() => setViewMode('bill')}
-                    >
-                      Back
-                    </button>
-                    <button 
-                      className="btn" 
-                      style={{ background: '#fff', border: '1px solid #e2e8f0', color: '#0f172a', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} 
-                      onClick={handlePrint}
-                    >
-                      Print
-                    </button>
-                    <button 
-                      className="btn" 
-                      style={{ background: '#fff', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, transition: 'all 0.2s' }} 
-                      onClick={() => handleSaveResult(false)} 
-                      disabled={isSaving}
-                    >
-                      Save Draft
-                    </button>
-                    <button 
-                      className="btn" 
-                      style={{ background: 'var(--primary)', border: 'none', color: '#fff', padding: '10px 32px', borderRadius: 8, fontWeight: 700, fontSize: 14, boxShadow: '0 4px 12px rgba(232, 117, 26, 0.3)', transition: 'all 0.2s' }} 
-                      onClick={() => handleSaveResult(true)} 
-                      disabled={isSaving}
-                    >
-                      Save & Complete
-                    </button>
-                  </div>
-                </div>
-            </div>
-          </div>
+        {/* Sticky Footer for Clinical Actions */}
+        <div style={{
+          position: 'sticky',
+          bottom: 0,
+          background: 'rgba(255, 255, 255, 0.97)',
+          backdropFilter: 'blur(8px)',
+          borderTop: '1px solid #e2e8f0',
+          padding: '16px 32px',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 12,
+          zIndex: 10
+        }}>
+          <button
+            className="btn"
+            style={{ background: '#fff', border: '1px solid #e2e8f0', color: '#475569', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14 }}
+            onClick={() => setViewMode('bill')}
+          >
+            Back
+          </button>
+          <button
+            className="btn"
+            style={{ background: '#fff', border: '1px solid #e2e8f0', color: '#0f172a', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14 }}
+            onClick={handlePrint}
+          >
+            Print
+          </button>
+          <button
+            className="btn"
+            style={{ background: '#fff', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '10px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14 }}
+            onClick={() => handleSaveResult(false)}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving...' : 'Save Draft'}
+          </button>
+          <button
+            className="btn"
+            style={{ background: 'var(--primary)', border: 'none', color: '#fff', padding: '10px 32px', borderRadius: 8, fontWeight: 700, fontSize: 14, boxShadow: '0 4px 12px rgba(232,117,26,0.3)' }}
+            onClick={() => handleSaveResult(true)}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving...' : 'Save & Complete'}
+          </button>
         </div>
+      </div>
+        )
       )}
+
 
       {/* Hidden Printable Area - Using Off-screen positioning for maximum react-to-print compatibility in Turbopack */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '210mm' }}>
@@ -1596,28 +1619,29 @@ export default function InProcessPage() {
             </div>
 
             {/* Right Column */}
-            <div style={{ fontSize: 13, lineHeight: 1.8 }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
-                {/* Optimized High-Fidelity Barcode */}
-                <div style={{ textAlign: 'right' }}>
-                  {selectedBill?.billNo ? (
-                    <img
-                      src={`https://barcode.tec-it.com/barcode.ashx?data=${selectedBill.billNo}&code=Code128&dpi=300&imagewidth=400&imageheight=60&includetext=0`}
-                      alt="Barcode"
-                      style={{ height: '32px', width: '240px', objectFit: 'contain', display: 'block', marginLeft: 'auto' }}
-                    />
-                  ) : (
-                    <div style={{ height: '32px', width: '240px', background: '#f8fafc', border: '1px dashed #cbd5e1', marginLeft: 'auto' }} />
-                  )}
+            <div style={{ fontSize: 13, lineHeight: 1.8, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
+              {/* Barcode - prominently sized, scannable */}
+              {selectedBill?.billNo ? (
+                <div style={{ textAlign: 'center', marginBottom: 2 }}>
+                  <img
+                    src={`https://barcode.tec-it.com/barcode.ashx?data=${encodeURIComponent(String(selectedBill.billNo))}&code=Code128&dpi=96&imagewidth=250&imageheight=70&includetext=1&fontsize=10`}
+                    alt={`Barcode ${selectedBill.billNo}`}
+                    style={{ display: 'block', width: '200px', height: '55px', objectFit: 'fill' }}
+                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
                 </div>
-              </div>
+              ) : (
+                <div style={{ width: '200px', height: '55px', background: '#f1f5f9', border: '1px dashed #94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#94a3b8' }}>
+                  No Barcode
+                </div>
+              )}
               <div style={{ display: 'flex' }}>
-                <div style={{ width: 100 }}>Bill Number</div>
+                <div style={{ width: 110, color: '#475569' }}>Bill Number</div>
                 <div style={{ padding: '0 8px' }}>:</div>
                 <div><strong>{selectedBill?.billNo || ''}</strong></div>
               </div>
               <div style={{ display: 'flex' }}>
-                <div style={{ width: 100 }}>Reporting Date</div>
+                <div style={{ width: 110, color: '#475569' }}>Reporting Date</div>
                 <div style={{ padding: '0 8px' }}>:</div>
                 <div>{new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</div>
               </div>

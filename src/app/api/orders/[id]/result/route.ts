@@ -26,7 +26,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       where: { billId: updatedOrder.billId }
     });
 
-    const allCompleted = allOrders.every(o => o.resultStatus === 'Entered' || o.resultStatus === 'Verified');
+    const allCompleted = allOrders.length > 0 && allOrders.every(o => o.resultStatus === 'Completed' || o.resultStatus === 'Verified');
 
     if (allCompleted) {
       await prisma.bill.update({
