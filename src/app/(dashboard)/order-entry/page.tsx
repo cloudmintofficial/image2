@@ -609,6 +609,14 @@ export default function OrderEntryPage() {
     setPhone(p.phone || '');
     setPhoneUmr(p.umr || '');
     setSource(p.source || '');
+    
+    // Reset order-specific fields for new patient selection
+    setDoctor('');
+    setOrders([]);
+    setPaidAmount(0);
+    setDiscountAmount(0);
+    setDiscountReason('');
+    setOrderSearch('');
 
     // Save original state for modification tracking
     setOriginalPatientData({
@@ -1124,8 +1132,7 @@ export default function OrderEntryPage() {
                       value={source}
                       onChange={e => setSource(e.target.value)}
                       onFocus={() => { setDoctorSuggestions([]); setOrderSuggestions([]); }}
-                      readOnly={patientId ? !isEditing : false}
-                      style={{ paddingRight: 32, height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
+                      style={{ paddingRight: 32, height: 40 }}
                     />
                     {isSearchingSourcesDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -1173,8 +1180,7 @@ export default function OrderEntryPage() {
                       value={doctor}
                       onChange={e => setDoctor(e.target.value)}
                       onFocus={() => { setSourceSuggestions([]); setOrderSuggestions([]); }}
-                      readOnly={patientId ? !isEditing : false}
-                      style={{ paddingRight: 32, height: 40, backgroundColor: (patientId && !isEditing) ? 'var(--bg-main)' : 'var(--bg-input)' }}
+                      style={{ paddingRight: 32, height: 40 }}
                     />
                     {isSearchingDoctorsDropdown && (
                       <Loader2 size={16} className="animate-spin" style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
