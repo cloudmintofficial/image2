@@ -1536,19 +1536,21 @@ export default function InProcessPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #000' }}>
-                    <th style={{ textAlign: 'left', padding: '8px 0' }}>Component</th>
-                    <th style={{ textAlign: 'center', padding: '8px 0' }}>Result</th>
-                    <th style={{ textAlign: 'center', padding: '8px 0' }}>Range</th>
-                    <th style={{ textAlign: 'center', padding: '8px 0' }}>Units</th>
+                    <th style={{ textAlign: 'left', padding: '10px 0', width: '25%', fontSize: 13 }}>Component</th>
+                    <th style={{ textAlign: 'center', padding: '10px 0', width: '20%', fontSize: 13 }}>Result</th>
+                    <th style={{ textAlign: 'center', padding: '10px 0', width: '25%', fontSize: 13 }}>Reference Range</th>
+                    <th style={{ textAlign: 'center', padding: '10px 0', width: '15%', fontSize: 13 }}>Units</th>
+                    <th style={{ textAlign: 'right', padding: '10px 0', width: '15%', fontSize: 13 }}>Method</th>
                   </tr>
                 </thead>
                 <tbody>
                   {testTemplate.components?.map((c: any) => (
                     <tr key={c.id}>
-                      <td style={{ padding: '8px 0' }}>{c.name}</td>
-                      <td style={{ textAlign: 'center', padding: '8px 0' }}>{panelResults[c.name]?.value || ''}</td>
-                      <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.normalRange || ''}</td>
-                      <td style={{ textAlign: 'center', padding: '8px 0' }}>{c.unit || ''}</td>
+                      <td style={{ padding: '10px 0', fontWeight: 700, fontSize: 12 }}>{c.name}</td>
+                      <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{panelResults[c.name]?.value || ''}</td>
+                      <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 11, color: '#000', lineHeight: 1.4 }}>{c.normalRange || ''}</td>
+                      <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{c.unit || ''}</td>
+                      <td style={{ textAlign: 'right', padding: '10px 0', fontSize: 11, fontStyle: 'italic' }}>{panelResults[c.name]?.method || c.method || resultMethod || ''}</td>
                     </tr>
                   ))}
                 </tbody>
