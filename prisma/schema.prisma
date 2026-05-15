@@ -85,6 +85,8 @@ model Bill {
   paidAmount     Float       @default(0)
   balance        Float       @default(0)
   status         String      @default("InProcess")
+  isUrgent       Boolean     @default(false)
+  externalId     String?
   createdBy      Int
   labId          Int
   createdAt      DateTime    @default(now())
@@ -107,6 +109,7 @@ model OrderItem {
   resultData   String?
   resultMethod String?
   resultDoctor String?
+  resultNotes  String?
   resultAdvice String?
   signatureId  String?
   verifiedBy   String?

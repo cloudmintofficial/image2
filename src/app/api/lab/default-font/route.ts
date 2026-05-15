@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 // Helper to retrieve or create the global singleton test container used to anchor Lab Default Font settings
 async function getGlobalTestContainer() {
   const testName = "__GLOBAL_LAB_DEFAULT_FONT__";
-  let master = await prisma.testMaster.findUnique({
+  let master = await prisma.testMaster.findFirst({
     where: { testName }
   });
 
@@ -30,7 +30,6 @@ async function getGlobalTestContainer() {
 export async function GET() {
   try {
     const master = await getGlobalTestContainer();
-    // @ts-ignore
     const orderFont = await prisma.orderFont.findUnique({
       where: { testId: master.id }
     });
@@ -68,7 +67,6 @@ export async function POST(request: Request) {
       spaceAfterLineFont: spaceAfterLineFont || null
     };
 
-    // @ts-ignore
     const orderFont = await prisma.orderFont.upsert({
       where: { testId: master.id },
       update: data,

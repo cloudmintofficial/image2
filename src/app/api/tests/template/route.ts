@@ -41,6 +41,7 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json({
+      id: test.id,
       uiType: test.uiType,
       testName: test.testName,
       components: test.components.map(c => ({
