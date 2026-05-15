@@ -20,6 +20,7 @@ export default function CompletedBillsPage() {
   const [data, setData] = useState<CompletedBill[]>([]);
   const [loading, setLoading] = useState(true);
   const [showPayment, setShowPayment] = useState<number | null>(null);
+  const [paymentForm, setPaymentForm] = useState({ amount: 0, discount: 0, discountReason: '', paymentMethod: 'Cash', isPercentage: false });
   const [printBillData, setPrintBillData] = useState<any>(null);
 
   const printRef = useRef<HTMLDivElement>(null);
@@ -40,12 +41,14 @@ export default function CompletedBillsPage() {
     }
   }, [printBillData, handlePrint]);
 
-  React.useEffect(() => {
+  const fetchCompletedBills = () => {
+    setLoading(true);
     fetch('/api/bills/completed')
       .then(res => res.json())
       .then(bills => {
         if (Array.isArray(bills)) {
           const formatted = bills.map((b: any) => ({
+            id: b.id, // need the id for api calls
             billNo: b.billNumber,
             date: new Date(b.billDate).toLocaleDateString('en-GB'),
             patient: b.patient.name,
@@ -54,7 +57,7 @@ export default function CompletedBillsPage() {
             phone: b.patient.phone || '-',
             orders: b.orders.map((o: any) => o.orderName).join(', '),
             balance: b.balance,
-            rawBill: b // Save the raw API object so we can pass it to the print component
+            rawBill: b
           }));
           setData(formatted);
         }
@@ -64,7 +67,43 @@ export default function CompletedBillsPage() {
         console.error(err);
         setLoading(false);
       });
+  };
+
+  React.useEffect(() => {
+    fetchCompletedBills();
   }, []);
+
+  const handlePaymentSubmit = async () => {
+    const selectedBill = data.find(d => d.billNo === showPayment);
+    if (!selectedBill) return;
+
+    let discountAmount = paymentForm.discount;
+    if (paymentForm.isPercentage) {
+      discountAmount = (selectedBill.balance * paymentForm.discount) / 100;
+    }
+
+    try {
+      const res = await fetch(`/api/bills/${selectedBill.rawBill.id}/payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentAmount: paymentForm.amount,
+          discount: discountAmount,
+          discountReason: paymentForm.discountReason,
+          paymentMethod: paymentForm.paymentMethod
+        })
+      });
+
+      if (!res.ok) throw new Error('Payment failed');
+
+      setShowPayment(null);
+      setPaymentForm({ amount: 0, discount: 0, discountReason: '', paymentMethod: 'Cash', isPercentage: false });
+      fetchCompletedBills();
+      alert('Payment successful!');
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
 
   const selectedBill = data.find(d => d.billNo === showPayment);
 
@@ -103,7 +142,7 @@ export default function CompletedBillsPage() {
                         {row.balance > 0 ? 'Bill Payment' : 'Bill Details'}
                       </button>
                       <button className="btn btn-info btn-sm" onClick={() => setPrintBillData(row.rawBill)}>Print Bill</button>
-                      <button className="btn btn-success btn-sm">Orders List</button>
+                      <button className="btn btn-success btn-sm" onClick={() => window.open(`/in-process?bill=${row.billNo}`, '_blank')}>Orders List</button>
                     </div>
                   </td>
                   <td style={{ fontWeight: 600 }}>{row.billNo}</td>
@@ -143,7 +182,7 @@ export default function CompletedBillsPage() {
                 <div style={{ display: 'flex', gap: 6 }}>
                   <button className="btn btn-danger btn-sm" style={{ flex: 1 }}>{row.balance > 0 ? 'Payment' : 'Details'}</button>
                   <button className="btn btn-info btn-sm" style={{ flex: 1 }} onClick={() => setPrintBillData(row.rawBill)}>Print</button>
-                  <button className="btn btn-success btn-sm" style={{ flex: 1 }}>Orders</button>
+                  <button className="btn btn-success btn-sm" style={{ flex: 1 }} onClick={() => window.open(`/in-process?bill=${row.billNo}`, '_blank')}>Orders</button>
                 </div>
               </div>
             </div>
@@ -174,22 +213,24 @@ export default function CompletedBillsPage() {
             <div className="modal-body">
               <div style={{ marginBottom: 12 }}>
                 <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Billed Amount:</span>
-                <span style={{ fontWeight: 700, marginLeft: 8, fontSize: 18 }}>₹{selectedBill.balance + 1000}</span>
+                <span style={{ fontWeight: 700, marginLeft: 8, fontSize: 18 }}>₹{selectedBill.rawBill.totalBill}</span>
               </div>
               <div className="form-group">
                 <label className="form-label">Overall Discount</label>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <input className="form-input" type="number" defaultValue={0} style={{ width: 120 }} />
-                  <label style={{ fontSize: 13, display: 'flex', gap: 4, alignItems: 'center' }}><input type="checkbox" /> %</label>
+                  <input className="form-input" type="number" min={0} value={paymentForm.discount} onChange={e => setPaymentForm({...paymentForm, discount: parseFloat(e.target.value) || 0})} style={{ width: 120 }} />
+                  <label style={{ fontSize: 13, display: 'flex', gap: 4, alignItems: 'center' }}>
+                    <input type="checkbox" checked={paymentForm.isPercentage} onChange={e => setPaymentForm({...paymentForm, isPercentage: e.target.checked})} /> %
+                  </label>
                 </div>
               </div>
               <div className="form-group">
                 <label className="form-label">Reason For Discount</label>
-                <textarea className="form-input" rows={2} style={{ resize: 'vertical' }} />
+                <textarea className="form-input" rows={2} style={{ resize: 'vertical' }} value={paymentForm.discountReason} onChange={e => setPaymentForm({...paymentForm, discountReason: e.target.value})} />
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14 }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Paid till now:</span>
-                <span style={{ fontWeight: 600 }}>₹{1000}</span>
+                <span style={{ fontWeight: 600 }}>₹{selectedBill.rawBill.paidAmount}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontSize: 14 }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Balance:</span>
@@ -197,18 +238,18 @@ export default function CompletedBillsPage() {
               </div>
               <div className="form-group">
                 <label className="form-label">Amount paid now</label>
-                <input className="form-input" type="number" />
+                <input className="form-input" type="number" min={0} max={selectedBill.balance} value={paymentForm.amount} onChange={e => setPaymentForm({...paymentForm, amount: parseFloat(e.target.value) || 0})} />
               </div>
               <div className="form-group">
                 <label className="form-label">Payment Method</label>
-                <select className="form-input form-select">
+                <select className="form-input form-select" value={paymentForm.paymentMethod} onChange={e => setPaymentForm({...paymentForm, paymentMethod: e.target.value})}>
                   <option>Cash</option><option>Card</option><option>UPI</option><option>Online</option>
                 </select>
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary">Submit</button>
-              <button className="btn btn-outline">Clear Payments</button>
+              <button className="btn btn-primary" onClick={handlePaymentSubmit}>Submit</button>
+              <button className="btn btn-outline" onClick={() => setPaymentForm({...paymentForm, amount: 0, discount: 0})}>Clear</button>
               <button className="btn btn-ghost" onClick={() => setShowPayment(null)}>Close</button>
             </div>
           </div>
