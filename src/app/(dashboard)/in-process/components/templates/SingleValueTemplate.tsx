@@ -33,7 +33,7 @@ export default function SingleValueTemplate({ testTemplate, singleResult, setSin
                 <input
                   type={testTemplate.components?.[0]?.fieldType === 'number' ? 'number' : 'text'}
                   style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', background: '#fff', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                  value={singleResult}
+                  value={singleResult || ''}
                   onChange={e => setSingleResult(e.target.value)}
                   onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
                   onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}

@@ -23,6 +23,7 @@ export default function ImmunologyTemplate({ testTemplate, immunoResult, setImmu
             {['Positive', 'Negative', 'Equivocal'].map(opt => (
               <button
                 key={opt}
+                type="button"
                 onClick={() => setImmunoResult(opt)}
                 style={{
                   flex: 1, padding: '14px 8px', borderRadius: 10, border: '2px solid',
@@ -51,7 +52,7 @@ export default function ImmunologyTemplate({ testTemplate, immunoResult, setImmu
         </div>
         <div>
           <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Titer / Value</label>
-          <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={immunoTiter} onChange={e => setImmunoTiter(e.target.value)} placeholder="e.g. 1:320 or 4.5 S/CO" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
+          <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={immunoTiter || ''} onChange={e => setImmunoTiter(e.target.value)} placeholder="e.g. 1:320 or 4.5 S/CO" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
         </div>
       </div>
     </div>

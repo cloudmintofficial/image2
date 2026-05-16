@@ -25,7 +25,7 @@ export default function MicrobiologyTemplate({ testTemplate, microOrganism, setM
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Organism Isolated</label>
-            <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={microOrganism} onChange={e => setMicroOrganism(e.target.value)} placeholder="e.g. E. coli, No Growth" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
+            <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={microOrganism || ''} onChange={e => setMicroOrganism(e.target.value)} placeholder="e.g. E. coli, No Growth" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
           </div>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Growth</label>
@@ -39,7 +39,7 @@ export default function MicrobiologyTemplate({ testTemplate, microOrganism, setM
           </div>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Colony Count (CFU/mL)</label>
-            <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={microColonyCount} onChange={e => setMicroColonyCount(e.target.value)} placeholder="e.g. >1,00,000" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
+            <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={microColonyCount || ''} onChange={e => setMicroColonyCount(e.target.value)} placeholder="e.g. >1,00,000" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
           </div>
         </div>
         {/* Antibiotic Sensitivity Table */}

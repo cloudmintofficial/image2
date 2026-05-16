@@ -103,7 +103,10 @@ export default function InProcessPage() {
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: 'Diagnostic_Report',
-    onBeforePrint: () => new Promise((resolve) => setTimeout(resolve, 500))
+    onBeforePrint: () => new Promise((resolve) => {
+      // Increased delay for Next.js 16 / Turbopack to ensure iframe content is fully hydrated
+      setTimeout(resolve, 1500);
+    }),
   });
 
   // Fetch test template when order is selected for result entry with Caching & Skeleton Support
@@ -1356,8 +1359,8 @@ export default function InProcessPage() {
       )}
 
 
-      {/* Hidden Printable Area - Using Off-screen positioning for maximum react-to-print compatibility in Turbopack */}
-      <div style={{ position: 'absolute', left: '-9999px', top: 0, width: '210mm' }}>
+      {/* Hidden Printable Area - Optimized for Next.js 16/Turbopack compatibility */}
+      <div style={{ position: 'fixed', opacity: 0, pointerEvents: 'none', top: 0, left: 0, zIndex: -1, width: '210mm' }}>
         <div ref={printRef} style={{ padding: '60px 40px', fontFamily: '"Arial", sans-serif', color: '#000', backgroundColor: '#fff', minHeight: '100vh', boxSizing: 'border-box' }}>
           {/* Top Thin Line */}
           <div style={{ borderTop: '1px solid #000', marginBottom: '24px', width: '100%' }}></div>
@@ -1444,19 +1447,32 @@ export default function InProcessPage() {
                 </thead>
                 <tbody>
                   {testTemplate.components?.map((c: any) => {
-                    const isAbnormal = panelResults[c.name]?.abnormal;
+                    const resObj = panelResults[c.name] || {};
+                    const isAbnormal = resObj.abnormal;
+
+                    let calculatedRange = c.normalRange ?? '';
+                    if (selectedBill?.patientObj?.gender === 'M' && c.minMale != null && c.maxMale != null) {
+                      calculatedRange = `${c.minMale} - ${c.maxMale}`;
+                    } else if (selectedBill?.patientObj?.gender === 'F' && c.minFemale != null && c.maxFemale != null) {
+                      calculatedRange = `${c.minFemale} - ${c.maxFemale}`;
+                    }
+
+                    const currentRange = resObj.range ?? calculatedRange;
+                    const currentUnit = resObj.unit ?? c.unit ?? '';
+                    const currentMethod = resObj.method ?? c.method ?? resultMethod ?? '';
+
                     return (
                       <tr key={c.id}>
                         <td style={{ padding: '10px 0', fontWeight: 700, fontSize: 12 }}>{c.name}</td>
                         <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12, fontWeight: isAbnormal ? 900 : 'normal' }}>
-                          {panelResults[c.name]?.value || ''}
+                          {resObj.value || ''}
                         </td>
                         <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12, fontWeight: 800 }}>
                           {isAbnormal ? '*' : ''}
                         </td>
-                        <td style={{ textAlign: 'left', padding: '10px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{c.normalRange || ''}</td>
-                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{c.unit || ''}</td>
-                        <td style={{ textAlign: 'right', padding: '10px 0', fontSize: 11, fontStyle: 'italic' }}>{panelResults[c.name]?.method || c.method || resultMethod || ''}</td>
+                        <td style={{ textAlign: 'left', padding: '10px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{currentRange}</td>
+                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{currentUnit}</td>
+                        <td style={{ textAlign: 'right', padding: '10px 0', fontSize: 11, fontStyle: 'italic' }}>{currentMethod}</td>
                       </tr>
                     );
                   })}
@@ -1491,7 +1507,7 @@ export default function InProcessPage() {
           {/* Metadata: Method & Advice */}
           {(resultMethod || resultAdvice) && (
             <div style={{ marginTop: 32, fontSize: 13, borderTop: '1px dashed #eee', paddingTop: 16 }}>
-              {resultMethod && (
+              {resultMethod && testTemplate?.uiType !== 'panel' && (
                 <div style={{ marginBottom: 12 }}>
                   <strong>Method:</strong> {resultMethod}
                 </div>
@@ -1524,7 +1540,7 @@ export default function InProcessPage() {
             </div>
 
             {/* Signature Block - Right Aligned */}
-            {(() => {
+            {testTemplate?.uiType !== 'panel' && (() => {
               const sig = signaturesList.find(s => s.id === signatureId) || signaturesList[0];
               if (!sig) return null;
               return (
