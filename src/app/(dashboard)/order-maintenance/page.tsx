@@ -16,16 +16,8 @@ function OrderMaintenanceContent() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const [currentPage, setCurrentPage] = useState(initialPage);
+  const currentPage = initialPage;
   const itemsPerPage = 50;
-
-  // Sync URL changes back to state (e.g. when pressing back button)
-  useEffect(() => {
-    const pageFromUrl = parseInt(searchParams.get('page') || '1', 10);
-    if (pageFromUrl !== currentPage) {
-      setCurrentPage(pageFromUrl);
-    }
-  }, [searchParams]);
 
   // Sync state changes to URL
   const updateUrl = useCallback((page: number) => {
@@ -35,7 +27,6 @@ function OrderMaintenanceContent() {
   }, [pathname, router, searchParams]);
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
     updateUrl(page);
   };
 
@@ -118,15 +109,14 @@ function OrderMaintenanceContent() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  const isInitialMount = React.useRef(true);
+  const previousSearchRef = React.useRef(debouncedSearch);
   // Reset pagination when search changes
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
+    if (previousSearchRef.current !== debouncedSearch) {
+      previousSearchRef.current = debouncedSearch;
+      updateUrl(1);
     }
-    setCurrentPage(1);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, updateUrl]);
 
   const fetchTestDetails = async (id: number) => {
     router.push(`/order-maintenance/${id}/edit`);
