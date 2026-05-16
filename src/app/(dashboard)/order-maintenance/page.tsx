@@ -119,8 +119,13 @@ export default function OrderMaintenancePage() {
     return () => clearTimeout(timer);
   }, [search]);
 
+  const isInitialMount = React.useRef(true);
   // Reset pagination when search changes
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     setCurrentPage(1);
   }, [debouncedSearch]);
 

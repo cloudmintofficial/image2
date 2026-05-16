@@ -42,14 +42,11 @@ async function main() {
   ];
 
   for (const t of tests) {
-    const existing = await prisma.testMaster.findFirst({
-      where: { testName: t.testName }
+    await prisma.testMaster.upsert({
+      where: { testName: t.testName },
+      update: {},
+      create: t,
     });
-    if (!existing) {
-      await prisma.testMaster.create({
-        data: t
-      });
-    }
   }
 
   console.log('Seeding complete!');
