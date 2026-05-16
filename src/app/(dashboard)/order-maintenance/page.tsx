@@ -12,22 +12,28 @@ function OrderMaintenanceContent() {
 
   const [tests, setTests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const initialSearch = searchParams.get('search') || '';
+  const [search, setSearch] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
 
-  const initialPage = parseInt(searchParams.get('page') || '1', 10);
-  const currentPage = initialPage;
+  let initialPage = parseInt(searchParams.get('page') || '1', 10);
+  if (isNaN(initialPage) || initialPage < 1) initialPage = 1;
   const itemsPerPage = 50;
 
   // Sync state changes to URL
-  const updateUrl = useCallback((page: number) => {
+  const updateUrl = useCallback((page: number, searchTerm: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', page.toString());
+    if (searchTerm) {
+      params.set('search', searchTerm);
+    } else {
+      params.delete('search');
+    }
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }, [pathname, router, searchParams]);
 
   const handlePageChange = (page: number) => {
-    updateUrl(page);
+    updateUrl(page, debouncedSearch);
   };
 
   const [selectedTestId, setSelectedTestId] = useState<number | null>(null);
@@ -114,7 +120,7 @@ function OrderMaintenanceContent() {
   useEffect(() => {
     if (previousSearchRef.current !== debouncedSearch) {
       previousSearchRef.current = debouncedSearch;
-      updateUrl(1);
+      updateUrl(1, debouncedSearch);
     }
   }, [debouncedSearch, updateUrl]);
 
@@ -186,7 +192,16 @@ function OrderMaintenanceContent() {
     (t.displayOrderName || '').toLowerCase().includes(debouncedSearch.toLowerCase())
   );
   const totalPages = Math.ceil(filteredTests.length / itemsPerPage) || 1;
-  const currentTests = filteredTests.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const safeCurrentPage = loading ? initialPage : Math.min(Math.max(1, initialPage), totalPages);
+
+  // Automatically correct out-of-bounds page numbers in URL once loading completes
+  useEffect(() => {
+    if (!loading && initialPage !== safeCurrentPage) {
+      setTimeout(() => updateUrl(safeCurrentPage, debouncedSearch), 0);
+    }
+  }, [loading, initialPage, safeCurrentPage, debouncedSearch, updateUrl]);
+
+  const currentTests = filteredTests.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);
 
   return (
     <div className="order-maintenance-container">
@@ -200,7 +215,7 @@ function OrderMaintenanceContent() {
           onChange={e => setSearch(e.target.value)}
         />
         <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
-          Showing {currentTests.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, filteredTests.length)} of {filteredTests.length} entries
+          Showing {currentTests.length > 0 ? (safeCurrentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(safeCurrentPage * itemsPerPage, filteredTests.length)} of {filteredTests.length} entries
         </div>
       </div>
 
@@ -266,18 +281,18 @@ function OrderMaintenanceContent() {
           <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '8px' }}>
             <button 
               className="btn btn-outline btn-sm" 
-              disabled={currentPage === 1}
-              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={safeCurrentPage === 1}
+              onClick={() => handlePageChange(safeCurrentPage - 1)}
             >
               Previous
             </button>
             <span style={{ fontSize: '13px', color: 'var(--text-primary)', margin: '0 8px' }}>
-              Page {currentPage} of {totalPages}
+              Page {safeCurrentPage} of {totalPages}
             </span>
             <button 
               className="btn btn-outline btn-sm" 
-              disabled={currentPage === totalPages}
-              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={safeCurrentPage === totalPages}
+              onClick={() => handlePageChange(safeCurrentPage + 1)}
             >
               Next
             </button>
