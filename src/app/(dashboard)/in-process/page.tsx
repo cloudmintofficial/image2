@@ -516,10 +516,10 @@ export default function InProcessPage() {
                         const statusLabel = allVerified ? 'AUTHORIZED' : allCompleted ? 'COMPLETED' : 'IN PROCESS';
                         const statusColor = allVerified ? '#16a34a' : allCompleted ? '#2563eb' : '#f97316';
                         const statusBg = allVerified ? '#f0fdf4' : allCompleted ? '#eff6ff' : '#fff7ed';
-                        
+
                         const btnColor = allCompleted ? '#27ae60' : '#e74c3c';
                         const btnClass = allCompleted ? 'btn-success' : 'btn-danger';
-                        
+
                         return (
                           <tr key={row.billNo}>
                             <td>
@@ -1187,7 +1187,7 @@ export default function InProcessPage() {
                                     const currentRange = resObj.range ?? comp.normalRange ?? '—';
                                     const currentUnit = resObj.unit ?? comp.unit ?? '—';
                                     const currentMethod = resObj.method ?? comp.method ?? resultMethod ?? '—';
-                                    
+
                                     const currentRangeStr = String(currentRange || '');
                                     const rangeLines = currentRangeStr.split('\n').length;
                                     const textareaRows = Math.max(3, rangeLines);
