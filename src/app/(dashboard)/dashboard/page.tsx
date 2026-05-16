@@ -17,17 +17,32 @@ export default function DashboardPage() {
   });
 
   const [loading, setLoading] = useState(true);
+  const [billsStats, setBillsStats] = useState<any>(null);
+  const [ordersStats, setOrdersStats] = useState<any>(null);
+  const [categoryStats, setCategoryStats] = useState<any[]>([]);
 
   React.useEffect(() => {
-    fetch('/api/dashboard')
-      .then(res => res.json())
-      .then(data => {
-        if (!data.error) {
-          setStats(data);
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [dashRes, billsRes, ordersRes, catRes] = await Promise.all([
+          fetch('/api/dashboard'),
+          fetch('/api/dashboard/bills-status'),
+          fetch('/api/dashboard/orders-status'),
+          fetch('/api/dashboard/billing-category')
+        ]);
+        
+        if (dashRes.ok) setStats(await dashRes.json());
+        if (billsRes.ok) setBillsStats(await billsRes.json());
+        if (ordersRes.ok) setOrdersStats(await ordersRes.json());
+        if (catRes.ok) setCategoryStats(await catRes.json());
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   return (
@@ -75,24 +90,67 @@ export default function DashboardPage() {
       )}
 
       {activeTab === 'Bills' && (
-        <div className="card"><div className="card-body" style={{ textAlign: 'center', padding: 60, color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📊</div>
-          <h3>Bill Analytics</h3><p>Charts and bill count analytics coming soon</p>
-        </div></div>
+        <div>
+          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 16, color: 'var(--text-secondary)' }}>Bill Status Overview</h3>
+          <div className="metric-grid" style={{ marginBottom: 20 }}>
+            <div className="metric-card blue"><div className="metric-label">Total Bills</div><div className="metric-value">{loading ? '...' : billsStats?.total || 0}</div></div>
+            <div className="metric-card orange"><div className="metric-label">Pending</div><div className="metric-value">{loading ? '...' : billsStats?.pending || 0}</div></div>
+            <div className="metric-card green"><div className="metric-label">Completed</div><div className="metric-value">{loading ? '...' : billsStats?.completed || 0}</div></div>
+          </div>
+          <div className="metric-grid" style={{ marginBottom: 20 }}>
+            <div className="metric-card teal"><div className="metric-label">Saved</div><div className="metric-value">{loading ? '...' : billsStats?.saved || 0}</div></div>
+            <div className="metric-card purple"><div className="metric-label">Dispatched</div><div className="metric-value">{loading ? '...' : billsStats?.dispatched || 0}</div></div>
+            <div className="metric-card red"><div className="metric-label">Cancelled</div><div className="metric-value">{loading ? '...' : billsStats?.cancelled || 0}</div></div>
+          </div>
+        </div>
       )}
 
       {activeTab === 'Orders' && (
-        <div className="card"><div className="card-body" style={{ textAlign: 'center', padding: 60, color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📈</div>
-          <h3>Order Statistics</h3><p>Order-level analytics coming soon</p>
-        </div></div>
+        <div>
+          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 16, color: 'var(--text-secondary)' }}>Order Status Overview</h3>
+          <div className="metric-grid" style={{ marginBottom: 20 }}>
+            <div className="metric-card blue"><div className="metric-label">Total Orders</div><div className="metric-value">{loading ? '...' : ordersStats?.total || 0}</div></div>
+            <div className="metric-card orange"><div className="metric-label">Pending</div><div className="metric-value">{loading ? '...' : ordersStats?.pending || 0}</div></div>
+            <div className="metric-card green"><div className="metric-label">Completed</div><div className="metric-value">{loading ? '...' : ordersStats?.completed || 0}</div></div>
+          </div>
+          <div className="metric-grid" style={{ marginBottom: 20 }}>
+            <div className="metric-card teal"><div className="metric-label">Authorized</div><div className="metric-value">{loading ? '...' : ordersStats?.authorized || 0}</div></div>
+            <div className="metric-card purple"><div className="metric-label">Dispatched</div><div className="metric-value">{loading ? '...' : ordersStats?.dispatched || 0}</div></div>
+            <div className="metric-card red"><div className="metric-label">Cancelled</div><div className="metric-value">{loading ? '...' : ordersStats?.cancelled || 0}</div></div>
+          </div>
+        </div>
       )}
 
       {activeTab === 'Billing Category' && (
-        <div className="card"><div className="card-body" style={{ textAlign: 'center', padding: 60, color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🏷️</div>
-          <h3>Category Breakdown</h3><p>Revenue by test category coming soon</p>
-        </div></div>
+        <div>
+          <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 16, color: 'var(--text-secondary)' }}>Category Breakdown</h3>
+          <div className="card">
+            <div className="data-table-container">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Billed Amount</th>
+                    <th>Paid Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr><td colSpan={3} style={{ textAlign: 'center' }}>Loading...</td></tr>
+                  ) : categoryStats.length === 0 ? (
+                    <tr><td colSpan={3} style={{ textAlign: 'center' }}>No data found</td></tr>
+                  ) : categoryStats.map((cat, idx) => (
+                    <tr key={idx}>
+                      <td style={{ fontWeight: 600 }}>{cat.category}</td>
+                      <td>₹{cat.billed.toLocaleString()}</td>
+                      <td style={{ color: 'var(--success)', fontWeight: 500 }}>₹{cat.paid.toLocaleString()}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

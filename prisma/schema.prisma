@@ -8,35 +8,40 @@ datasource db {
 }
 
 model Lab {
-  id            Int            @id @default(autoincrement())
-  labName       String
-  labAddress    String
-  contactPerson String?
-  primaryPhone  String
-  email         String?
-  logo          String?
-  status        String         @default("Active")
-  createdAt     DateTime       @default(now())
-  bills         Bill[]
-  expenses      Expense[]
-  serviceGroups ServiceGroup[]
-  tests         TestMaster[]
-  users         User[]
+  id                Int                @id @default(autoincrement())
+  labName           String
+  labAddress        String
+  contactPerson     String?
+  primaryPhone      String
+  email             String?
+  logo              String?
+  status            String             @default("Active")
+  createdAt         DateTime           @default(now())
+  bills             Bill[]
+  expenses          Expense[]
+  serviceGroups     ServiceGroup[]
+  tests             TestMaster[]
+  users             User[]
+  departments       Department[]
+  locations         Location[]
+  incomingLabs      IncomingLab[]
+  discountApprovers DiscountApprover[]
 }
 
 model User {
-  id           Int        @id @default(autoincrement())
-  username     String     @unique
-  passwordHash String
-  displayName  String
-  role         String
-  status       String     @default("Active")
-  labId        Int
-  createdAt    DateTime   @default(now())
-  auditLogs    AuditLog[]
-  bills        Bill[]
-  payments     Payment[]  @relation("ReceivedBy")
-  lab          Lab        @relation(fields: [labId], references: [id])
+  id                Int                @id @default(autoincrement())
+  username          String             @unique
+  passwordHash      String
+  displayName       String
+  role              String
+  status            String             @default("Active")
+  labId             Int
+  createdAt         DateTime           @default(now())
+  auditLogs         AuditLog[]
+  bills             Bill[]
+  payments          Payment[]          @relation("ReceivedBy")
+  lab               Lab                @relation(fields: [labId], references: [id])
+  discountApprovers DiscountApprover[]
 }
 
 model Patient {
@@ -295,4 +300,50 @@ model OrderDetailTemplate {
   createdAt    DateTime        @default(now())
   test         TestMaster      @relation(fields: [testId], references: [id], onDelete: Cascade)
   components   TestComponent[]
+}
+
+model Department {
+  id        Int      @id @default(autoincrement())
+  name      String
+  status    Boolean  @default(true)
+  labId     Int?
+  lab       Lab?     @relation(fields: [labId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Location {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String?
+  phone     String?
+  status    Boolean  @default(true)
+  labId     Int?
+  lab       Lab?     @relation(fields: [labId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model IncomingLab {
+  id            Int      @id @default(autoincrement())
+  labName       String
+  labAddress    String?
+  contactPerson String?
+  primaryPhone  String?
+  status        Boolean  @default(true)
+  labId         Int?
+  lab           Lab?     @relation(fields: [labId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model DiscountApprover {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  maxAmount Float
+  labId     Int?
+  lab       Lab?     @relation(fields: [labId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

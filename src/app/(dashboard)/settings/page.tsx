@@ -1,15 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Save, Plus, Edit2, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
-const tabs = ['Lab Profile', 'Multi-Lab Management', 'User Management', 'Test Master Data', 'Preferences'];
+const tabs = ['Lab Profile', 'Locations', 'Departments', 'Incoming Labs', 'Test Master Data', 'Preferences'];
 
 export default function SettingsPage() {
   const { data: session } = useSession();
-  const [activeTab, setActiveTab] = useState('Lab Profile');
+  const searchParams = useSearchParams();
+  const router = useRouter();
   
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'Lab Profile');
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && tabs.includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    router.push(`/settings?tab=${tab}`);
+  };
+  
+  // Data states
+  const [locations, setLocations] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [incomingLabs, setIncomingLabs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
   // States for Lab Profile
   const [labProfile, setLabProfile] = useState({
     name: 'Medfile Labs',
@@ -17,6 +39,18 @@ export default function SettingsPage() {
     phone: '+91 9876543210',
     email: 'contact@medfilelabs.com'
   });
+
+  React.useEffect(() => {
+    if (activeTab === 'Locations') {
+      fetch('/api/locations').then(r=>r.json()).then(d => setLocations(Array.isArray(d) ? d : []));
+    }
+    if (activeTab === 'Departments') {
+      fetch('/api/departments').then(r=>r.json()).then(d => setDepartments(Array.isArray(d) ? d : []));
+    }
+    if (activeTab === 'Incoming Labs') {
+      fetch('/api/incoming-labs').then(r=>r.json()).then(d => setIncomingLabs(Array.isArray(d) ? d : []));
+    }
+  }, [activeTab]);
 
   if (session?.user && (session.user as any).role !== 'Owner') {
     return (
@@ -39,7 +73,7 @@ export default function SettingsPage() {
           {tabs.map(tab => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabChange(tab)}
               style={{
                 padding: '16px 24px',
                 background: 'transparent',
@@ -86,99 +120,93 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {activeTab === 'Multi-Lab Management' && (
+          {activeTab === 'Locations' && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-                <h3 style={{ fontSize: 16, fontWeight: 600 }}>Lab Branches</h3>
-                <button className="btn btn-primary btn-sm"><Plus size={16} /> Add Branch</button>
+                <h3 style={{ fontSize: 16, fontWeight: 600 }}>Lab Branches / Locations</h3>
+                <button className="btn btn-primary btn-sm"><Plus size={16} /> Add Location</button>
               </div>
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Lab Name</th>
+                    <th>Location Name</th>
                     <th>Address</th>
-                    <th>Contact</th>
                     <th>Phone</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td style={{ fontWeight: 500 }}>Hospital (Main)</td>
-                    <td>HYDERABAD</td>
-                    <td>RAMESH</td>
-                    <td>9999999999</td>
-                    <td><span className="badge badge-success">Active</span></td>
-                    <td><button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button></td>
-                  </tr>
-                  <tr>
-                    <td style={{ fontWeight: 500 }}>Hospital (Branch)</td>
-                    <td>HAYATH NAGAR</td>
-                    <td>—</td>
-                    <td>9248924828</td>
-                    <td><span className="badge badge-danger">InActive</span></td>
-                    <td><button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button></td>
-                  </tr>
-                  <tr>
-                    <td style={{ fontWeight: 500 }}>Hospital (Branch)</td>
-                    <td>MANSURABAD</td>
-                    <td>—</td>
-                    <td>8297045678</td>
-                    <td><span className="badge badge-danger">InActive</span></td>
-                    <td><button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button></td>
-                  </tr>
+                  {locations.map((loc: any) => (
+                    <tr key={loc.id}>
+                      <td style={{ fontWeight: 500 }}>{loc.name}</td>
+                      <td>{loc.address || '—'}</td>
+                      <td>{loc.phone || '—'}</td>
+                      <td>{loc.status ? <span className="badge badge-success">Active</span> : <span className="badge badge-danger">InActive</span>}</td>
+                      <td><button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button></td>
+                    </tr>
+                  ))}
+                  {locations.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center' }}>No locations found</td></tr>}
                 </tbody>
               </table>
             </div>
           )}
 
-          {activeTab === 'User Management' && (
+          {activeTab === 'Departments' && (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-                <h3 style={{ fontSize: 16, fontWeight: 600 }}>System Users</h3>
-                <button className="btn btn-primary btn-sm"><Plus size={16} /> Add User</button>
+                <h3 style={{ fontSize: 16, fontWeight: 600 }}>Lab Departments</h3>
+                <button className="btn btn-primary btn-sm"><Plus size={16} /> Add Department</button>
               </div>
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>Display Name</th>
-                    <th>Username</th>
-                    <th>Role</th>
+                    <th>Department Name</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
+                  {departments.map((dept: any) => (
+                    <tr key={dept.id}>
+                      <td style={{ fontWeight: 500 }}>{dept.name}</td>
+                      <td>{dept.status ? <span className="badge badge-success">Active</span> : <span className="badge badge-danger">InActive</span>}</td>
+                      <td><button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button></td>
+                    </tr>
+                  ))}
+                  {departments.length === 0 && <tr><td colSpan={3} style={{ textAlign: 'center' }}>No departments found</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {activeTab === 'Incoming Labs' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+                <h3 style={{ fontSize: 16, fontWeight: 600 }}>Incoming Labs / Referrals</h3>
+                <button className="btn btn-primary btn-sm"><Plus size={16} /> Add Lab</button>
+              </div>
+              <table className="data-table">
+                <thead>
                   <tr>
-                    <td>IMAGEE OWNER</td>
-                    <td>Imagee owner</td>
-                    <td><span className="badge badge-primary">Admin/Owner</span></td>
-                    <td><span className="badge badge-success">Active</span></td>
-                    <td>
-                      <button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button>
-                    </td>
+                    <th>Lab Name</th>
+                    <th>Contact Person</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                   </tr>
-                  <tr>
-                    <td>IMAGEERAJANI</td>
-                    <td>IMAGEERAJANI</td>
-                    <td><span className="badge badge-secondary">Reception</span></td>
-                    <td><span className="badge badge-success">Active</span></td>
-                    <td>
-                      <button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button>
-                      <button className="btn btn-ghost btn-icon btn-sm" style={{ color: 'var(--danger)' }}><Trash2 size={14} /></button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>imageemallesh</td>
-                    <td>Imageemallesh</td>
-                    <td><span className="badge badge-secondary">Lab Entry</span></td>
-                    <td><span className="badge badge-success">Active</span></td>
-                    <td>
-                      <button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button>
-                      <button className="btn btn-ghost btn-icon btn-sm" style={{ color: 'var(--danger)' }}><Trash2 size={14} /></button>
-                    </td>
-                  </tr>
+                </thead>
+                <tbody>
+                  {incomingLabs.map((lab: any) => (
+                    <tr key={lab.id}>
+                      <td style={{ fontWeight: 500 }}>{lab.labName}</td>
+                      <td>{lab.contactPerson || '—'}</td>
+                      <td>{lab.primaryPhone || '—'}</td>
+                      <td>{lab.status ? <span className="badge badge-success">Active</span> : <span className="badge badge-danger">InActive</span>}</td>
+                      <td><button className="btn btn-ghost btn-icon btn-sm"><Edit2 size={14} /></button></td>
+                    </tr>
+                  ))}
+                  {incomingLabs.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center' }}>No incoming labs found</td></tr>}
                 </tbody>
               </table>
             </div>

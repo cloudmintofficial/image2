@@ -28,13 +28,13 @@ const navItems: NavItem[] = [
     adminOnly: true,
     subItems: [
       { label: 'Order Maintenance', path: '/order-maintenance' },
-      { label: 'Department Maintenance', path: '/settings' },
+      { label: 'Department Maintenance', path: '/settings?tab=Departments' },
       { label: 'Doctors', path: '/doctors' },
-      { label: 'Locations', path: '/locations' },
+      { label: 'Locations', path: '/settings?tab=Locations' },
       { label: 'Lab Users', path: '/users' },
       { label: 'Patient Requests', path: '/patient-requests' },
       { label: 'SMS', path: '/sms' },
-      { label: 'Incoming Labs', path: '/incoming-labs' },
+      { label: 'Incoming Labs', path: '/settings?tab=Incoming Labs' },
     ]
   },
   { icon: <FileText size={20} />, label: 'Reports', path: '/reports', adminOnly: true },
