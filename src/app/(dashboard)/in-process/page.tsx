@@ -1451,36 +1451,69 @@ export default function InProcessPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {testTemplate.components?.map((c: any) => {
-                    const resObj = panelResults[c.name] || {};
-                    const isAbnormal = resObj.abnormal;
+                  {(() => {
+                    let lastHeading = '';
+                    return testTemplate.components?.map((c: any) => {
+                      const showHeading = c.subHeading && c.subHeading !== lastHeading;
+                      if (showHeading) lastHeading = c.subHeading;
 
-                    let calculatedRange = c.normalRange ?? '';
-                    if (selectedBill?.patientObj?.gender === 'M' && c.minMale != null && c.maxMale != null) {
-                      calculatedRange = `${c.minMale} - ${c.maxMale}`;
-                    } else if (selectedBill?.patientObj?.gender === 'F' && c.minFemale != null && c.maxFemale != null) {
-                      calculatedRange = `${c.minFemale} - ${c.maxFemale}`;
-                    }
+                      const resObj = panelResults[c.name] || {};
+                      const isAbnormal = resObj.abnormal;
 
-                    const currentRange = resObj.range ?? calculatedRange;
-                    const currentUnit = resObj.unit ?? c.unit ?? '';
-                    const currentMethod = resObj.method ?? c.method ?? resultMethod ?? '';
+                      let calculatedRange = c.normalRange ?? '';
+                      if (selectedBill?.patientObj?.gender === 'M' && c.minMale != null && c.maxMale != null) {
+                        calculatedRange = `${c.minMale} - ${c.maxMale}`;
+                      } else if (selectedBill?.patientObj?.gender === 'F' && c.minFemale != null && c.maxFemale != null) {
+                        calculatedRange = `${c.minFemale} - ${c.maxFemale}`;
+                      }
 
-                    return (
-                      <tr key={c.id}>
-                        <td style={{ padding: '10px 0', fontWeight: 700, fontSize: 12 }}>{c.name}</td>
-                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12, fontWeight: isAbnormal ? 900 : 'normal' }}>
-                          {resObj.value || ''}
-                        </td>
-                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12, fontWeight: 800 }}>
-                          {isAbnormal ? '*' : ''}
-                        </td>
-                        <td style={{ textAlign: 'left', padding: '10px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{currentRange}</td>
-                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{currentUnit}</td>
-                        <td style={{ textAlign: 'right', padding: '10px 0', fontSize: 11, fontStyle: 'italic' }}>{currentMethod}</td>
-                      </tr>
-                    );
-                  })}
+                      const currentRange = resObj.range ?? calculatedRange;
+                      const currentUnit = resObj.unit ?? c.unit ?? '';
+                      const currentMethod = resObj.method ?? c.method ?? resultMethod ?? '';
+
+                      const isRedundantName = c.subHeading && c.name.toLowerCase() === c.subHeading.toLowerCase();
+
+                      return (
+                        <React.Fragment key={c.id}>
+                          {showHeading && (
+                            <tr>
+                              <td colSpan={6} style={{ padding: '8px 0 2px 0', fontWeight: 800, fontSize: 13, textDecoration: 'underline', textTransform: 'uppercase' }}>
+                                {c.subHeading}
+                              </td>
+                            </tr>
+                          )}
+                          {!isRedundantName && (
+                            <tr>
+                              <td style={{ paddingTop: 6, paddingBottom: 6, paddingRight: 0, fontWeight: 700, fontSize: 12, paddingLeft: c.subHeading ? 20 : 0 }}>{c.name}</td>
+                              <td style={{ textAlign: 'center', padding: '6px 8px', fontSize: 12, fontWeight: isAbnormal ? 900 : 'normal' }}>
+                                {resObj.value || ''}
+                              </td>
+                              <td style={{ textAlign: 'center', padding: '6px 8px', fontSize: 12, fontWeight: 800 }}>
+                                {isAbnormal ? '*' : ''}
+                              </td>
+                              <td style={{ textAlign: 'left', padding: '6px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{currentRange}</td>
+                              <td style={{ textAlign: 'center', padding: '6px 8px', fontSize: 12 }}>{currentUnit}</td>
+                              <td style={{ textAlign: 'right', paddingTop: 6, paddingBottom: 6, paddingLeft: 0, paddingRight: 0, fontSize: 11, fontStyle: 'italic' }}>{currentMethod}</td>
+                            </tr>
+                          )}
+                          {isRedundantName && (
+                            <tr>
+                              <td style={{ paddingTop: 0, paddingBottom: 6, paddingLeft: 0, paddingRight: 0, fontSize: 0, height: 0 }} colSpan={1}></td>
+                              <td style={{ textAlign: 'center', padding: '0 8px 6px 8px', fontSize: 12, fontWeight: isAbnormal ? 900 : 'normal' }}>
+                                {resObj.value || ''}
+                              </td>
+                              <td style={{ textAlign: 'center', padding: '0 8px 6px 8px', fontSize: 12, fontWeight: 800 }}>
+                                {isAbnormal ? '*' : ''}
+                              </td>
+                              <td style={{ textAlign: 'left', padding: '0 12px 6px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{currentRange}</td>
+                              <td style={{ textAlign: 'center', padding: '0 8px 6px 8px', fontSize: 12 }}>{currentUnit}</td>
+                              <td style={{ textAlign: 'right', paddingTop: 0, paddingBottom: 6, paddingLeft: 0, paddingRight: 0, fontSize: 11, fontStyle: 'italic' }}>{currentMethod}</td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    });
+                  })()}
                 </tbody>
               </table>
             ) : testTemplate?.uiType === 'microbiology' ? (

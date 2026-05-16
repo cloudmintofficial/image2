@@ -67,7 +67,7 @@ export default function PanelTemplate({ testTemplate, panelResults, updatePanelF
                       </tr>
                     )}
                     <tr style={{ borderTop: '1px solid #f1f5f9', background: isAbnormal ? '#fef2f2' : 'transparent' }}>
-                      <td style={{ padding: '10px 16px', fontWeight: 600, color: '#0f172a', paddingLeft: comp.subHeading ? 32 : 16 }}>{comp.name}</td>
+                      <td style={{ paddingTop: 10, paddingBottom: 10, paddingRight: 16, fontWeight: 600, color: '#0f172a', paddingLeft: comp.subHeading ? 32 : 16 }}>{comp.name}</td>
                       <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                         <input
                           type={comp.fieldType === 'number' ? 'number' : 'text'}
