@@ -8,8 +8,11 @@ import { useReactToPrint } from 'react-to-print';
 import 'react-quill-new/dist/quill.snow.css';
 import { useToast } from '@/context/ToastContext';
 import AddOrderModal from '@/components/modals/AddOrderModal';
-
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+import PanelTemplate from './components/templates/PanelTemplate';
+import SingleValueTemplate from './components/templates/SingleValueTemplate';
+import MicrobiologyTemplate from './components/templates/MicrobiologyTemplate';
+import ImmunologyTemplate from './components/templates/ImmunologyTemplate';
+import RichTextTemplate from './components/templates/RichTextTemplate';
 
 export default function InProcessPage() {
   const router = useRouter();
@@ -1153,381 +1156,54 @@ export default function InProcessPage() {
                       )}
 
                       {/* === PANEL TABLE UI === */}
-                      {testTemplate?.uiType === 'panel' && testTemplate.components?.length > 0 && (
-                        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-                          <div style={{ padding: '16px 24px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0f172a' }}>Panel Test Entry</h3>
-                            <span style={{ fontSize: 12, color: '#64748b' }}>{testTemplate.components.length} parameters</span>
-                          </div>
-                          <div style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-                              <thead>
-                                <tr style={{ background: 'linear-gradient(to right, #f8fafc, #f1f5f9)' }}>
-                                  <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 700, color: '#dc2626', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px', width: 250 }}>Component</th>
-                                  <th style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 700, color: '#dc2626', fontSize: 11, textTransform: 'uppercase', width: 150 }}>Results</th>
-                                  <th style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 700, color: '#dc2626', fontSize: 11, textTransform: 'uppercase', width: 80 }}>Abnormal</th>
-                                  <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 700, color: '#dc2626', fontSize: 11, textTransform: 'uppercase', width: 350 }}>Range</th>
-                                  <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 700, color: '#dc2626', fontSize: 11, textTransform: 'uppercase', width: 120 }}>Units</th>
-                                  <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 700, color: '#dc2626', fontSize: 11, textTransform: 'uppercase', width: 350 }}>Method</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {(() => {
-                                  let lastHeading = '';
-                                  return testTemplate.components.map((comp: any, idx: number) => {
-                                    const showHeading = comp.subHeading && comp.subHeading !== lastHeading;
-                                    if (showHeading) lastHeading = comp.subHeading;
-
-                                    const resObj = panelResults[comp.name] || {};
-                                    const val = resObj.value || '';
-                                    const manualAbnormal = resObj.abnormal ?? false;
-
-                                    const isAbnormal = manualAbnormal;
-
-                                    const currentRange = resObj.range ?? comp.normalRange ?? '—';
-                                    const currentUnit = resObj.unit ?? comp.unit ?? '—';
-                                    const currentMethod = resObj.method ?? comp.method ?? resultMethod ?? '—';
-
-                                    const currentRangeStr = String(currentRange || '');
-                                    const rangeLines = currentRangeStr.split('\n').length;
-                                    const textareaRows = Math.max(3, rangeLines);
-
-                                    return (
-                                      <React.Fragment key={idx}>
-                                        {showHeading && (
-                                          <tr style={{ background: '#f8fafc' }}>
-                                            <td colSpan={6} style={{ padding: '8px 16px', fontWeight: 800, color: '#0f172a', textDecoration: 'underline', fontSize: 12, textTransform: 'uppercase' }}>
-                                              {comp.subHeading}
-                                            </td>
-                                          </tr>
-                                        )}
-                                        <tr style={{ borderTop: '1px solid #f1f5f9', background: isAbnormal ? '#fef2f2' : 'transparent' }}>
-                                          <td style={{ padding: '10px 16px', fontWeight: 600, color: '#0f172a', paddingLeft: comp.subHeading ? 32 : 16 }}>{comp.name}</td>
-                                          <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                                            <input
-                                              type={comp.fieldType === 'number' ? 'number' : 'text'}
-                                              style={{ width: '100%', padding: '6px 12px', border: `1px solid ${isAbnormal ? '#dc2626' : '#e2e8f0'}`, borderRadius: 6, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', background: '#fff', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                                              value={val}
-                                              onChange={e => updatePanelField(comp.name, 'value', e.target.value)}
-                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                                              onBlur={e => { e.currentTarget.style.borderColor = isAbnormal ? '#dc2626' : '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
-                                            />
-                                          </td>
-                                          <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                                            <input
-                                              type="checkbox"
-                                              checked={isAbnormal}
-                                              onChange={e => updatePanelField(comp.name, 'abnormal', e.target.checked)}
-                                              style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#f97316' }}
-                                            />
-                                          </td>
-                                          <td style={{ padding: '6px 8px' }}>
-                                            <textarea
-                                              rows={textareaRows}
-                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, resize: 'vertical', fontFamily: 'inherit', outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                                              value={currentRange}
-                                              onChange={e => updatePanelField(comp.name, 'range', e.target.value)}
-                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
-                                            />
-                                          </td>
-                                          <td style={{ padding: '6px 8px' }}>
-                                            <input
-                                              type="text"
-                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                                              value={currentUnit}
-                                              onChange={e => updatePanelField(comp.name, 'unit', e.target.value)}
-                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
-                                            />
-                                          </td>
-                                          <td style={{ padding: '6px 8px' }}>
-                                            <input
-                                              type="text"
-                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                                              value={currentMethod}
-                                              onChange={e => updatePanelField(comp.name, 'method', e.target.value)}
-                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
-                                            />
-                                          </td>
-                                        </tr>
-                                      </React.Fragment>
-                                    );
-                                  });
-                                })()}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      )}
+                      <PanelTemplate
+                        testTemplate={testTemplate}
+                        panelResults={panelResults}
+                        updatePanelField={updatePanelField}
+                        resultMethod={resultMethod}
+                        selectedBill={selectedBill}
+                      />
 
                       {/* === SINGLE VALUE UI === */}
-                      {testTemplate?.uiType === 'single' && (
-                        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-                          <div style={{ padding: '16px 24px', background: 'linear-gradient(to right, #dcfce7, #fff)', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0f172a' }}>🔢 Single Value Entry</h3>
-                          </div>
-                          <div style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-                              <thead>
-                                <tr style={{ borderBottom: '2px solid #e2e8f0', background: '#f8fafc' }}>
-                                  <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '25%' }}>Component</th>
-                                  <th style={{ textAlign: 'center', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '20%' }}>Results</th>
-                                  <th style={{ textAlign: 'center', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '10%' }}>Abnormal</th>
-                                  <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '25%' }}>Range</th>
-                                  <th style={{ textAlign: 'center', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '10%' }}>Units</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr style={{ borderTop: '1px solid #f1f5f9' }}>
-                                  <td style={{ padding: '10px 16px', fontWeight: 600, color: '#0f172a' }}>{testTemplate.components?.[0]?.name || testTemplate.testName}</td>
-                                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                                    <input
-                                      type={testTemplate.components?.[0]?.fieldType === 'number' ? 'number' : 'text'}
-                                      style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', background: '#fff', transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                                      value={singleResult}
-                                      onChange={e => setSingleResult(e.target.value)}
-                                      onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                                      onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
-                                    />
-                                  </td>
-                                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                                    <input
-                                      type="checkbox"
-                                      checked={false} // Assuming single values might not have the abnormal toggle implemented yet, keeping UI consistent
-                                      readOnly
-                                      style={{ width: 16, height: 16, cursor: 'not-allowed', opacity: 0.5 }}
-                                      title="Not available for single values currently"
-                                    />
-                                  </td>
-                                  <td style={{ padding: '6px 8px' }}>
-                                    <div style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#475569', background: '#f8fafc', fontWeight: 500 }}>
-                                      {(() => {
-                                        const comp = testTemplate.components?.[0];
-                                        if (!comp) return '-';
-                                        const gender = selectedBill?.patientObj?.gender;
-                                        if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
-                                        if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
-                                        return comp.normalRange || '-';
-                                      })()}
-                                    </div>
-                                  </td>
-                                  <td style={{ padding: '6px 8px' }}>
-                                    <div style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#475569', background: '#f8fafc', fontWeight: 500, textAlign: 'center' }}>
-                                      {testTemplate.components?.[0]?.unit || '-'}
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      )}
+                      <SingleValueTemplate
+                        testTemplate={testTemplate}
+                        singleResult={singleResult}
+                        setSingleResult={setSingleResult}
+                        selectedBill={selectedBill}
+                      />
 
                       {/* === MICROBIOLOGY UI === */}
-                      {testTemplate?.uiType === 'microbiology' && (
-                        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
-                          <div style={{ padding: '16px 24px', background: 'linear-gradient(to right, #fef3c7, #fff)', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0f172a' }}>🦠 Microbiology / Culture Result</h3>
-                          </div>
-                          <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-                            {/* Row 1: Organism + Growth */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
-                              <div>
-                                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Organism Isolated</label>
-                                <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={microOrganism} onChange={e => setMicroOrganism(e.target.value)} placeholder="e.g. E. coli, No Growth" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
-                              </div>
-                              <div>
-                                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Growth</label>
-                                <select style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none', background: '#fff' }} value={microGrowth} onChange={e => setMicroGrowth(e.target.value)}>
-                                  <option>No Growth</option>
-                                  <option>Scanty Growth</option>
-                                  <option>Moderate Growth</option>
-                                  <option>Heavy Growth</option>
-                                  <option>Mixed Flora</option>
-                                </select>
-                              </div>
-                              <div>
-                                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Colony Count (CFU/mL)</label>
-                                <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={microColonyCount} onChange={e => setMicroColonyCount(e.target.value)} placeholder="e.g. >1,00,000" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
-                              </div>
-                            </div>
-                            {/* Antibiotic Sensitivity Table */}
-                            <div>
-                              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 12 }}>Antibiotic Sensitivity</label>
-                              <div style={{ overflowX: 'auto', border: '1px solid #e2e8f0', borderRadius: 10 }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-                                  <thead>
-                                    <tr style={{ background: '#f8fafc' }}>
-                                      <th style={{ padding: '10px 16px', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: 11, textTransform: 'uppercase' }}>Antibiotic</th>
-                                      {['Sensitive', 'Intermediate', 'Resistant'].map(h => (
-                                        <th key={h} style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 700, color: '#475569', fontSize: 11, textTransform: 'uppercase', width: 120 }}>{h[0]}</th>
-                                      ))}
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {['Amoxicillin', 'Ampicillin', 'Ciprofloxacin', 'Cotrimoxazole', 'Gentamicin', 'Nitrofurantoin', 'Norfloxacin', 'Ceftriaxone', 'Imipenem', 'Piperacillin'].map((drug, i) => (
-                                      <tr key={drug} style={{ borderTop: '1px solid #f1f5f9', background: i % 2 === 0 ? '#fff' : '#fafafa' }}>
-                                        <td style={{ padding: '10px 16px', fontWeight: 500, color: '#0f172a' }}>{drug}</td>
-                                        {['Sensitive', 'Intermediate', 'Resistant'].map(opt => (
-                                          <td key={opt} style={{ padding: '10px 16px', textAlign: 'center' }}>
-                                            <input
-                                              type="radio"
-                                              name={`drug-${drug}`}
-                                              checked={microSensitivity[drug] === opt}
-                                              onChange={() => setMicroSensitivity(prev => ({ ...prev, [drug]: opt }))}
-                                              style={{ width: 16, height: 16, cursor: 'pointer', accentColor: opt === 'Sensitive' ? '#16a34a' : opt === 'Resistant' ? '#dc2626' : '#f97316' }}
-                                            />
-                                          </td>
-                                        ))}
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                      <MicrobiologyTemplate
+                        testTemplate={testTemplate}
+                        microOrganism={microOrganism}
+                        setMicroOrganism={setMicroOrganism}
+                        microGrowth={microGrowth}
+                        setMicroGrowth={setMicroGrowth}
+                        microColonyCount={microColonyCount}
+                        setMicroColonyCount={setMicroColonyCount}
+                        microSensitivity={microSensitivity}
+                        setMicroSensitivity={setMicroSensitivity}
+                      />
 
                       {/* === IMMUNOLOGY / SEROLOGY UI === */}
-                      {testTemplate?.uiType === 'immunology' && (
-                        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '32px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-                          <h3 style={{ margin: '0 0 24px 0', fontSize: 14, fontWeight: 700, color: '#0f172a' }}>🧠 Immunology / Serology Result</h3>
-                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20 }}>
-                            <div>
-                              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Result</label>
-                              <div style={{ display: 'flex', gap: 10 }}>
-                                {['Positive', 'Negative', 'Equivocal'].map(opt => (
-                                  <button
-                                    key={opt}
-                                    onClick={() => setImmunoResult(opt)}
-                                    style={{
-                                      flex: 1, padding: '14px 8px', borderRadius: 10, border: '2px solid',
-                                      borderColor: immunoResult === opt ? (opt === 'Positive' ? '#dc2626' : opt === 'Negative' ? '#16a34a' : '#f97316') : '#e2e8f0',
-                                      background: immunoResult === opt ? (opt === 'Positive' ? '#fef2f2' : opt === 'Negative' ? '#f0fdf4' : '#fff7ed') : '#fff',
-                                      color: immunoResult === opt ? (opt === 'Positive' ? '#dc2626' : opt === 'Negative' ? '#16a34a' : '#f97316') : '#94a3b8',
-                                      fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all 0.2s'
-                                    }}
-                                  >
-                                    {opt === 'Positive' ? '🔴' : opt === 'Negative' ? '🟢' : '🟡'} {opt}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Method</label>
-                              <select style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none', background: '#fff' }} value={immunoMethod} onChange={e => setImmunoMethod(e.target.value)}>
-                                <option value="">Select Method</option>
-                                <option>ELISA</option>
-                                <option>Rapid ICT</option>
-                                <option>Chemiluminescence</option>
-                                <option>Agglutination</option>
-                                <option>PCR</option>
-                                <option>Western Blot</option>
-                              </select>
-                            </div>
-                            <div>
-                              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: 8 }}>Titer / Value</label>
-                              <input type="text" style={{ width: '100%', padding: '10px 14px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, outline: 'none' }} value={immunoTiter} onChange={e => setImmunoTiter(e.target.value)} placeholder="e.g. 1:320 or 4.5 S/CO" onFocus={e => e.currentTarget.style.borderColor = '#f97316'} onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'} />
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                      <ImmunologyTemplate
+                        testTemplate={testTemplate}
+                        immunoResult={immunoResult}
+                        setImmunoResult={setImmunoResult}
+                        immunoMethod={immunoMethod}
+                        setImmunoMethod={setImmunoMethod}
+                        immunoTiter={immunoTiter}
+                        setImmunoTiter={setImmunoTiter}
+                      />
 
                       {/* === RICH TEXT (RADIOLOGY / GENERAL) UI === */}
-                      {/* === RICH TEXT (RADIOLOGY / GENERAL) UI === */}
-                      {(!testTemplate || testTemplate?.uiType === 'richtext') && (
-                        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)', overflow: 'hidden' }}>
-                          <div style={{ display: 'flex', background: '#f8fafc', padding: '10px 16px', borderBottom: '1px solid #e2e8f0', gap: 8 }}>
-                            <div
-                              onClick={() => setRichTextTab('report')}
-                              style={{ padding: '6px 16px', background: richTextTab === 'report' ? '#e67e22' : '#bdc3c7', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 4, cursor: 'pointer' }}>
-                              Page 1
-                            </div>
-                            <div
-                              style={{ padding: '6px 16px', background: '#bdc3c7', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 4, cursor: 'pointer' }}>
-                              Page 2
-                            </div>
-                            <div
-                              onClick={() => setRichTextTab('templates')}
-                              style={{ padding: '6px 16px', background: richTextTab === 'templates' ? '#34495e' : '#bdc3c7', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 4, cursor: 'pointer' }}>
-                              Templates
-                            </div>
-                          </div>
-                          <div style={{ padding: '24px', minHeight: 450 }}>
-                            {richTextTab === 'report' ? (
-                              <>
-                                <style>{`
-                            .ql-container { height: 450px; font-family: "Inter", system-ui, sans-serif; font-size: 15px; border: none !important; }
-                            .ql-toolbar { background: #fff; border-top: none !important; border-left: none !important; border-right: none !important; border-bottom: 1px solid #f1f5f9 !important; padding: 12px !important; margin: -24px -24px 24px -24px; }
-                            .ql-editor { padding: 0; line-height: 1.6; }
-                            .ql-editor.ql-blank::before { left: 0; font-style: normal; color: #94a3b8; }
-                          `}</style>
-                                <ReactQuill
-                                  theme="snow"
-                                  value={resultInput}
-                                  onChange={setResultInput}
-                                  placeholder="Start typing diagnostic observations..."
-                                  modules={{
-                                    toolbar: [
-                                      [{ 'header': [1, 2, 3, false] }],
-                                      ['bold', 'italic', 'underline', 'strike'],
-                                      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                                      [{ 'color': [] }, { 'background': [] }],
-                                      [{ 'align': [] }],
-                                      ['clean']
-                                    ],
-                                  }}
-                                />
-                              </>
-                            ) : (
-                              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                                <h4 style={{ margin: 0, fontSize: 14, color: '#475569' }}>Available Templates</h4>
-
-                                {testTemplate?.resultTemplate ? (
-                                  <div
-                                    style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}
-                                    onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
-                                    onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
-                                    onClick={() => {
-                                      if (confirm('Applying this template will overwrite your current report. Continue?')) {
-                                        setResultInput(testTemplate.resultTemplate);
-                                        setRichTextTab('report');
-                                      }
-                                    }}
-                                  >
-                                    <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: 4 }}>Default Master Template</div>
-                                    <div style={{ fontSize: 12, color: '#64748b' }}>Standard template defined for {testTemplate.testName}</div>
-                                  </div>
-                                ) : null}
-
-                                <div
-                                  style={{ padding: '16px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s' }}
-                                  onMouseEnter={e => e.currentTarget.style.borderColor = '#f97316'}
-                                  onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
-                                  onClick={() => {
-                                    if (confirm('Applying this template will overwrite your current report. Continue?')) {
-                                      setResultInput('<h3>NORMAL STUDY</h3><p>The study reveals no significant abnormality.</p><p><b>IMPRESSION:</b> Normal Study.</p>');
-                                      setRichTextTab('report');
-                                    }
-                                  }}
-                                >
-                                  <div style={{ fontWeight: 600, color: '#0f172a', marginBottom: 4 }}>Normal Study (Generic)</div>
-                                  <div style={{ fontSize: 12, color: '#64748b' }}>A simple "Normal Study" layout.</div>
-                                </div>
-
-                                {!testTemplate?.resultTemplate && (
-                                  <div style={{ padding: '16px', textAlign: 'center', color: '#94a3b8', fontSize: 13, fontStyle: 'italic' }}>
-                                    No specific template is assigned to this test in the master database.
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                      <RichTextTemplate
+                        testTemplate={testTemplate}
+                        richTextTab={richTextTab}
+                        setRichTextTab={setRichTextTab}
+                        resultInput={resultInput}
+                        setResultInput={setResultInput}
+                      />
 
                       {/* Combined Advice & Metadata Footer */}
                       <div style={{
@@ -1556,22 +1232,24 @@ export default function InProcessPage() {
                                 onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                               />
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                              <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Service Doctor:</span>
-                              <select
-                                className="form-input form-select"
-                                style={{ maxWidth: 300, transition: 'border-color 0.2s, box-shadow 0.2s', outline: 'none' }}
-                                value={resultDoctor}
-                                onChange={e => setResultDoctor(e.target.value)}
-                                onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                                onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
-                              >
-                                <option value="">Select Service Doctor</option>
-                                {serviceDoctors.map(doc => (
-                                  <option key={doc.id} value={doc.name}>{doc.name}</option>
-                                ))}
-                              </select>
-                            </div>
+                            {testTemplate?.uiType !== 'panel' && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Service Doctor:</span>
+                                <select
+                                  className="form-input form-select"
+                                  style={{ maxWidth: 300, transition: 'border-color 0.2s, box-shadow 0.2s', outline: 'none' }}
+                                  value={resultDoctor}
+                                  onChange={e => setResultDoctor(e.target.value)}
+                                  onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                  onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                                >
+                                  <option value="">Select Service Doctor</option>
+                                  {serviceDoctors.map(doc => (
+                                    <option key={doc.id} value={doc.name}>{doc.name}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
                           </div>
 
                           {/* Right Column: Upload & Signature */}
@@ -1580,19 +1258,21 @@ export default function InProcessPage() {
                               <span style={{ fontSize: 13, color: '#64748b' }}>Upload Result File:</span>
                               <button className="btn btn-primary" style={{ padding: '8px 20px', borderRadius: 6, background: 'var(--primary)' }}>Add Attachments</button>
                             </div>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
-                              <span style={{ fontSize: 13, color: '#64748b' }}>Signature:</span>
-                              <select
-                                className="form-input form-select"
-                                style={{ maxWidth: 250 }}
-                                value={signatureId}
-                                onChange={e => setSignatureId(e.target.value)}
-                              >
-                                {signaturesList.map(sig => (
-                                  <option key={sig.id} value={sig.id}>{sig.label}</option>
-                                ))}
-                              </select>
-                            </div>
+                            {testTemplate?.uiType !== 'panel' && (
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
+                                <span style={{ fontSize: 13, color: '#64748b' }}>Signature:</span>
+                                <select
+                                  className="form-input form-select"
+                                  style={{ maxWidth: 250 }}
+                                  value={signatureId}
+                                  onChange={e => setSignatureId(e.target.value)}
+                                >
+                                  {signaturesList.map(sig => (
+                                    <option key={sig.id} value={sig.id}>{sig.label}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
                           </div>
                         </div>
 
