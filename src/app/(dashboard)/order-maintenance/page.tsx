@@ -1,11 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import { Loader2 } from 'lucide-react';
 
 export default function OrderMaintenancePage() {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [tests, setTests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -13,6 +16,29 @@ export default function OrderMaintenancePage() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
+
+  // Initialize from URL on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const pageFromUrl = parseInt(params.get('page') || '1', 10);
+      if (pageFromUrl && pageFromUrl !== currentPage) {
+        setCurrentPage(pageFromUrl);
+      }
+    }
+  }, []);
+
+  // Update URL when page changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const pageFromUrl = parseInt(params.get('page') || '1', 10);
+      if (currentPage !== pageFromUrl) {
+        params.set('page', currentPage.toString());
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+      }
+    }
+  }, [currentPage, pathname, router]);
 
   const [selectedTestId, setSelectedTestId] = useState<number | null>(null);
   const [selectedTestDetails, setSelectedTestDetails] = useState<any | null>(null);
@@ -121,7 +147,7 @@ export default function OrderMaintenancePage() {
     fetchTests();
   }, []);
 
-  const router = useRouter();
+
 
   useEffect(() => {
     const handler = (e: Event) => {
