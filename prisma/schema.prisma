@@ -132,7 +132,7 @@ model Payment {
 
 model TestMaster {
   id                    Int                   @id @default(autoincrement())
-  testName              String                @unique
+  testName              String
   hasComponents         Boolean               @default(false)
   testCode              String?
   displayOrderName      String?
