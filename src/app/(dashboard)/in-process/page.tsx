@@ -1177,30 +1177,14 @@ export default function InProcessPage() {
                                     const val = resObj.value || '';
                                     const manualAbnormal = resObj.abnormal ?? false;
 
-                                    const gender = selectedBill?.patientObj?.gender;
-                                    const autoAbnormal = (() => {
-                                      if (!val) return false;
-                                      const num = parseFloat(val);
-                                      if (isNaN(num)) return false;
-
-                                      if (gender === 'M' && comp.minMale != null && comp.maxMale != null) {
-                                        return num < comp.minMale || num > comp.maxMale;
-                                      }
-                                      if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) {
-                                        return num < comp.minFemale || num > comp.maxFemale;
-                                      }
-
-                                      if (!comp.normalRange) return false;
-                                      const rangeMatch = comp.normalRange.match(/(\d+\.?\d*)\s*-\s*(\d+\.?\d*)/);
-                                      if (rangeMatch) return num < parseFloat(rangeMatch[1]) || num > parseFloat(rangeMatch[2]);
-                                      return false;
-                                    })();
-
-                                    const isAbnormal = manualAbnormal || autoAbnormal;
+                                    const isAbnormal = manualAbnormal;
 
                                     const currentRange = resObj.range ?? comp.normalRange ?? '—';
                                     const currentUnit = resObj.unit ?? comp.unit ?? '—';
                                     const currentMethod = resObj.method ?? comp.method ?? resultMethod ?? '—';
+                                    
+                                    const rangeLines = currentRange.split('\n').length;
+                                    const textareaRows = Math.max(3, rangeLines);
 
                                     return (
                                       <React.Fragment key={idx}>
@@ -1231,7 +1215,8 @@ export default function InProcessPage() {
                                           </td>
                                           <td style={{ padding: '6px 8px' }}>
                                             <textarea
-                                              style={{ width: '100%', minHeight: '60px', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, resize: 'vertical', fontFamily: 'inherit' }}
+                                              rows={textareaRows}
+                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, resize: 'vertical', fontFamily: 'inherit' }}
                                               value={currentRange}
                                               onChange={e => updatePanelField(comp.name, 'range', e.target.value)}
                                             />
