@@ -90,7 +90,7 @@ export default function ServiceGroupsPage() {
           </button>
           <button
             className="btn btn-ghost"
-            onClick={() => router.push('/order-maintenance')}
+            onClick={() => router.back()}
             style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '8px' }}
           >
             <ArrowLeft size={18} /> Back

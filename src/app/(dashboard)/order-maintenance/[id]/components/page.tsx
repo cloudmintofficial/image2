@@ -312,7 +312,7 @@ export default function OrderComponentsPage() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button className="btn btn-outline" onClick={() => router.push('/order-maintenance')}>
+          <button className="btn btn-outline" onClick={() => router.back()}>
             <ArrowLeft size={18} style={{ marginRight: '8px' }} /> Back to Orders
           </button>
           <button

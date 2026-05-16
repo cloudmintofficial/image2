@@ -153,7 +153,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
 
       if (res.ok) {
         showToast(isEdit ? 'Order updated successfully' : 'Order added successfully', 'success');
-        router.push('/order-maintenance');
+        router.back();
         router.refresh();
       } else if (res.status === 400) {
         const errorData = await res.json().catch(() => ({}));
@@ -185,7 +185,8 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
 
       if (res.ok) {
         showToast('Order deleted successfully', 'success');
-        router.push('/order-maintenance');
+        router.back();
+        router.refresh();
       } else {
         const data = await res.json();
         showToast(data.error || 'Failed to delete order', 'error');
@@ -203,7 +204,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
       {/* Action Header */}
       <div className="workspace-header">
         <div className="header-left">
-          <button className="btn-back" onClick={() => router.push('/order-maintenance')} title="Go Back">
+          <button className="btn-back" onClick={() => router.back()} title="Go Back">
             <ArrowLeft size={20} />
           </button>
           <div>
