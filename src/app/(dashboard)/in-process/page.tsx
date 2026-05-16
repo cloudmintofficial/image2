@@ -13,6 +13,7 @@ import SingleValueTemplate from './components/templates/SingleValueTemplate';
 import MicrobiologyTemplate from './components/templates/MicrobiologyTemplate';
 import ImmunologyTemplate from './components/templates/ImmunologyTemplate';
 import RichTextTemplate from './components/templates/RichTextTemplate';
+import RichTextEditor from '@/components/RichTextEditor';
 
 export default function InProcessPage() {
   const router = useRouter();
@@ -148,8 +149,6 @@ export default function InProcessPage() {
       if (tmpl) {
         setTestTemplate(tmpl);
         setTemplateCache(prev => ({ ...prev, [cacheKey]: tmpl }));
-        if (tmpl.method && !selectedOrder.resultMethod) setResultMethod(tmpl.method);
-        if (tmpl.advice && !selectedOrder.resultAdvice) setResultAdvice(tmpl.advice);
         restoreSavedResults(tmpl, selectedOrder);
       }
     } catch (error) {
@@ -166,7 +165,22 @@ export default function InProcessPage() {
 
   // Helper: restore saved results from order data into the correct state fields
   const restoreSavedResults = (tmpl: any, order: any) => {
-    if (!order.resultData) return;
+    // 1. Always load clinical metadata first (Fallback to template defaults if order has no saved data)
+    setResultMethod(order.resultMethod || tmpl.method || '');
+    setResultAdvice(order.resultAdvice || tmpl.advice || '');
+    setResultNotes(order.resultNotes || tmpl.resultNotes || '');
+    setResultDoctor(order.resultDoctor || '');
+    setSignatureId(order.signatureId || 'default');
+
+    // 2. Parse result data if available
+    if (!order.resultData) {
+      // If it's a richtext UI, it defaults to the resultTemplate if no resultData exists
+      if (tmpl.uiType === 'richtext') {
+        setResultInput(tmpl.resultTemplate ?? '');
+      }
+      return;
+    }
+
     try {
       if (tmpl.uiType === 'panel') {
         setPanelResults(JSON.parse(order.resultData));
@@ -184,15 +198,8 @@ export default function InProcessPage() {
         setImmunoMethod(d.method || '');
         setImmunoTiter(d.titer || '');
       } else if (tmpl.uiType === 'richtext') {
-        setResultInput(order.resultData || (tmpl.resultTemplate ?? ''));
+        setResultInput(order.resultData);
       }
-
-      // Restore Clinical Metadata
-      if (order.resultMethod) setResultMethod(order.resultMethod);
-      if (order.resultDoctor) setResultDoctor(order.resultDoctor);
-      if (order.resultNotes) setResultNotes(order.resultNotes);
-      if (order.resultAdvice) setResultAdvice(order.resultAdvice);
-      if (order.signatureId) setSignatureId(order.signatureId);
     } catch {
       // Malformed saved data - start fresh
       console.warn('Could not parse saved resultData for order:', order.id);
@@ -1283,22 +1290,20 @@ export default function InProcessPage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 8 }}>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>NOTES:</span>
-                            <textarea
-                              style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'vertical', outline: 'none', minHeight: 80, transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                              value={resultNotes}
-                              onChange={e => setResultNotes(e.target.value)}
-                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                            <RichTextEditor 
+                              value={resultNotes} 
+                              onChange={setResultNotes}
+                              minHeight={100}
+                              placeholder="Enter result notes or interpretation..."
                             />
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>ADVICE:</span>
-                            <textarea
-                              style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'vertical', outline: 'none', minHeight: 80, transition: 'border-color 0.2s, box-shadow 0.2s' }}
-                              value={resultAdvice}
-                              onChange={e => setResultAdvice(e.target.value)}
-                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                            <RichTextEditor 
+                              value={resultAdvice} 
+                              onChange={setResultAdvice}
+                              minHeight={100}
+                              placeholder="Enter clinical advice..."
                             />
                           </div>
                         </div>

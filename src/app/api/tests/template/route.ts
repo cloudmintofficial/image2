@@ -35,6 +35,7 @@ export async function GET(request: Request) {
         testName: orderName,
         components: [],
         resultTemplate: null,
+        resultNotes: null,
         method: null,
         advice: null,
       });
@@ -58,6 +59,7 @@ export async function GET(request: Request) {
         options: c.options,
       })),
       resultTemplate: test.resultTemplate || test.resultNotes,
+      resultNotes: test.resultNotes,
       method: test.method,
       advice: test.advice,
       sampleType: test.sampleType,

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { Loader2, ArrowLeft, Plus, Edit, Trash2, Printer, Layout, Type } from 'lucide-react';
+import { Loader2, ArrowLeft, Plus, Edit, Trash2, Printer, Layout, Type, ArrowUp, ArrowDown } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 
 export default function OrderComponentsPage() {
@@ -242,6 +242,42 @@ export default function OrderComponentsPage() {
     }
   };
 
+  const handleReorder = async (direction: 'up' | 'down', index: number) => {
+    const newComponents = [...components];
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    
+    if (targetIdx < 0 || targetIdx >= newComponents.length) return;
+
+    // Swap elements in state for immediate UI update
+    const [moved] = newComponents.splice(index, 1);
+    newComponents.splice(targetIdx, 0, moved);
+    setComponents(newComponents);
+
+    try {
+      // Prepare reordered list with updated sortOrder values
+      const reorderedList = newComponents.map((comp, idx) => ({
+        id: comp.id,
+        sortOrder: idx
+      }));
+
+      const res = await fetch(`/api/tests/${testId}/components`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reorderedList })
+      });
+
+      if (!res.ok) {
+        showToast('Failed to save new order', 'error');
+        // Revert on failure
+        fetchDetails();
+      }
+    } catch (err) {
+      console.error('Reorder error:', err);
+      showToast('Error syncing component order', 'error');
+      fetchDetails();
+    }
+  };
+
   const handleOpenFontModal = async () => {
     try {
       const res = await fetch(`/api/tests/${testId}/font`);
@@ -435,6 +471,26 @@ export default function OrderComponentsPage() {
                           </div>
                         ) : (
                           <>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0px', marginRight: '4px' }}>
+                              <button 
+                                className="btn btn-ghost btn-sm" 
+                                style={{ padding: '2px', height: '18px', color: idx === 0 ? '#cbd5e1' : '#64748b' }} 
+                                onClick={() => handleReorder('up', idx)} 
+                                disabled={idx === 0}
+                                title="Move Up"
+                              >
+                                <ArrowUp size={14} />
+                              </button>
+                              <button 
+                                className="btn btn-ghost btn-sm" 
+                                style={{ padding: '2px', height: '18px', color: idx === components.length - 1 ? '#cbd5e1' : '#64748b' }} 
+                                onClick={() => handleReorder('down', idx)} 
+                                disabled={idx === components.length - 1}
+                                title="Move Down"
+                              >
+                                <ArrowDown size={14} />
+                              </button>
+                            </div>
                             <button className="btn btn-ghost btn-sm" style={{ color: '#e25838', backgroundColor: '#fff', border: '1px solid #e25838' }}>Values</button>
                             <button className="btn btn-ghost btn-sm" style={{ color: 'var(--text-secondary)' }} onClick={() => handleEditComponent(comp)}><Edit size={16} /></button>
                             <button 

@@ -88,3 +88,36 @@ export async function POST(
     return NextResponse.json({ error: 'Failed to create component' }, { status: 500 });
   }
 }
+
+// PATCH /api/tests/[id]/components - Reorder components
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const testId = parseInt(id);
+  if (isNaN(testId)) return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+
+  try {
+    const { reorderedList } = await request.json();
+    
+    if (!Array.isArray(reorderedList)) {
+      return NextResponse.json({ error: 'reorderedList must be an array' }, { status: 400 });
+    }
+
+    // Update each component's sortOrder in a transaction
+    await prisma.$transaction(
+      reorderedList.map((item: { id: number; sortOrder: number }) =>
+        prisma.testComponent.update({
+          where: { id: item.id },
+          data: { sortOrder: item.sortOrder }
+        })
+      )
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error reordering components:', error);
+    return NextResponse.json({ error: 'Failed to reorder components' }, { status: 500 });
+  }
+}
