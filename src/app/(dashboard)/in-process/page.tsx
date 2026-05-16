@@ -1230,9 +1230,8 @@ export default function InProcessPage() {
                                             />
                                           </td>
                                           <td style={{ padding: '6px 8px' }}>
-                                            <input
-                                              type="text"
-                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500 }}
+                                            <textarea
+                                              style={{ width: '100%', minHeight: '60px', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, resize: 'vertical', fontFamily: 'inherit' }}
                                               value={currentRange}
                                               onChange={e => updatePanelField(comp.name, 'range', e.target.value)}
                                             />
