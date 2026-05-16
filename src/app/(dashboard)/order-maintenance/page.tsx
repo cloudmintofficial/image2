@@ -1,44 +1,43 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import React, { useState, useEffect, Suspense, useCallback } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
 import { Loader2 } from 'lucide-react';
 
-export default function OrderMaintenancePage() {
+function OrderMaintenanceContent() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [tests, setTests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const initialPage = parseInt(searchParams.get('page') || '1', 10);
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const itemsPerPage = 50;
 
-  // Initialize from URL on mount
+  // Sync URL changes back to state (e.g. when pressing back button)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const pageFromUrl = parseInt(params.get('page') || '1', 10);
-      if (pageFromUrl && pageFromUrl !== currentPage) {
-        setCurrentPage(pageFromUrl);
-      }
+    const pageFromUrl = parseInt(searchParams.get('page') || '1', 10);
+    if (pageFromUrl !== currentPage) {
+      setCurrentPage(pageFromUrl);
     }
-  }, []);
+  }, [searchParams]);
 
-  // Update URL when page changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const pageFromUrl = parseInt(params.get('page') || '1', 10);
-      if (currentPage !== pageFromUrl) {
-        params.set('page', currentPage.toString());
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-      }
-    }
-  }, [currentPage, pathname, router]);
+  // Sync state changes to URL
+  const updateUrl = useCallback((page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('page', page.toString());
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }, [pathname, router, searchParams]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    updateUrl(page);
+  };
 
   const [selectedTestId, setSelectedTestId] = useState<number | null>(null);
   const [selectedTestDetails, setSelectedTestDetails] = useState<any | null>(null);
@@ -274,21 +273,21 @@ export default function OrderMaintenancePage() {
 
         {/* Pagination Controls */}
         {!loading && totalPages > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '24px' }}>
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+          <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '8px' }}>
+            <button 
+              className="btn btn-outline btn-sm" 
               disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
             >
               Previous
             </button>
-            <span style={{ padding: '4px 12px', display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+            <span style={{ fontSize: '13px', color: 'var(--text-primary)', margin: '0 8px' }}>
               Page {currentPage} of {totalPages}
             </span>
-            <button
-              className="btn btn-outline btn-sm"
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            <button 
+              className="btn btn-outline btn-sm" 
               disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
             >
               Next
             </button>
@@ -438,5 +437,18 @@ export default function OrderMaintenancePage() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function OrderMaintenancePage() {
+  return (
+    <Suspense fallback={
+      <div style={{ textAlign: 'center', padding: '60px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
+        <Loader2 size={32} className="animate-spin" style={{ color: 'var(--primary)' }} />
+        <span style={{ color: 'var(--text-secondary)' }}>Loading orders...</span>
+      </div>
+    }>
+      <OrderMaintenanceContent />
+    </Suspense>
   );
 }
