@@ -9,6 +9,16 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
 
     const body = await request.json();
 
+    // EDGE CASE FIX: Ensure all orders are 'Verified' before allowing the bill to be dispatched.
+    const orders = await prisma.orderItem.findMany({ where: { billId: id } });
+    if (orders.length === 0) {
+      return NextResponse.json({ error: 'Cannot dispatch a bill with no orders.' }, { status: 400 });
+    }
+    const allVerified = orders.every(o => o.resultStatus === 'Verified');
+    if (!allVerified) {
+      return NextResponse.json({ error: 'All orders must be Verified before dispatching.' }, { status: 400 });
+    }
+
     const updatedBill = await prisma.bill.update({
       where: { id },
       data: {

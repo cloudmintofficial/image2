@@ -512,26 +512,31 @@ export default function InProcessPage() {
                       {filteredData.map(row => {
                         const allVerified = row.rawOrders?.every((o: any) => o.resultStatus === 'Verified');
                         const allCompleted = row.isCompleted;
+                        const hasAnyResult = row.rawOrders?.some((o: any) => o.resultStatus !== 'Pending');
                         const statusLabel = allVerified ? 'AUTHORIZED' : allCompleted ? 'COMPLETED' : 'IN PROCESS';
                         const statusColor = allVerified ? '#16a34a' : allCompleted ? '#2563eb' : '#f97316';
                         const statusBg = allVerified ? '#f0fdf4' : allCompleted ? '#eff6ff' : '#fff7ed';
+                        
+                        const btnColor = allCompleted ? '#27ae60' : '#e74c3c';
+                        const btnClass = allCompleted ? 'btn-success' : 'btn-danger';
+                        
                         return (
                           <tr key={row.billNo}>
                             <td>
                               <button
-                                className={`btn btn-sm ${row.isCompleted ? 'btn-success' : 'btn-danger'}`}
-                                style={{ padding: '4px 12px', background: row.isCompleted ? '#27ae60' : '#e74c3c', color: '#fff', border: 'none' }}
+                                className={`btn btn-sm ${btnClass}`}
+                                style={{ padding: '4px 12px', background: btnColor, color: '#fff', border: 'none' }}
                                 onClick={() => { setSelectedBill(row); setViewMode('bill'); }}
                               >
                                 Orders List
                               </button>
                             </td>
-                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.billNo}</td>
-                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.date}</td>
-                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.patient}</td>
-                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.phone}</td>
-                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.ageGender}</td>
-                            <td style={{ color: row.isCompleted ? '#27ae60' : 'inherit', fontWeight: row.isCompleted ? 600 : 'normal' }}>{row.orders}</td>
+                            <td style={{ color: allCompleted ? '#27ae60' : 'inherit', fontWeight: allCompleted ? 600 : 'normal' }}>{row.billNo}</td>
+                            <td style={{ color: allCompleted ? '#27ae60' : 'inherit', fontWeight: allCompleted ? 600 : 'normal' }}>{row.date}</td>
+                            <td style={{ color: allCompleted ? '#27ae60' : 'inherit', fontWeight: allCompleted ? 600 : 'normal' }}>{row.patient}</td>
+                            <td style={{ color: allCompleted ? '#27ae60' : 'inherit', fontWeight: allCompleted ? 600 : 'normal' }}>{row.phone}</td>
+                            <td style={{ color: allCompleted ? '#27ae60' : 'inherit', fontWeight: allCompleted ? 600 : 'normal' }}>{row.ageGender}</td>
+                            <td style={{ color: allCompleted ? '#27ae60' : 'inherit', fontWeight: allCompleted ? 600 : 'normal' }}>{row.orders}</td>
                             <td>
                               <span style={{ padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: statusBg, color: statusColor, letterSpacing: '0.5px' }}>
                                 {statusLabel}
@@ -1183,7 +1188,8 @@ export default function InProcessPage() {
                                     const currentUnit = resObj.unit ?? comp.unit ?? '—';
                                     const currentMethod = resObj.method ?? comp.method ?? resultMethod ?? '—';
                                     
-                                    const rangeLines = currentRange.split('\n').length;
+                                    const currentRangeStr = String(currentRange || '');
+                                    const rangeLines = currentRangeStr.split('\n').length;
                                     const textareaRows = Math.max(3, rangeLines);
 
                                     return (
@@ -1200,9 +1206,11 @@ export default function InProcessPage() {
                                           <td style={{ padding: '6px 8px', textAlign: 'center' }}>
                                             <input
                                               type={comp.fieldType === 'number' ? 'number' : 'text'}
-                                              style={{ width: '100%', padding: '6px 12px', border: `1px solid ${isAbnormal ? '#dc2626' : '#e2e8f0'}`, borderRadius: 4, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', background: '#fff' }}
+                                              style={{ width: '100%', padding: '6px 12px', border: `1px solid ${isAbnormal ? '#dc2626' : '#e2e8f0'}`, borderRadius: 6, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', background: '#fff', transition: 'border-color 0.2s, box-shadow 0.2s' }}
                                               value={val}
                                               onChange={e => updatePanelField(comp.name, 'value', e.target.value)}
+                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                              onBlur={e => { e.currentTarget.style.borderColor = isAbnormal ? '#dc2626' : '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                                             />
                                           </td>
                                           <td style={{ padding: '6px 8px', textAlign: 'center' }}>
@@ -1210,31 +1218,37 @@ export default function InProcessPage() {
                                               type="checkbox"
                                               checked={isAbnormal}
                                               onChange={e => updatePanelField(comp.name, 'abnormal', e.target.checked)}
-                                              style={{ width: 16, height: 16, cursor: 'pointer' }}
+                                              style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#f97316' }}
                                             />
                                           </td>
                                           <td style={{ padding: '6px 8px' }}>
                                             <textarea
                                               rows={textareaRows}
-                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, resize: 'vertical', fontFamily: 'inherit' }}
+                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, resize: 'vertical', fontFamily: 'inherit', outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
                                               value={currentRange}
                                               onChange={e => updatePanelField(comp.name, 'range', e.target.value)}
+                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                                             />
                                           </td>
                                           <td style={{ padding: '6px 8px' }}>
                                             <input
                                               type="text"
-                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500 }}
+                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
                                               value={currentUnit}
                                               onChange={e => updatePanelField(comp.name, 'unit', e.target.value)}
+                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                                             />
                                           </td>
                                           <td style={{ padding: '6px 8px' }}>
                                             <input
                                               type="text"
-                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 4, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500 }}
+                                              style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#0f172a', background: '#fff', fontWeight: 500, outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s' }}
                                               value={currentMethod}
                                               onChange={e => updatePanelField(comp.name, 'method', e.target.value)}
+                                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                                             />
                                           </td>
                                         </tr>
@@ -1250,41 +1264,63 @@ export default function InProcessPage() {
 
                       {/* === SINGLE VALUE UI === */}
                       {testTemplate?.uiType === 'single' && (
-                        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: '32px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-                          <h3 style={{ margin: '0 0 24px 0', fontSize: 14, fontWeight: 700, color: '#0f172a' }}>Single Value Entry</h3>
-                          <div style={{ display: 'flex', gap: 16, alignItems: 'flex-end' }}>
-                            <div style={{ flex: 2 }}>
-                              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Result Value</label>
-                              <input
-                                type="text"
-                                style={{ width: '100%', padding: '14px 18px', border: '2px solid #e2e8f0', borderRadius: 12, fontSize: 20, fontWeight: 700, textAlign: 'center', outline: 'none', transition: 'border-color 0.2s' }}
-                                value={singleResult}
-                                onChange={e => setSingleResult(e.target.value)}
-                                onFocus={e => e.currentTarget.style.borderColor = '#f97316'}
-                                onBlur={e => e.currentTarget.style.borderColor = '#e2e8f0'}
-                                placeholder="Enter value"
-                              />
-                            </div>
-                            {testTemplate.components?.[0]?.unit && (
-                              <div style={{ flex: 1 }}>
-                                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Units</label>
-                                <div style={{ padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, fontWeight: 600, color: '#475569', textAlign: 'center' }}>{testTemplate.components[0].unit}</div>
-                              </div>
-                            )}
-                            {testTemplate.components?.[0]?.normalRange && (
-                              <div style={{ flex: 1 }}>
-                                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 8 }}>Reference Range</label>
-                                <div style={{ padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, fontSize: 14, fontWeight: 600, color: '#475569', textAlign: 'center' }}>
-                                  {(() => {
-                                    const comp = testTemplate.components[0];
-                                    const gender = selectedBill?.patientObj?.gender;
-                                    if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
-                                    if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
-                                    return comp.normalRange;
-                                  })()}
-                                </div>
-                              </div>
-                            )}
+                        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+                          <div style={{ padding: '16px 24px', background: 'linear-gradient(to right, #dcfce7, #fff)', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: '#0f172a' }}>🔢 Single Value Entry</h3>
+                          </div>
+                          <div style={{ overflowX: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
+                              <thead>
+                                <tr style={{ borderBottom: '2px solid #e2e8f0', background: '#f8fafc' }}>
+                                  <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '25%' }}>Component</th>
+                                  <th style={{ textAlign: 'center', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '20%' }}>Results</th>
+                                  <th style={{ textAlign: 'center', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '10%' }}>Abnormal</th>
+                                  <th style={{ textAlign: 'left', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '25%' }}>Range</th>
+                                  <th style={{ textAlign: 'center', padding: '12px 16px', fontSize: 12, fontWeight: 700, color: '#475569', textTransform: 'uppercase', width: '10%' }}>Units</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr style={{ borderTop: '1px solid #f1f5f9' }}>
+                                  <td style={{ padding: '10px 16px', fontWeight: 600, color: '#0f172a' }}>{testTemplate.components?.[0]?.name || testTemplate.testName}</td>
+                                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>
+                                    <input
+                                      type={testTemplate.components?.[0]?.fieldType === 'number' ? 'number' : 'text'}
+                                      style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', background: '#fff', transition: 'border-color 0.2s, box-shadow 0.2s' }}
+                                      value={singleResult}
+                                      onChange={e => setSingleResult(e.target.value)}
+                                      onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                      onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                                    />
+                                  </td>
+                                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>
+                                    <input
+                                      type="checkbox"
+                                      checked={false} // Assuming single values might not have the abnormal toggle implemented yet, keeping UI consistent
+                                      readOnly
+                                      style={{ width: 16, height: 16, cursor: 'not-allowed', opacity: 0.5 }}
+                                      title="Not available for single values currently"
+                                    />
+                                  </td>
+                                  <td style={{ padding: '6px 8px' }}>
+                                    <div style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#475569', background: '#f8fafc', fontWeight: 500 }}>
+                                      {(() => {
+                                        const comp = testTemplate.components?.[0];
+                                        if (!comp) return '-';
+                                        const gender = selectedBill?.patientObj?.gender;
+                                        if (gender === 'M' && comp.minMale != null && comp.maxMale != null) return `${comp.minMale} - ${comp.maxMale}`;
+                                        if (gender === 'F' && comp.minFemale != null && comp.maxFemale != null) return `${comp.minFemale} - ${comp.maxFemale}`;
+                                        return comp.normalRange || '-';
+                                      })()}
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '6px 8px' }}>
+                                    <div style={{ width: '100%', padding: '6px 12px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 12, color: '#475569', background: '#f8fafc', fontWeight: 500, textAlign: 'center' }}>
+                                      {testTemplate.components?.[0]?.unit || '-'}
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       )}
@@ -1504,25 +1540,31 @@ export default function InProcessPage() {
                         flexDirection: 'column',
                         gap: 24
                       }}>
+                        {/* Top Row: Fields and Actions */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+                          {/* Left Column: Method & Doctor */}
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                               <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Method:</span>
                               <input
                                 type="text"
                                 className="form-input"
-                                style={{ maxWidth: 300 }}
+                                style={{ maxWidth: 300, transition: 'border-color 0.2s, box-shadow 0.2s', outline: 'none' }}
                                 value={resultMethod}
                                 onChange={e => setResultMethod(e.target.value)}
+                                onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                               />
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                               <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Service Doctor:</span>
                               <select
                                 className="form-input form-select"
-                                style={{ maxWidth: 300 }}
+                                style={{ maxWidth: 300, transition: 'border-color 0.2s, box-shadow 0.2s', outline: 'none' }}
                                 value={resultDoctor}
                                 onChange={e => setResultDoctor(e.target.value)}
+                                onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                               >
                                 <option value="">Select Service Doctor</option>
                                 {serviceDoctors.map(doc => (
@@ -1530,25 +1572,10 @@ export default function InProcessPage() {
                                 ))}
                               </select>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                              <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>NOTES:</span>
-                              <textarea
-                                style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'none', outline: 'none', height: 100 }}
-                                value={resultNotes}
-                                onChange={e => setResultNotes(e.target.value)}
-                              />
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                              <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>ADVICE:</span>
-                              <textarea
-                                style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'none', outline: 'none', height: 100 }}
-                                value={resultAdvice}
-                                onChange={e => setResultAdvice(e.target.value)}
-                              />
-                            </div>
                           </div>
 
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                          {/* Right Column: Upload & Signature */}
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
                               <span style={{ fontSize: 13, color: '#64748b' }}>Upload Result File:</span>
                               <button className="btn btn-primary" style={{ padding: '8px 20px', borderRadius: 6, background: 'var(--primary)' }}>Add Attachments</button>
@@ -1566,6 +1593,30 @@ export default function InProcessPage() {
                                 ))}
                               </select>
                             </div>
+                          </div>
+                        </div>
+
+                        {/* Bottom Rows: Full Width Textareas */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 8 }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>NOTES:</span>
+                            <textarea
+                              style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'vertical', outline: 'none', minHeight: 80, transition: 'border-color 0.2s, box-shadow 0.2s' }}
+                              value={resultNotes}
+                              onChange={e => setResultNotes(e.target.value)}
+                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                            />
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>ADVICE:</span>
+                            <textarea
+                              style={{ width: '100%', padding: '12px 16px', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'vertical', outline: 'none', minHeight: 80, transition: 'border-color 0.2s, box-shadow 0.2s' }}
+                              value={resultAdvice}
+                              onChange={e => setResultAdvice(e.target.value)}
+                              onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                              onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -1704,22 +1755,31 @@ export default function InProcessPage() {
                 <thead>
                   <tr style={{ borderBottom: '1px solid #000' }}>
                     <th style={{ textAlign: 'left', padding: '10px 0', width: '25%', fontSize: 13 }}>Component</th>
-                    <th style={{ textAlign: 'center', padding: '10px 0', width: '20%', fontSize: 13 }}>Result</th>
-                    <th style={{ textAlign: 'left', padding: '10px 12px', width: '30%', fontSize: 13 }}>Reference Range</th>
-                    <th style={{ textAlign: 'center', padding: '10px 0', width: '15%', fontSize: 13 }}>Units</th>
+                    <th style={{ textAlign: 'center', padding: '10px 0', width: '15%', fontSize: 13 }}>Result</th>
+                    <th style={{ textAlign: 'center', padding: '10px 0', width: '10%', fontSize: 13 }}>Abnormal</th>
+                    <th style={{ textAlign: 'left', padding: '10px 12px', width: '25%', fontSize: 13 }}>Reference Range</th>
+                    <th style={{ textAlign: 'center', padding: '10px 0', width: '10%', fontSize: 13 }}>Units</th>
                     <th style={{ textAlign: 'right', padding: '10px 0', width: '15%', fontSize: 13 }}>Method</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {testTemplate.components?.map((c: any) => (
-                    <tr key={c.id}>
-                      <td style={{ padding: '10px 0', fontWeight: 700, fontSize: 12 }}>{c.name}</td>
-                      <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{panelResults[c.name]?.value || ''}</td>
-                      <td style={{ textAlign: 'left', padding: '10px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{c.normalRange || ''}</td>
-                      <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{c.unit || ''}</td>
-                      <td style={{ textAlign: 'right', padding: '10px 0', fontSize: 11, fontStyle: 'italic' }}>{panelResults[c.name]?.method || c.method || resultMethod || ''}</td>
-                    </tr>
-                  ))}
+                  {testTemplate.components?.map((c: any) => {
+                    const isAbnormal = panelResults[c.name]?.abnormal;
+                    return (
+                      <tr key={c.id}>
+                        <td style={{ padding: '10px 0', fontWeight: 700, fontSize: 12 }}>{c.name}</td>
+                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12, fontWeight: isAbnormal ? 900 : 'normal' }}>
+                          {panelResults[c.name]?.value || ''}
+                        </td>
+                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12, fontWeight: 800 }}>
+                          {isAbnormal ? '*' : ''}
+                        </td>
+                        <td style={{ textAlign: 'left', padding: '10px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{c.normalRange || ''}</td>
+                        <td style={{ textAlign: 'center', padding: '10px 8px', fontSize: 12 }}>{c.unit || ''}</td>
+                        <td style={{ textAlign: 'right', padding: '10px 0', fontSize: 11, fontStyle: 'italic' }}>{panelResults[c.name]?.method || c.method || resultMethod || ''}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             ) : testTemplate?.uiType === 'microbiology' ? (

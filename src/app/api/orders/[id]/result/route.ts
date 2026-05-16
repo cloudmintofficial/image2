@@ -29,11 +29,10 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
 
     const allCompleted = allOrders.length > 0 && allOrders.every(o => o.resultStatus === 'Completed' || o.resultStatus === 'Verified');
 
+    // Determine if all orders are completed for UI purposes, but DO NOT auto-update the Bill status.
+    // The Bill must stay in 'InProcess' so the lab tech can Authorize and Dispatch it manually.
     if (allCompleted) {
-      await prisma.bill.update({
-        where: { id: updatedOrder.billId },
-        data: { status: 'Completed' }
-      });
+      // Do nothing to the Bill status. It remains 'InProcess'.
     }
 
     return NextResponse.json({ success: true, allCompleted, updatedOrder });
