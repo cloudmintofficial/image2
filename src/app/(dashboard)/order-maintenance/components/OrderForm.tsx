@@ -104,6 +104,12 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
     }
   }, [initialData]);
 
+  useEffect(() => {
+    if (orderForm.hasComponents || orderForm.uiType === 'panel') {
+      setResultNotesTab('Page 1');
+    }
+  }, [orderForm.hasComponents, orderForm.uiType]);
+
   const handleClear = () => {
     if (confirm('Are you sure you want to clear all fields?')) {
       setOrderForm({
@@ -126,7 +132,8 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
     }
     try {
       setIsSavingEntity(true);
-      const combinedNotes = resultNotesPage2
+      const isPanel = orderForm.hasComponents || orderForm.uiType === 'panel';
+      const combinedNotes = (resultNotesPage2 && !isPanel)
         ? `<div class="page-1">${resultNotesPage1}</div><div class="page-break" style="page-break-before: always;"></div><div class="page-2">${resultNotesPage2}</div>`
         : resultNotesPage1;
 
@@ -493,22 +500,26 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
           {/* Template Section */}
           <div className="form-section no-border">
             <div className="section-header">
-              <h2 className="section-title-main">Reporting Template</h2>
+              <h2 className="section-title-main">
+                {orderForm.hasComponents || orderForm.uiType === 'panel' ? 'Notes / Interpretation' : 'Reporting Template'}
+              </h2>
               <div className="section-actions">
-                <div className="tab-group">
-                  <button className={`tab-btn ${resultNotesTab === 'Page 1' ? 'active' : ''}`} onClick={() => setResultNotesTab('Page 1')}>Page 1</button>
-                  <button className={`tab-btn ${resultNotesTab === 'Page 2' ? 'active' : ''}`} onClick={() => setResultNotesTab('Page 2')}>Page 2</button>
-                </div>
+                {!(orderForm.hasComponents || orderForm.uiType === 'panel') && (
+                  <div className="tab-group">
+                    <button className={`tab-btn ${resultNotesTab === 'Page 1' ? 'active' : ''}`} onClick={() => setResultNotesTab('Page 1')}>Page 1</button>
+                    <button className={`tab-btn ${resultNotesTab === 'Page 2' ? 'active' : ''}`} onClick={() => setResultNotesTab('Page 2')}>Page 2</button>
+                  </div>
+                )}
                 <button className="btn btn-outline btn-sm" onClick={handlePreviewPrint}>
                   <Printer size={14} /> Preview Template
                 </button>
               </div>
             </div>
             <div className="editor-wrapper">
-              {resultNotesTab === 'Page 1' && (
+              {(resultNotesTab === 'Page 1' || orderForm.hasComponents || orderForm.uiType === 'panel') && (
                 <RichTextEditor value={resultNotesPage1} onChange={setResultNotesPage1} minHeight={350} />
               )}
-              {resultNotesTab === 'Page 2' && (
+              {resultNotesTab === 'Page 2' && !(orderForm.hasComponents || orderForm.uiType === 'panel') && (
                 <RichTextEditor value={resultNotesPage2} onChange={setResultNotesPage2} minHeight={350} />
               )}
             </div>
@@ -530,17 +541,19 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
                   <RichTextEditor value={orderForm.workSheet} onChange={val => setOrderForm({ ...orderForm, workSheet: val })} minHeight={120} />
                 </div>
               </div>
-              <div className="form-group">
-                <label className="form-label">Order Purpose</label>
-                <textarea 
-                  className="form-input" 
-                  rows={4} 
-                  value={orderForm.purpose} 
-                  onChange={e => setOrderForm({ ...orderForm, purpose: e.target.value })} 
-                  placeholder="Enter the clinical purpose or background for this diagnostic order..." 
-                  style={{ resize: 'vertical' }}
-                />
-              </div>
+              {!(orderForm.hasComponents || orderForm.uiType === 'panel') && (
+                <div className="form-group">
+                  <label className="form-label">Order Purpose</label>
+                  <textarea 
+                    className="form-input" 
+                    rows={4} 
+                    value={orderForm.purpose} 
+                    onChange={e => setOrderForm({ ...orderForm, purpose: e.target.value })} 
+                    placeholder="Enter the clinical purpose or background for this diagnostic order..." 
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -600,7 +613,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
           </div>
 
           <div dangerouslySetInnerHTML={{ __html: resultNotesPage1 }} />
-          {resultNotesPage2 && (
+          {resultNotesPage2 && !(orderForm.hasComponents || orderForm.uiType === 'panel') && (
             <>
               <div style={{ pageBreakBefore: 'always' }} />
               <div dangerouslySetInnerHTML={{ __html: resultNotesPage2 }} />
