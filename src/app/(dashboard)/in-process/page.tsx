@@ -1509,9 +1509,18 @@ export default function InProcessPage() {
             ) : null}
           </div>
 
-          {/* Metadata: Method & Advice */}
-          {(resultMethod || resultAdvice) && (
-            <div style={{ marginTop: 32, fontSize: 13, borderTop: '1px dashed #eee', paddingTop: 16 }}>
+          {/* Metadata: Notes, Method & Advice */}
+          {(resultNotes || resultMethod || resultAdvice) && (
+            <div style={{ marginTop: 24, fontSize: 13, borderTop: '1px dashed #eee', paddingTop: 16 }}>
+              {resultNotes && (
+                <div style={{ marginBottom: 20 }}>
+                  <strong style={{ display: 'block', marginBottom: 6, fontSize: 13, textDecoration: 'underline' }}>INTERPRETATION / NOTES:</strong>
+                  <div 
+                    dangerouslySetInnerHTML={{ __html: resultNotes }}
+                    style={{ lineHeight: 1.5 }}
+                  />
+                </div>
+              )}
               {resultMethod && testTemplate?.uiType !== 'panel' && (
                 <div style={{ marginBottom: 12 }}>
                   <strong>Method:</strong> {resultMethod}
@@ -1519,8 +1528,11 @@ export default function InProcessPage() {
               )}
               {resultAdvice && (
                 <div>
-                  <strong style={{ display: 'block', marginBottom: 4 }}>ADVICE:</strong>
-                  <div style={{ whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>{resultAdvice}</div>
+                  <strong style={{ display: 'block', marginBottom: 6, fontSize: 13, textDecoration: 'underline' }}>ADVICE:</strong>
+                  <div 
+                    dangerouslySetInnerHTML={{ __html: resultAdvice }}
+                    style={{ lineHeight: 1.5 }}
+                  />
                 </div>
               )}
             </div>
