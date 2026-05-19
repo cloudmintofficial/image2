@@ -13,10 +13,10 @@ export async function POST(request: NextRequest) {
     }
 
     const formData = await request.formData();
-    const file = formData.get('file');
+    const file = formData.get('file') as File;
     const uploadType = formData.get('type') as string; // 'doctor-signature', 'lab-signature', 'patient-profile', 'lab-logo', 'report-pdf', 'prescription'
 
-    if (!file || !(file instanceof File) || file.size === 0) {
+    if (!file) {
       return NextResponse.json({ error: 'No file received.' }, { status: 400 });
     }
 
