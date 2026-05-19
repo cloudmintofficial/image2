@@ -121,7 +121,7 @@ export default function OrderEntryPage() {
   const [dbDepartments, setDbDepartments] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/departments')
+    fetch('/api/departments?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setDbDepartments(data);

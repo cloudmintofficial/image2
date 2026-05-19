@@ -122,7 +122,7 @@ export default function InProcessPage() {
       })
       .catch(console.error);
 
-    fetch('/api/signatures')
+    fetch('/api/signatures?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -137,7 +137,7 @@ export default function InProcessPage() {
         setSignaturesList([{ id: 'default', label: 'Default System Signature', name: 'DR. AUTHORIZED SIGNATORY', title: 'CONSULTANT RADIOLOGIST', signText: 'Signature' }]);
       });
 
-    fetch('/api/departments')
+    fetch('/api/departments?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setDepartmentsList(data);

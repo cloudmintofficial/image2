@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { deleteCloudinaryFileByUrl } from '@/lib/cloudinary-delete';
 
+export const dynamic = 'force-dynamic';
+
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }

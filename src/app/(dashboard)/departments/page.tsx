@@ -86,7 +86,7 @@ export default function DepartmentsPage() {
     try {
       setLoading(true);
       if (activeTab === 'departments') {
-        const res = await fetch('/api/departments');
+        const res = await fetch('/api/departments?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           setDepartments(Array.isArray(data) ? data : []);
@@ -94,7 +94,7 @@ export default function DepartmentsPage() {
           showToast('Failed to load departments', 'error');
         }
       } else {
-        const res = await fetch('/api/signatures');
+        const res = await fetch('/api/signatures?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           setSignatures(Array.isArray(data) ? data : []);

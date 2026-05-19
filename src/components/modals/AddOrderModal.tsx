@@ -42,7 +42,7 @@ export default function AddOrderModal({ isOpen, onClose, onSuccess, initialData 
 
   useEffect(() => {
     // Fetch Departments
-    fetch('/api/departments')
+    fetch('/api/departments?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setDbDepartments(data);
