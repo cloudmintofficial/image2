@@ -14,6 +14,8 @@ import MicrobiologyTemplate from './components/templates/MicrobiologyTemplate';
 import ImmunologyTemplate from './components/templates/ImmunologyTemplate';
 import RichTextTemplate from './components/templates/RichTextTemplate';
 import RichTextEditor from '@/components/RichTextEditor';
+import QRCode from 'qrcode';
+import bwipjs from 'bwip-js';
 
 export default function InProcessPage() {
   const router = useRouter();
@@ -72,6 +74,42 @@ export default function InProcessPage() {
   const [referralDoctors, setReferralDoctors] = useState<any[]>([]);
   const [serviceDoctors, setServiceDoctors] = useState<any[]>([]);
   const [signaturesList, setSignaturesList] = useState<any[]>([]);
+  const [barcodeUrl, setBarcodeUrl] = useState('');
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+
+  useEffect(() => {
+    if (selectedBill?.billNo) {
+      try {
+        const canvas = document.createElement('canvas');
+        bwipjs.toCanvas(canvas, {
+          bcid: 'code128',
+          text: String(selectedBill.billNo),
+          scale: 5,
+          height: 12,
+          includetext: true,
+          textxalign: 'center',
+          textsize: 13,
+        });
+        setBarcodeUrl(canvas.toDataURL('image/png'));
+      } catch (e) {
+        console.error('Barcode generation failed:', e);
+        setBarcodeUrl('');
+      }
+    } else {
+      setBarcodeUrl('');
+    }
+
+    if (selectedBill?.id) {
+      QRCode.toDataURL(`https://medfile.lab/verify/report/${selectedBill.id}`, { width: 300, margin: 1 })
+        .then(url => setQrCodeUrl(url))
+        .catch(err => {
+          console.error('QR code generation failed:', err);
+          setQrCodeUrl('');
+        });
+    } else {
+      setQrCodeUrl('');
+    }
+  }, [selectedBill?.billNo, selectedBill?.id]);
 
   useEffect(() => {
     fetch('/api/doctors?all=true')
@@ -129,6 +167,7 @@ export default function InProcessPage() {
     setResultDoctor('');
     setResultAdvice('');
     setSignatureId('default');
+    setTestTemplate(null); // Clear previous template to prevent UI flickering
 
     // Use orderId-based cache key (not orderName) to avoid cross-bill data collisions
     const cacheKey = `${selectedOrder.id}`;
@@ -1119,7 +1158,7 @@ export default function InProcessPage() {
                   <div>
                     <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Clinical Context</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>{selectedBill.doctor?.name || 'Self'}</div>
-                    <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>Dept: {selectedOrder.department || 'Radiology'}</div>
+                    <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>Dept: {testTemplate?.department || 'N/A'}</div>
                   </div>
                 </div>
               </div>
@@ -1290,8 +1329,8 @@ export default function InProcessPage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 8 }}>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>NOTES:</span>
-                            <RichTextEditor 
-                              value={resultNotes} 
+                            <RichTextEditor
+                              value={resultNotes}
                               onChange={setResultNotes}
                               minHeight={100}
                               placeholder="Enter result notes or interpretation..."
@@ -1299,8 +1338,8 @@ export default function InProcessPage() {
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>ADVICE:</span>
-                            <RichTextEditor 
-                              value={resultAdvice} 
+                            <RichTextEditor
+                              value={resultAdvice}
                               onChange={setResultAdvice}
                               minHeight={100}
                               placeholder="Enter clinical advice..."
@@ -1371,10 +1410,10 @@ export default function InProcessPage() {
           <div style={{ borderTop: '1px solid #000', marginBottom: '24px', width: '100%' }}></div>
 
           {/* Header section */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
 
             {/* Left Column */}
-            <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+            <div style={{ fontSize: 13, lineHeight: 1.8, flex: 1 }}>
               <div style={{ display: 'flex' }}>
                 <div style={{ width: 100 }}>Name</div>
                 <div style={{ padding: '0 8px' }}>:</div>
@@ -1383,7 +1422,17 @@ export default function InProcessPage() {
               <div style={{ display: 'flex' }}>
                 <div style={{ width: 100 }}>Age/Gender</div>
                 <div style={{ padding: '0 8px' }}>:</div>
-                <div><strong>{selectedBill?.patientObj?.age || ''}YEARS/{selectedBill?.patientObj?.gender === 'M' ? 'MALE' : 'FEMALE'}</strong></div>
+                <div><strong>
+                  {[
+                    selectedBill?.patientObj?.age ? `${selectedBill.patientObj.age}YEARS` : null,
+                    selectedBill?.patientObj?.gender === 'M' ? 'MALE' : selectedBill?.patientObj?.gender === 'F' ? 'FEMALE' : (selectedBill?.patientObj?.gender ? selectedBill.patientObj.gender.toUpperCase() : null)
+                  ].filter(Boolean).join('/')}
+                </strong></div>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 100 }}>Sample Type</div>
+                <div style={{ padding: '0 8px' }}>:</div>
+                <div>{testTemplate?.sampleType || 'WB EDTA'}</div>
               </div>
               <div style={{ display: 'flex' }}>
                 <div style={{ width: 100 }}>Reff By</div>
@@ -1393,222 +1442,234 @@ export default function InProcessPage() {
             </div>
 
             {/* Right Column */}
-            <div style={{ fontSize: 13, lineHeight: 1.8, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-              {/* Barcode - prominently sized, scannable */}
-              {selectedBill?.billNo ? (
-                <div style={{ textAlign: 'center', marginBottom: 2 }}>
-                  <img
-                    src={`https://barcode.tec-it.com/barcode.ashx?data=${encodeURIComponent(String(selectedBill.billNo))}&code=Code128&dpi=96&imagewidth=250&imageheight=70&includetext=1&fontsize=10`}
-                    alt={`Barcode ${selectedBill.billNo}`}
-                    style={{ display: 'block', width: '200px', height: '55px', objectFit: 'fill' }}
-                    onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                  />
-                </div>
-              ) : (
-                <div style={{ width: '200px', height: '55px', background: '#f1f5f9', border: '1px dashed #94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#94a3b8' }}>
-                  No Barcode
-                </div>
-              )}
+            <div style={{ fontSize: 13, lineHeight: 1.8, flex: 1, paddingLeft: 40 }}>
               <div style={{ display: 'flex' }}>
-                <div style={{ width: 110, color: '#475569' }}>Bill Number</div>
+                <div style={{ width: 140 }}>Bill Number</div>
                 <div style={{ padding: '0 8px' }}>:</div>
                 <div><strong>{selectedBill?.billNo || ''}</strong></div>
               </div>
               <div style={{ display: 'flex' }}>
-                <div style={{ width: 110, color: '#475569' }}>Reporting Date</div>
+                <div style={{ width: 140 }}>Sample Collection</div>
                 <div style={{ padding: '0 8px' }}>:</div>
-                <div>{new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</div>
+                <div>{selectedOrder?.createdAt ? new Date(selectedOrder.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am|pm/i, m => m.toUpperCase()) : ''}</div>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <div style={{ width: 140 }}>Reporting Date</div>
+                <div style={{ padding: '0 8px' }}>:</div>
+                <div>{new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am|pm/i, m => m.toUpperCase())}</div>
               </div>
             </div>
 
           </div>
 
+          {/* Bottom Thin Line */}
+          <div style={{ borderTop: '1px solid #000', marginBottom: '24px', width: '100%' }}></div>
+
           {/* Test Title */}
           <h2 style={{ textAlign: 'center', fontSize: 16, fontWeight: 800, margin: '0 0 32px 0', textTransform: 'uppercase', textDecoration: 'underline' }}>
-            {selectedOrder?.orderName}
+            {testTemplate?.department?.toUpperCase() || selectedOrder?.orderName}
           </h2>
 
           {/* Test Content */}
           <div style={{ fontSize: 14, lineHeight: 1.6 }}>
             {testTemplate?.uiType === 'richtext' || !testTemplate ? (
-              <div dangerouslySetInnerHTML={{ __html: resultInput }} />
+              (() => {
+                const isEmptyRichText = !resultInput || resultInput.trim() === '' || resultInput.replace(/<[^>]*>?/gm, '').trim() === '';
+                if (isEmptyRichText) return null;
+                return <div dangerouslySetInnerHTML={{ __html: resultInput }} />;
+              })()
             ) : testTemplate?.uiType === 'single' ? (
-              <div style={{ display: 'flex', gap: 20 }}>
-                <div><strong>Result:</strong> {singleResult}</div>
-                <div><strong>Units:</strong> {testTemplate.components?.[0]?.unit || ''}</div>
-                <div><strong>Reference Range:</strong> {testTemplate.components?.[0]?.normalRange || ''}</div>
-              </div>
+              (() => {
+                if (singleResult === undefined || singleResult === null || String(singleResult).trim() === '') return null;
+                return (
+                  <div style={{ display: 'flex', gap: 20 }}>
+                    <div><strong>Result:</strong> {singleResult}</div>
+                    {testTemplate.components?.[0]?.unit && <div><strong>Units:</strong> {testTemplate.components[0].unit}</div>}
+                    {testTemplate.components?.[0]?.normalRange && <div><strong>Reference Range:</strong> {testTemplate.components[0].normalRange}</div>}
+                  </div>
+                );
+              })()
             ) : testTemplate?.uiType === 'panel' ? (
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #000' }}>
-                    <th style={{ textAlign: 'left', padding: '10px 0', width: '25%', fontSize: 13 }}>Component</th>
-                    <th style={{ textAlign: 'center', padding: '10px 0', width: '15%', fontSize: 13 }}>Result</th>
-                    <th style={{ textAlign: 'center', padding: '10px 0', width: '10%', fontSize: 13 }}>Abnormal</th>
-                    <th style={{ textAlign: 'left', padding: '10px 12px', width: '25%', fontSize: 13 }}>Reference Range</th>
-                    <th style={{ textAlign: 'center', padding: '10px 0', width: '10%', fontSize: 13 }}>Units</th>
-                    <th style={{ textAlign: 'right', padding: '10px 0', width: '15%', fontSize: 13 }}>Method</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(() => {
-                    let lastHeading = '';
-                    return testTemplate.components?.map((c: any) => {
-                      const showHeading = c.subHeading && c.subHeading !== lastHeading;
-                      if (showHeading) lastHeading = c.subHeading;
+              (() => {
+                const componentsWithValues = testTemplate.components?.filter((c: any) => {
+                  const resObj = panelResults[c.name] || {};
+                  return resObj.value !== undefined && resObj.value !== null && String(resObj.value).trim() !== '';
+                }) || [];
 
-                      const resObj = panelResults[c.name] || {};
-                      const isAbnormal = resObj.abnormal;
+                if (componentsWithValues.length === 0) return null;
 
-                      let calculatedRange = c.normalRange ?? '';
-                      if (selectedBill?.patientObj?.gender === 'M' && c.minMale != null && c.maxMale != null) {
-                        calculatedRange = `${c.minMale} - ${c.maxMale}`;
-                      } else if (selectedBill?.patientObj?.gender === 'F' && c.minFemale != null && c.maxFemale != null) {
-                        calculatedRange = `${c.minFemale} - ${c.maxFemale}`;
-                      }
-
-                      const currentRange = resObj.range ?? calculatedRange;
-                      const currentUnit = resObj.unit ?? c.unit ?? '';
-                      const currentMethod = resObj.method ?? c.method ?? resultMethod ?? '';
-
-                      const isRedundantName = c.subHeading && c.name.toLowerCase() === c.subHeading.toLowerCase();
-
-                      return (
-                        <React.Fragment key={c.id}>
-                          {showHeading && (
-                            <tr>
-                              <td colSpan={6} style={{ padding: '8px 0 2px 0', fontWeight: 800, fontSize: 13, textDecoration: 'underline', textTransform: 'uppercase' }}>
-                                {c.subHeading}
-                              </td>
-                            </tr>
-                          )}
-                          {!isRedundantName && (
-                            <tr>
-                              <td style={{ paddingTop: 6, paddingBottom: 6, paddingRight: 0, fontWeight: 700, fontSize: 12, paddingLeft: c.subHeading ? 20 : 0 }}>{c.name}</td>
-                              <td style={{ textAlign: 'center', padding: '6px 8px', fontSize: 12, fontWeight: isAbnormal ? 900 : 'normal' }}>
-                                {resObj.value || ''}
-                              </td>
-                              <td style={{ textAlign: 'center', padding: '6px 8px', fontSize: 12, fontWeight: 800 }}>
-                                {isAbnormal ? '*' : ''}
-                              </td>
-                              <td style={{ textAlign: 'left', padding: '6px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{currentRange}</td>
-                              <td style={{ textAlign: 'center', padding: '6px 8px', fontSize: 12 }}>{currentUnit}</td>
-                              <td style={{ textAlign: 'right', paddingTop: 6, paddingBottom: 6, paddingLeft: 0, paddingRight: 0, fontSize: 11, fontStyle: 'italic' }}>{currentMethod}</td>
-                            </tr>
-                          )}
-                          {isRedundantName && (
-                            <tr>
-                              <td style={{ paddingTop: 0, paddingBottom: 6, paddingLeft: 0, paddingRight: 0, fontSize: 0, height: 0 }} colSpan={1}></td>
-                              <td style={{ textAlign: 'center', padding: '0 8px 6px 8px', fontSize: 12, fontWeight: isAbnormal ? 900 : 'normal' }}>
-                                {resObj.value || ''}
-                              </td>
-                              <td style={{ textAlign: 'center', padding: '0 8px 6px 8px', fontSize: 12, fontWeight: 800 }}>
-                                {isAbnormal ? '*' : ''}
-                              </td>
-                              <td style={{ textAlign: 'left', padding: '0 12px 6px 12px', fontSize: 11, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{currentRange}</td>
-                              <td style={{ textAlign: 'center', padding: '0 8px 6px 8px', fontSize: 12 }}>{currentUnit}</td>
-                              <td style={{ textAlign: 'right', paddingTop: 0, paddingBottom: 6, paddingLeft: 0, paddingRight: 0, fontSize: 11, fontStyle: 'italic' }}>{currentMethod}</td>
-                            </tr>
-                          )}
-                        </React.Fragment>
-                      );
-                    });
-                  })()}
-                </tbody>
-              </table>
-            ) : testTemplate?.uiType === 'microbiology' ? (
-              <div>
-                <p><strong>Organism Isolated:</strong> {microOrganism}</p>
-                <p><strong>Growth:</strong> {microGrowth}</p>
-                <p><strong>Colony Count:</strong> {microColonyCount}</p>
-                <h4 style={{ marginTop: 20 }}>Antibiotic Sensitivity:</h4>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <tbody>
-                    {Object.entries(microSensitivity).map(([drug, result]) => (
-                      <tr key={drug}>
-                        <td style={{ padding: '4px 0' }}>{drug}</td>
-                        <td style={{ padding: '4px 0' }}>{result as string}</td>
+                return (
+                  <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16, tableLayout: 'fixed' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #000' }}>
+                        <th style={{ textAlign: 'left', padding: '10px 0', width: '40%', fontSize: 13, textDecoration: 'underline' }}>INVESTIGATION</th>
+                        <th style={{ textAlign: 'center', padding: '10px 0', width: '20%', fontSize: 13, textDecoration: 'underline' }}>RESULT</th>
+                        <th style={{ textAlign: 'center', padding: '10px 0', width: '15%', fontSize: 13, textDecoration: 'underline' }}>UNITS</th>
+                        <th style={{ textAlign: 'left', padding: '10px 12px', width: '25%', fontSize: 13, textDecoration: 'underline' }}>NORMAL RANGE</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {(() => {
+                        let lastHeading = '';
+                        return componentsWithValues.map((c: any) => {
+                          const showHeading = c.subHeading && c.subHeading !== lastHeading;
+                          if (showHeading) lastHeading = c.subHeading;
+
+                          const resObj = panelResults[c.name] || {};
+                          const isAbnormal = resObj.abnormal === true || resObj.abnormal === 'true';
+
+                          let calculatedRange = c.normalRange ?? '';
+                          if (selectedBill?.patientObj?.gender === 'M' && c.minMale != null && c.maxMale != null) {
+                            calculatedRange = `${c.minMale} - ${c.maxMale}`;
+                          } else if (selectedBill?.patientObj?.gender === 'F' && c.minFemale != null && c.maxFemale != null) {
+                            calculatedRange = `${c.minFemale} - ${c.maxFemale}`;
+                          }
+
+                          const currentRange = resObj.range ?? calculatedRange;
+                          const currentUnit = resObj.unit ?? c.unit ?? '';
+                          const currentMethod = resObj.method ?? c.method ?? resultMethod ?? '';
+
+                          const isRedundantName = c.subHeading && c.name.toLowerCase() === c.subHeading.toLowerCase();
+
+                          return (
+                            <React.Fragment key={c.id}>
+                              {showHeading && (
+                                <tr>
+                                  <td colSpan={4} style={{ textAlign: 'center', padding: '12px 0 4px 0', fontWeight: 800, fontSize: 13, textDecoration: 'underline', textTransform: 'uppercase', wordBreak: 'break-word' }}>
+                                    {c.subHeading}
+                                  </td>
+                                </tr>
+                              )}
+                              {!isRedundantName && (
+                                <tr>
+                                  <td style={{ paddingTop: 8, paddingBottom: 8, paddingRight: 0, fontWeight: 700, fontSize: 12, wordBreak: 'break-word' }}>
+                                    {c.name}
+                                    {currentMethod && <div style={{ fontSize: 12, fontWeight: 'normal', marginTop: 2 }}>(Method :{currentMethod} )</div>}
+                                  </td>
+                                  <td style={{ textAlign: 'center', padding: '8px 8px', fontSize: 12, fontWeight: isAbnormal ? 'bold' : 'normal', wordBreak: 'break-word' }}>
+                                    {resObj.value || ''}
+                                  </td>
+                                  <td style={{ textAlign: 'center', padding: '8px 8px', fontSize: 12, wordBreak: 'break-word' }}>{currentUnit}</td>
+                                  <td style={{ textAlign: 'left', padding: '8px 12px', fontSize: 12, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line', wordBreak: 'break-word' }}>{currentRange}</td>
+                                </tr>
+                              )}
+                              {isRedundantName && (
+                                <tr>
+                                  <td style={{ paddingTop: 8, paddingBottom: 8, paddingRight: 0, fontWeight: 700, fontSize: 12, wordBreak: 'break-word' }}>
+                                    <span style={{ visibility: 'hidden' }}>{c.name}</span>
+                                    {currentMethod && <div style={{ fontSize: 12, fontWeight: 'normal', marginTop: 2 }}>(Method :{currentMethod} )</div>}
+                                  </td>
+                                  <td style={{ textAlign: 'center', padding: '8px 8px', fontSize: 12, fontWeight: isAbnormal ? 'bold' : 'normal', wordBreak: 'break-word' }}>
+                                    {resObj.value || ''}
+                                  </td>
+                                  <td style={{ textAlign: 'center', padding: '8px 8px', fontSize: 12, wordBreak: 'break-word' }}>{currentUnit}</td>
+                                  <td style={{ textAlign: 'left', padding: '8px 12px', fontSize: 12, color: '#000', lineHeight: 1.5, whiteSpace: 'pre-line', wordBreak: 'break-word' }}>{currentRange}</td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          );
+                        });
+                      })()}
+                    </tbody>
+                  </table>
+                );
+              })()
+            ) : testTemplate?.uiType === 'microbiology' ? (
+              (() => {
+                const hasOrganism = microOrganism && String(microOrganism).trim() !== '';
+                // Check if growth is not just the default "No Growth" or if it is "No Growth" it's considered filled? Usually "No Growth" is a valid final result.
+                // If it's a default state we might still want to print it if they completed it. The condition will be satisfied since it's not empty.
+                const hasGrowth = microGrowth && String(microGrowth).trim() !== '';
+                const hasColony = microColonyCount && String(microColonyCount).trim() !== '';
+                const hasSensitivity = microSensitivity && Object.keys(microSensitivity).length > 0;
+
+                if (!hasOrganism && !hasGrowth && !hasColony && !hasSensitivity) return null;
+
+                return (
+                  <div>
+                    {hasOrganism && <p><strong>Organism Isolated:</strong> {microOrganism}</p>}
+                    {hasGrowth && <p><strong>Growth:</strong> {microGrowth}</p>}
+                    {hasColony && <p><strong>Colony Count:</strong> {microColonyCount}</p>}
+                    {hasSensitivity && (
+                      <>
+                        <h4 style={{ marginTop: 20 }}>Antibiotic Sensitivity:</h4>
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                          <tbody>
+                            {Object.entries(microSensitivity).map(([drug, result]) => (
+                              <tr key={drug}>
+                                <td style={{ padding: '4px 0' }}>{drug}</td>
+                                <td style={{ padding: '4px 0' }}>{result as string}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </>
+                    )}
+                  </div>
+                );
+              })()
             ) : testTemplate?.uiType === 'immunology' ? (
-              <div>
-                <p><strong>Result:</strong> {immunoResult}</p>
-                <p><strong>Method:</strong> {immunoMethod}</p>
-                <p><strong>Value:</strong> {immunoTiter}</p>
-              </div>
+              (() => {
+                const hasResult = immunoResult && String(immunoResult).trim() !== '';
+                const hasMethod = immunoMethod && String(immunoMethod).trim() !== '';
+                const hasTiter = immunoTiter && String(immunoTiter).trim() !== '';
+
+                if (!hasResult && !hasMethod && !hasTiter) return null;
+
+                return (
+                  <div>
+                    {hasResult && <p><strong>Result:</strong> {immunoResult}</p>}
+                    {hasMethod && <p><strong>Method:</strong> {immunoMethod}</p>}
+                    {hasTiter && <p><strong>Value:</strong> {immunoTiter}</p>}
+                  </div>
+                );
+              })()
             ) : null}
           </div>
 
           {/* Metadata: Notes, Method & Advice */}
-          {(resultNotes || resultMethod || resultAdvice) && (
-            <div style={{ marginTop: 24, fontSize: 13, borderTop: '1px dashed #eee', paddingTop: 16 }}>
-              {resultNotes && (
-                <div style={{ marginBottom: 20 }}>
-                  <strong style={{ display: 'block', marginBottom: 6, fontSize: 13, textDecoration: 'underline' }}>INTERPRETATION / NOTES:</strong>
-                  <div 
-                    dangerouslySetInnerHTML={{ __html: resultNotes }}
-                    style={{ lineHeight: 1.5 }}
-                  />
-                </div>
-              )}
-              {resultMethod && testTemplate?.uiType !== 'panel' && (
-                <div style={{ marginBottom: 12 }}>
-                  <strong>Method:</strong> {resultMethod}
-                </div>
-              )}
-              {resultAdvice && (
-                <div>
-                  <strong style={{ display: 'block', marginBottom: 6, fontSize: 13, textDecoration: 'underline' }}>ADVICE:</strong>
-                  <div 
-                    dangerouslySetInnerHTML={{ __html: resultAdvice }}
-                    style={{ lineHeight: 1.5 }}
-                  />
-                </div>
-              )}
-            </div>
-          )}
+          {(() => {
+            const hasValidNotes = resultNotes && resultNotes.replace(/<[^>]*>?/gm, '').trim() !== '';
+            const hasValidAdvice = resultAdvice && resultAdvice.replace(/<[^>]*>?/gm, '').trim() !== '';
+            const hasValidMethod = resultMethod && testTemplate?.uiType !== 'panel' && resultMethod.trim() !== '';
+
+            if (!hasValidNotes && !hasValidAdvice && !hasValidMethod) return null;
+
+            return (
+              <div style={{ marginTop: 24, fontSize: 13 }}>
+                {hasValidNotes && (
+                  <div style={{ border: '1px solid #000', padding: '16px', marginBottom: 20 }}>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: resultNotes }}
+                      style={{ lineHeight: 1.5 }}
+                    />
+                  </div>
+                )}
+                {hasValidMethod && (
+                  <div style={{ marginBottom: 12 }}>
+                    <strong>Method:</strong> {resultMethod}
+                  </div>
+                )}
+                {hasValidAdvice && (
+                  <div>
+                    <strong style={{ display: 'block', marginBottom: 6, fontSize: 13, textDecoration: 'underline' }}>ADVICE:</strong>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: resultAdvice }}
+                      style={{ lineHeight: 1.5 }}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Footer Signature Block */}
-          <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-            {/* Dynamic QR Code for Report Verification */}
-            <div style={{ textAlign: 'center', flexShrink: 0 }}>
-              {selectedBill?.id ? (
-                <div style={{ width: '90px', height: '90px', padding: '6px', border: '1px solid #e2e8f0', marginBottom: '6px', background: '#fff', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=${encodeURIComponent(`https://medfile.lab/verify/report/${selectedBill.id}`)}&ecc=M`}
-                    alt="QR Code"
-                    style={{ width: '100%', height: '100%' }}
-                  />
-                </div>
-              ) : (
-                <div style={{ width: '90px', height: '90px', background: '#f1f5f9', marginBottom: '6px', border: '1px dashed #cbd5e1' }} />
-              )}
-              <div style={{ fontSize: '9px', color: '#000', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 800 }}>Verify Report</div>
-            </div>
-
-            {/* Signature Block - Right Aligned */}
-            {testTemplate?.uiType !== 'panel' && (() => {
-              const sig = signaturesList.find(s => s.id === signatureId) || signaturesList[0];
-              if (!sig) return null;
-              return (
-                <div style={{ textAlign: 'right', fontSize: 13, lineHeight: 1.4, minWidth: 250 }}>
-                  {sig.imageData ? (
-                    <div style={{ marginBottom: 4, height: 50, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
-                      <img src={sig.imageData} alt="Signature" style={{ maxHeight: 50, maxWidth: 180, objectFit: 'contain' }} />
-                    </div>
-                  ) : (
-                    <div style={{ fontFamily: '"Brush Script MT", cursive', fontSize: 28, marginBottom: 4, color: '#1e3a8a', transform: 'rotate(-3deg)' }}>
-                      {sig.signText}
-                    </div>
-                  )}
-                  <div style={{ fontWeight: 700 }}>{sig.name}</div>
-                  <div style={{ fontWeight: 800, fontSize: 12, textTransform: 'uppercase' }}>{sig.title}</div>
-                </div>
-              );
-            })()}
+          <div style={{ textAlign: 'center', margin: '40px 0 30px 0', fontSize: 13 }}>
+            -------------End of the Report-------------
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '0 40px' }}>
+            <div style={{ fontWeight: 800, fontSize: 15 }}>Verified By</div>
+            <div style={{ fontWeight: 800, fontSize: 15 }}>LAB INCHARGE</div>
           </div>
         </div>
       </div>

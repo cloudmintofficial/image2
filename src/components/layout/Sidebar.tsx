@@ -22,9 +22,9 @@ const navItems: NavItem[] = [
   { icon: <CheckCircle size={20} />, label: 'Completed Bills', path: '/completed-bills', shortcut: 'Alt+C' },
   { icon: <Printer size={20} />, label: 'Previous Bills', path: '/previous-bills', shortcut: 'Alt+P' },
   { icon: <BarChart3 size={20} />, label: 'Dashboard', path: '/dashboard', adminOnly: true },
-  { 
-    icon: <ClipboardList size={20} />, 
-    label: 'Options', 
+  {
+    icon: <ClipboardList size={20} />,
+    label: 'Options',
     adminOnly: true,
     subItems: [
       { label: 'Order Maintenance', path: '/order-maintenance' },
