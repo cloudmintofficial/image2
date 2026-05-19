@@ -77,6 +77,9 @@ export async function POST(request: Request) {
           orders: true
         }
       });
+    }, {
+      maxWait: 15000, // default: 2000
+      timeout: 30000, // default: 5000
     });
 
     return NextResponse.json(result);

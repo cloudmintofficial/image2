@@ -84,11 +84,10 @@ export default function InProcessPage() {
         bwipjs.toCanvas(canvas, {
           bcid: 'code128',
           text: String(selectedBill.billNo),
-          scale: 5,
-          height: 12,
+          scale: 3,
+          height: 8,
           includetext: true,
           textxalign: 'center',
-          textsize: 13,
         });
         setBarcodeUrl(canvas.toDataURL('image/png'));
       } catch (e) {
@@ -142,6 +141,15 @@ export default function InProcessPage() {
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: 'Diagnostic_Report',
+    pageStyle: `
+      @page {
+        size: A4;
+        margin: 12mm 15mm !important;
+      }
+      #print-area-content p {
+        margin: 4px 0 !important;
+      }
+    `,
     onBeforePrint: () => new Promise((resolve) => {
       // Increased delay for Next.js 16 / Turbopack to ensure iframe content is fully hydrated
       setTimeout(resolve, 1500);
@@ -166,6 +174,7 @@ export default function InProcessPage() {
     setResultMethod('');
     setResultDoctor('');
     setResultAdvice('');
+    setResultNotes('');
     setSignatureId('default');
     setTestTemplate(null); // Clear previous template to prevent UI flickering
 
@@ -392,7 +401,7 @@ export default function InProcessPage() {
           resultStatus: newStatus,
           resultMethod,
           resultDoctor,
-          resultNotes,
+          resultNotes: testTemplate?.uiType === 'richtext' ? '' : resultNotes,
           resultAdvice,
           signatureId
         })
@@ -509,6 +518,8 @@ export default function InProcessPage() {
       setIsSaving(false);
     }
   };
+
+  const selectedSig = signaturesList.find(s => String(s.id) === String(signatureId));
 
   return (
     <div>
@@ -1156,9 +1167,9 @@ export default function InProcessPage() {
                     <div style={{ fontSize: 12, color: '#22c55e', fontWeight: 600, marginTop: 2 }}>{selectedBill.status}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Clinical Context</div>
+                    <div style={{ fontSize: 11, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: 6 }}>Referred Doctor</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>{selectedBill.doctor?.name || 'Self'}</div>
-                    <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>Dept: {testTemplate?.department || 'N/A'}</div>
+                    <div style={{ fontSize: 13, color: '#475569', marginTop: 2 }}>Dept: {selectedBill.doctor?.department || 'General'}</div>
                   </div>
                 </div>
               </div>
@@ -1327,15 +1338,17 @@ export default function InProcessPage() {
 
                         {/* Bottom Rows: Full Width Textareas */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginTop: 8 }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                            <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>NOTES:</span>
-                            <RichTextEditor
-                              value={resultNotes}
-                              onChange={setResultNotes}
-                              minHeight={100}
-                              placeholder="Enter result notes or interpretation..."
-                            />
-                          </div>
+                          {testTemplate?.uiType !== 'richtext' && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                              <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>NOTES:</span>
+                              <RichTextEditor
+                                value={resultNotes}
+                                onChange={setResultNotes}
+                                minHeight={100}
+                                placeholder="Enter result notes or interpretation..."
+                              />
+                            </div>
+                          )}
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700 }}>ADVICE:</span>
                             <RichTextEditor
@@ -1405,7 +1418,7 @@ export default function InProcessPage() {
 
       {/* Hidden Printable Area - Optimized for Next.js 16/Turbopack compatibility */}
       <div style={{ position: 'fixed', opacity: 0, pointerEvents: 'none', top: 0, left: 0, zIndex: -1, width: '210mm' }}>
-        <div ref={printRef} style={{ padding: '60px 40px', fontFamily: '"Arial", sans-serif', color: '#000', backgroundColor: '#fff', minHeight: '100vh', boxSizing: 'border-box' }}>
+        <div ref={printRef} style={{ padding: '10px 0', fontFamily: '"Arial", sans-serif', color: '#000', backgroundColor: '#fff', boxSizing: 'border-box' }}>
           {/* Top Thin Line */}
           <div style={{ borderTop: '1px solid #000', marginBottom: '24px', width: '100%' }}></div>
 
@@ -1442,18 +1455,25 @@ export default function InProcessPage() {
             </div>
 
             {/* Right Column */}
-            <div style={{ fontSize: 13, lineHeight: 1.8, flex: 1, paddingLeft: 40 }}>
-              <div style={{ display: 'flex' }}>
+            <div style={{ fontSize: 13, lineHeight: 1.8, flex: 1, paddingLeft: 40, textAlign: 'right' }}>
+              {barcodeUrl && (
+                <div style={{ marginBottom: 8 }}>
+                  <img src={barcodeUrl} alt="Barcode" style={{ height: 42, objectFit: 'contain' }} />
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <div style={{ width: 140 }}>Bill Number</div>
                 <div style={{ padding: '0 8px' }}>:</div>
                 <div><strong>{selectedBill?.billNo || ''}</strong></div>
               </div>
-              <div style={{ display: 'flex' }}>
-                <div style={{ width: 140 }}>Sample Collection</div>
-                <div style={{ padding: '0 8px' }}>:</div>
-                <div>{selectedOrder?.createdAt ? new Date(selectedOrder.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am|pm/i, m => m.toUpperCase()) : ''}</div>
-              </div>
-              <div style={{ display: 'flex' }}>
+              {testTemplate?.uiType !== 'richtext' && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <div style={{ width: 140 }}>Sample Collection</div>
+                  <div style={{ padding: '0 8px' }}>:</div>
+                  <div>{selectedOrder?.createdAt ? new Date(selectedOrder.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am|pm/i, m => m.toUpperCase()) : ''}</div>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <div style={{ width: 140 }}>Reporting Date</div>
                 <div style={{ padding: '0 8px' }}>:</div>
                 <div>{new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am|pm/i, m => m.toUpperCase())}</div>
@@ -1466,12 +1486,45 @@ export default function InProcessPage() {
           <div style={{ borderTop: '1px solid #000', marginBottom: '24px', width: '100%' }}></div>
 
           {/* Test Title */}
-          <h2 style={{ textAlign: 'center', fontSize: 16, fontWeight: 800, margin: '0 0 32px 0', textTransform: 'uppercase', textDecoration: 'underline' }}>
-            {testTemplate?.department?.toUpperCase() || selectedOrder?.orderName}
-          </h2>
+          {(() => {
+            const plainText = (resultInput || '').replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim().toLowerCase();
+            const dept = testTemplate?.department?.toLowerCase() || '';
+            const name = selectedOrder?.orderName?.toLowerCase() || '';
+            const hasTitleInContent = (dept && plainText.startsWith(dept)) || 
+                                     (name && plainText.startsWith(name)) || 
+                                     plainText.includes('department of radiology');
+
+            if (hasTitleInContent) return null;
+
+            return testTemplate?.uiType === 'richtext' && testTemplate?.department === 'RADIOLOGY' ? (
+              <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 800, margin: '0 0 4px 0', textTransform: 'uppercase' }}>
+                  DEPARTMENT OF RADIOLOGY AND IMAGING SCIENCES
+                </h3>
+                <h2 style={{ fontSize: 16, fontWeight: 800, margin: 0, textTransform: 'uppercase' }}>
+                  {selectedOrder?.orderName}
+                </h2>
+              </div>
+            ) : testTemplate?.uiType === 'richtext' ? (
+              <div style={{ textAlign: 'center', marginBottom: 32 }}>
+                {testTemplate?.department && (
+                  <h3 style={{ fontSize: 14, fontWeight: 800, margin: '0 0 4px 0', textTransform: 'uppercase' }}>
+                    {testTemplate.department}
+                  </h3>
+                )}
+                <h2 style={{ fontSize: 16, fontWeight: 800, margin: 0, textTransform: 'uppercase' }}>
+                  {selectedOrder?.orderName}
+                </h2>
+              </div>
+            ) : (
+              <h2 style={{ textAlign: 'center', fontSize: 16, fontWeight: 800, margin: '0 0 32px 0', textTransform: 'uppercase', textDecoration: 'underline' }}>
+                {testTemplate?.department?.toUpperCase() || selectedOrder?.orderName}
+              </h2>
+            );
+          })()}
 
           {/* Test Content */}
-          <div style={{ fontSize: 14, lineHeight: 1.6 }}>
+          <div id="print-area-content" style={{ fontSize: 14, lineHeight: 1.6 }}>
             {testTemplate?.uiType === 'richtext' || !testTemplate ? (
               (() => {
                 const isEmptyRichText = !resultInput || resultInput.trim() === '' || resultInput.replace(/<[^>]*>?/gm, '').trim() === '';
@@ -1629,7 +1682,7 @@ export default function InProcessPage() {
 
           {/* Metadata: Notes, Method & Advice */}
           {(() => {
-            const hasValidNotes = resultNotes && resultNotes.replace(/<[^>]*>?/gm, '').trim() !== '';
+            const hasValidNotes = testTemplate?.uiType !== 'richtext' && resultNotes && resultNotes.replace(/<[^>]*>?/gm, '').trim() !== '';
             const hasValidAdvice = resultAdvice && resultAdvice.replace(/<[^>]*>?/gm, '').trim() !== '';
             const hasValidMethod = resultMethod && testTemplate?.uiType !== 'panel' && resultMethod.trim() !== '';
 
@@ -1665,11 +1718,35 @@ export default function InProcessPage() {
 
           {/* Footer Signature Block */}
           <div style={{ textAlign: 'center', margin: '40px 0 30px 0', fontSize: 13 }}>
-            -------------End of the Report-------------
+            ------------- End of the Report -------------
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '0 40px' }}>
-            <div style={{ fontWeight: 800, fontSize: 15 }}>Verified By</div>
-            <div style={{ fontWeight: 800, fontSize: 15 }}>LAB INCHARGE</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: 0, pageBreakInside: 'avoid' }}>
+            <div>
+              {qrCodeUrl && <img src={qrCodeUrl} alt="QR Code" style={{ width: 80, height: 80 }} />}
+            </div>
+            <div style={{ textAlign: 'center', minWidth: 200 }}>
+              {selectedSig ? (
+                <>
+                  {selectedSig.imageData && (
+                    <div style={{ marginBottom: 4 }}>
+                      <img src={selectedSig.imageData} alt="Signature" style={{ height: 50, maxWidth: 150, objectFit: 'contain', display: 'inline-block' }} />
+                    </div>
+                  )}
+                  <div style={{ fontSize: 14, fontWeight: 800 }}>{selectedSig.name}</div>
+                  <div style={{ fontSize: 12, fontWeight: 800, marginTop: 4, textTransform: 'uppercase' }}>{selectedSig.title}</div>
+                </>
+              ) : selectedBill?.doctor?.name ? (
+                <>
+                  <div style={{ fontSize: 14, fontWeight: 800 }}>{selectedBill.doctor.name}</div>
+                  {selectedBill.doctor.department && <div style={{ fontSize: 12, fontWeight: 800, marginTop: 4, textTransform: 'uppercase' }}>{selectedBill.doctor.department}</div>}
+                </>
+              ) : (
+                <>
+                  <div style={{ fontWeight: 800, fontSize: 15 }}>Verified By</div>
+                  <div style={{ fontWeight: 800, fontSize: 15, marginTop: 4 }}>LAB INCHARGE</div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
