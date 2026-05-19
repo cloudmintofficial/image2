@@ -46,14 +46,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Phone number is required' }, { status: 400 });
     }
 
+     // Duplicate phone check
+    const existing = await prisma.patient.findUnique({
+      where: { phone: data.phone }
+    });
+    if (existing) {
+      return NextResponse.json({ error: 'Phone number already exists' }, { status: 409 });
+    }
+
+    // Validate age
+    const ageNum = data.age ? parseInt(data.age) : null;
+    if (ageNum !== null && (isNaN(ageNum) || ageNum < 0)) {
+      return NextResponse.json({ error: 'Invalid age value' }, { status: 400 });
+    }
+
+    // Validate gender
+    const allowedGenders = ['Male', 'Female', 'Other'];
+    if (data.gender && !allowedGenders.includes(data.gender)) {
+      return NextResponse.json({ error: 'Invalid gender' }, { status: 400 });
+    }
+
+    // Simple email format check
+    const emailVal = data.email || data.additionalDetails?.email;
+    if (emailVal && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailVal)) {
+      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
+    }
+
     let patient = await prisma.patient.create({
       data: {
         name: data.name,
-        age: data.age ? parseInt(data.age) : null,
+        age: ageNum,
         gender: data.gender,
         phone: data.phone,
         source: data.source,
-        email: data.email || data.additionalDetails?.email,
+        email: emailVal,
         additionalDetails: data.additionalDetails,
       }
     });

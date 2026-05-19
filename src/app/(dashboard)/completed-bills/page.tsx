@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { PrintableBill } from '@/components/PrintableBill';
+import { useSession } from 'next-auth/react';
 
 interface CompletedBill {
   billNo: number;
@@ -17,9 +18,15 @@ interface CompletedBill {
 }
 
 export default function CompletedBillsPage() {
+  const { data: session } = useSession();
+  const user = session?.user as any;
+
   const [data, setData] = useState<CompletedBill[]>([]);
   const [loading, setLoading] = useState(true);
   const [showPayment, setShowPayment] = useState<number | null>(null);
+  const [paymentAmount, setPaymentAmount] = useState<number>(0);
+  const [paymentMethod, setPaymentMethod] = useState<string>('Cash');
+  const [submitting, setSubmitting] = useState(false);
   const [printBillData, setPrintBillData] = useState<any>(null);
 
   const printRef = useRef<HTMLDivElement>(null);
@@ -68,6 +75,55 @@ export default function CompletedBillsPage() {
 
   const selectedBill = data.find(d => d.billNo === showPayment);
 
+  const handleSubmitPayment = async () => {
+    if (!selectedBill) return;
+    if (paymentAmount <= 0) {
+      alert('Please enter a valid payment amount');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/bills/${selectedBill.rawBill.id}/payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: paymentAmount,
+          method: paymentMethod,
+          userId: user?.id ? parseInt(user.id) : 1,
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to submit payment');
+      }
+
+      const updatedBill = await res.json();
+      
+      // Update local state
+      setData(prev => prev.map(item => {
+        if (item.billNo === selectedBill.billNo) {
+          return {
+            ...item,
+            balance: updatedBill.balance,
+            rawBill: updatedBill
+          };
+        }
+        return item;
+      }));
+
+      setShowPayment(null);
+      alert('Payment submitted successfully');
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Failed to submit payment');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div>
       <div className="page-header">
@@ -98,9 +154,20 @@ export default function CompletedBillsPage() {
                     <div className="table-actions">
                       <button
                         className="btn btn-danger btn-sm"
-                        onClick={() => row.balance > 0 ? setShowPayment(row.billNo) : null}
+                        onClick={() => {
+                          if (row.balance > 0) {
+                            setShowPayment(row.billNo);
+                            setPaymentAmount(row.balance);
+                            setPaymentMethod('Cash');
+                          }
+                        }}
+                        disabled={row.balance <= 0}
+                        style={{
+                          opacity: row.balance <= 0 ? 0.6 : 1,
+                          cursor: row.balance <= 0 ? 'not-allowed' : 'pointer'
+                        }}
                       >
-                        {row.balance > 0 ? 'Bill Payment' : 'Bill Details'}
+                        {row.balance > 0 ? 'Bill Payment' : 'Paid'}
                       </button>
                       <button className="btn btn-info btn-sm" onClick={() => setPrintBillData(row.rawBill)}>Print Bill</button>
                       <button className="btn btn-success btn-sm">Orders List</button>
@@ -141,7 +208,24 @@ export default function CompletedBillsPage() {
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>{row.age}/{row.gender} · {row.phone}</div>
                 <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>{row.orders}</div>
                 <div style={{ display: 'flex', gap: 6 }}>
-                  <button className="btn btn-danger btn-sm" style={{ flex: 1 }}>{row.balance > 0 ? 'Payment' : 'Details'}</button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    style={{
+                      flex: 1,
+                      opacity: row.balance <= 0 ? 0.6 : 1,
+                      cursor: row.balance <= 0 ? 'not-allowed' : 'pointer'
+                    }}
+                    onClick={() => {
+                      if (row.balance > 0) {
+                        setShowPayment(row.billNo);
+                        setPaymentAmount(row.balance);
+                        setPaymentMethod('Cash');
+                      }
+                    }}
+                    disabled={row.balance <= 0}
+                  >
+                    {row.balance > 0 ? 'Payment' : 'Paid'}
+                  </button>
                   <button className="btn btn-info btn-sm" style={{ flex: 1 }} onClick={() => setPrintBillData(row.rawBill)}>Print</button>
                   <button className="btn btn-success btn-sm" style={{ flex: 1 }}>Orders</button>
                 </div>
@@ -174,22 +258,22 @@ export default function CompletedBillsPage() {
             <div className="modal-body">
               <div style={{ marginBottom: 12 }}>
                 <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Billed Amount:</span>
-                <span style={{ fontWeight: 700, marginLeft: 8, fontSize: 18 }}>₹{selectedBill.balance + 1000}</span>
+                <span style={{ fontWeight: 700, marginLeft: 8, fontSize: 18 }}>₹{selectedBill.rawBill.totalBill}</span>
               </div>
               <div className="form-group">
                 <label className="form-label">Overall Discount</label>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <input className="form-input" type="number" defaultValue={0} style={{ width: 120 }} />
-                  <label style={{ fontSize: 13, display: 'flex', gap: 4, alignItems: 'center' }}><input type="checkbox" /> %</label>
+                  <input className="form-input" type="number" value={selectedBill.rawBill.discount} disabled style={{ width: 120 }} />
+                  <label style={{ fontSize: 13, display: 'flex', gap: 4, alignItems: 'center' }}><input type="checkbox" checked={selectedBill.rawBill.discount > 0} disabled /> %</label>
                 </div>
               </div>
               <div className="form-group">
                 <label className="form-label">Reason For Discount</label>
-                <textarea className="form-input" rows={2} style={{ resize: 'vertical' }} />
+                <textarea className="form-input" rows={2} value={selectedBill.rawBill.discountReason || ''} disabled style={{ resize: 'vertical' }} />
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: 14 }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Paid till now:</span>
-                <span style={{ fontWeight: 600 }}>₹{1000}</span>
+                <span style={{ fontWeight: 600 }}>₹{selectedBill.rawBill.paidAmount}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontSize: 14 }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Balance:</span>
@@ -197,18 +281,37 @@ export default function CompletedBillsPage() {
               </div>
               <div className="form-group">
                 <label className="form-label">Amount paid now</label>
-                <input className="form-input" type="number" />
+                <input
+                  className="form-input"
+                  type="number"
+                  value={paymentAmount}
+                  onChange={(e) => setPaymentAmount(parseFloat(e.target.value) || 0)}
+                  max={selectedBill.balance}
+                  min={0.01}
+                />
               </div>
               <div className="form-group">
                 <label className="form-label">Payment Method</label>
-                <select className="form-input form-select">
-                  <option>Cash</option><option>Card</option><option>UPI</option><option>Online</option>
+                <select
+                  className="form-input form-select"
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                >
+                  <option value="Cash">Cash</option>
+                  <option value="Card">Card</option>
+                  <option value="UPI">UPI</option>
+                  <option value="Online">Online</option>
                 </select>
               </div>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary">Submit</button>
-              <button className="btn btn-outline">Clear Payments</button>
+              <button
+                className="btn btn-primary"
+                onClick={handleSubmitPayment}
+                disabled={submitting}
+              >
+                {submitting ? 'Submitting...' : 'Submit'}
+              </button>
               <button className="btn btn-ghost" onClick={() => setShowPayment(null)}>Close</button>
             </div>
           </div>
