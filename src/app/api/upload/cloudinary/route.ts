@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     });
 
     // 8. Save to DB
-    const dbRecord = await prisma.cloudinaryFile.create({
+    const dbRecord = await (prisma as any).cloudinaryFile.create({
       data: {
         publicId: cloudinaryResponse.public_id,
         secureUrl: cloudinaryResponse.secure_url,
