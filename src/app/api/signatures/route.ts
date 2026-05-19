@@ -3,60 +3,57 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { searchParams } = new URL(request.url);
-    const onlyActive = searchParams.get('active') === 'true';
-
     const signatures = await prisma.doctorSignature.findMany({
-      where: onlyActive ? { status: 'Active' } : {},
       orderBy: { name: 'asc' }
     });
     return NextResponse.json(signatures);
-  } catch (error: any) {
-    console.error('Error fetching signatures:', error);
-    return NextResponse.json({ error: 'Failed to fetch signatures', details: error.message }, { status: 500 });
+  } catch (error) {
+    console.error('Failed to fetch doctor signatures:', error);
+    return NextResponse.json({ error: 'Failed to fetch doctor signatures' }, { status: 500 });
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body = await request.json();
-    const { id, name, title, label, signText, imageData, status } = body;
-    
+    const data = await req.json();
+    const { id, name, title, label, signText, imageData, status } = data;
+
     if (!id || !name || !title || !label) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json({ error: 'ID, Name, Title, and Label are required' }, { status: 400 });
     }
 
-    // Check if duplicate ID
-    const existing = await prisma.doctorSignature.findUnique({
-      where: { id }
+    // Check for duplicate ID
+    const duplicate = await prisma.doctorSignature.findUnique({
+      where: { id: id.trim() }
     });
-    if (existing) {
-      return NextResponse.json({ error: 'Signature ID already exists' }, { status: 409 });
+
+    if (duplicate) {
+      return NextResponse.json({ error: 'A doctor signature with this ID already exists' }, { status: 409 });
     }
 
     const signature = await prisma.doctorSignature.create({
       data: {
-        id,
-        name,
-        title,
-        label,
+        id: id.trim(),
+        name: name.trim(),
+        title: title.trim(),
+        label: label.trim(),
         signText: signText || null,
         imageData: imageData || null,
         status: status || 'Active'
       }
     });
-    
+
     return NextResponse.json(signature);
-  } catch (error: any) {
-    console.error('Error creating signature:', error);
-    return NextResponse.json({ error: 'Failed to create signature', details: error.message }, { status: 500 });
+  } catch (error) {
+    console.error('Failed to create doctor signature:', error);
+    return NextResponse.json({ error: 'Failed to create doctor signature' }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { deleteCloudinaryFileByUrl } from '@/lib/cloudinary-delete';
 
 export async function PUT(
   req: Request,
@@ -37,6 +38,14 @@ export async function PUT(
     const existingDept = await prisma.department.findUnique({ where: { id } });
     if (!existingDept) {
       return NextResponse.json({ error: 'Department not found' }, { status: 404 });
+    }
+
+    // Trigger cleanup if signatures are updated/removed
+    if (data.leftSignatureImageUrl !== undefined && data.leftSignatureImageUrl !== existingDept.leftSignatureImageUrl) {
+      await deleteCloudinaryFileByUrl(existingDept.leftSignatureImageUrl);
+    }
+    if (data.signatureImageUrl !== undefined && data.signatureImageUrl !== existingDept.signatureImageUrl) {
+      await deleteCloudinaryFileByUrl(existingDept.signatureImageUrl);
     }
 
     const department = await prisma.department.update({
@@ -83,6 +92,13 @@ export async function DELETE(
     const id = parseInt(resolvedParams.id);
     if (isNaN(id)) {
       return NextResponse.json({ error: 'Invalid department ID' }, { status: 400 });
+    }
+
+    const existingDept = await prisma.department.findUnique({ where: { id } });
+    if (existingDept) {
+      // Clean up signature files from Cloudinary
+      await deleteCloudinaryFileByUrl(existingDept.leftSignatureImageUrl);
+      await deleteCloudinaryFileByUrl(existingDept.signatureImageUrl);
     }
 
     await prisma.department.delete({

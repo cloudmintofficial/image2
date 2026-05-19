@@ -61,7 +61,7 @@ async function main() {
       labId: lab.id,
       signatureLabel: 'LAB INCHARGE',
       leftSignatureLabel: 'Verified By',
-      signatureImageUrl: '/uploads/sig_immunology.png',
+      signatureImageUrl: 'https://res.cloudinary.com/dci6zeb1n/image/upload/v1779181187/lab-management/signatures/lab/sig_immunology_1779181186870-901189275.png',
       printIndividualPages: true
     },
     { 
@@ -70,7 +70,7 @@ async function main() {
       labId: lab.id,
       signatureLabel: 'LAB INCHARGE',
       leftSignatureLabel: null,
-      signatureImageUrl: '/uploads/sig_immunology.png',
+      signatureImageUrl: 'https://res.cloudinary.com/dci6zeb1n/image/upload/v1779181187/lab-management/signatures/lab/sig_immunology_1779181186870-901189275.png',
       printIndividualPages: true
     },
     { 
@@ -79,7 +79,7 @@ async function main() {
       labId: lab.id,
       signatureLabel: 'LAB INCHARGE',
       leftSignatureLabel: 'Verified By',
-      signatureImageUrl: '/uploads/sig_immunology.png',
+      signatureImageUrl: 'https://res.cloudinary.com/dci6zeb1n/image/upload/v1779181187/lab-management/signatures/lab/sig_immunology_1779181186870-901189275.png',
       printIndividualPages: true
     },
     { 
@@ -88,7 +88,7 @@ async function main() {
       labId: lab.id,
       signatureLabel: 'LAB INCHARGE',
       leftSignatureLabel: 'Verified By',
-      signatureImageUrl: '/uploads/sig_immunology.png',
+      signatureImageUrl: 'https://res.cloudinary.com/dci6zeb1n/image/upload/v1779181187/lab-management/signatures/lab/sig_immunology_1779181186870-901189275.png',
       printIndividualPages: true
     },
     { 
@@ -97,7 +97,7 @@ async function main() {
       labId: lab.id,
       signatureLabel: 'LAB INCHARGE',
       leftSignatureLabel: 'Verified By',
-      signatureImageUrl: '/uploads/sig_immunology.png',
+      signatureImageUrl: 'https://res.cloudinary.com/dci6zeb1n/image/upload/v1779181187/lab-management/signatures/lab/sig_immunology_1779181186870-901189275.png',
       printIndividualPages: true
     },
     { name: 'PATHOLOGY', status: 'Active', labId: lab.id },
@@ -107,7 +107,7 @@ async function main() {
       labId: lab.id,
       signatureLabel: 'LAB INCHARGE',
       leftSignatureLabel: 'Verified By',
-      signatureImageUrl: '/uploads/sig_immunology.png',
+      signatureImageUrl: 'https://res.cloudinary.com/dci6zeb1n/image/upload/v1779181187/lab-management/signatures/lab/sig_immunology_1779181186870-901189275.png',
       printIndividualPages: true
     },
     { name: 'X-RAY', status: 'Active', labId: lab.id },
