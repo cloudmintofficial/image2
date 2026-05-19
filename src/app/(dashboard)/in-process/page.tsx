@@ -74,6 +74,7 @@ export default function InProcessPage() {
   const [referralDoctors, setReferralDoctors] = useState<any[]>([]);
   const [serviceDoctors, setServiceDoctors] = useState<any[]>([]);
   const [signaturesList, setSignaturesList] = useState<any[]>([]);
+  const [departmentsList, setDepartmentsList] = useState<any[]>([]);
   const [barcodeUrl, setBarcodeUrl] = useState('');
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
@@ -135,6 +136,13 @@ export default function InProcessPage() {
         console.error(e);
         setSignaturesList([{ id: 'default', label: 'Default System Signature', name: 'DR. AUTHORIZED SIGNATORY', title: 'CONSULTANT RADIOLOGIST', signText: 'Signature' }]);
       });
+
+    fetch('/api/departments')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setDepartmentsList(data);
+      })
+      .catch(console.error);
   }, []);
 
   const printRef = useRef<HTMLDivElement>(null);
@@ -1717,37 +1725,76 @@ export default function InProcessPage() {
           })()}
 
           {/* Footer Signature Block */}
-          <div style={{ textAlign: 'center', margin: '40px 0 30px 0', fontSize: 13 }}>
-            ------------- End of the Report -------------
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: 0, pageBreakInside: 'avoid' }}>
-            <div>
-              {qrCodeUrl && <img src={qrCodeUrl} alt="QR Code" style={{ width: 80, height: 80 }} />}
-            </div>
-            <div style={{ textAlign: 'center', minWidth: 200 }}>
-              {selectedSig ? (
-                <>
-                  {selectedSig.imageData && (
-                    <div style={{ marginBottom: 4 }}>
-                      <img src={selectedSig.imageData} alt="Signature" style={{ height: 50, maxWidth: 150, objectFit: 'contain', display: 'inline-block' }} />
-                    </div>
-                  )}
-                  <div style={{ fontSize: 14, fontWeight: 800 }}>{selectedSig.name}</div>
-                  <div style={{ fontSize: 12, fontWeight: 800, marginTop: 4, textTransform: 'uppercase' }}>{selectedSig.title}</div>
-                </>
-              ) : selectedBill?.doctor?.name ? (
-                <>
-                  <div style={{ fontSize: 14, fontWeight: 800 }}>{selectedBill.doctor.name}</div>
-                  {selectedBill.doctor.department && <div style={{ fontSize: 12, fontWeight: 800, marginTop: 4, textTransform: 'uppercase' }}>{selectedBill.doctor.department}</div>}
-                </>
-              ) : (
-                <>
-                  <div style={{ fontWeight: 800, fontSize: 15 }}>Verified By</div>
-                  <div style={{ fontWeight: 800, fontSize: 15, marginTop: 4 }}>LAB INCHARGE</div>
-                </>
-              )}
-            </div>
-          </div>
+          {(() => {
+            const currentDept = testTemplate?.department 
+              ? departmentsList.find(d => d.name.toUpperCase() === testTemplate.department.toUpperCase())
+              : null;
+
+            return (
+              <>
+                <div style={{ textAlign: 'center', margin: '40px 0 30px 0', fontSize: 13 }}>
+                  ------------- End of the Report -------------
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: 0, pageBreakInside: 'avoid' }}>
+                  {/* Left Side: QR Code + Optional Left Signature */}
+                  <div style={{ textAlign: 'center', minWidth: 200, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    {qrCodeUrl && <img src={qrCodeUrl} alt="QR Code" style={{ width: 80, height: 80, marginBottom: currentDept?.leftSignatureLabel ? 8 : 0 }} />}
+                    
+                    {currentDept?.leftSignatureLabel && (
+                      <>
+                        {currentDept.leftSignatureImageUrl ? (
+                          <div style={{ marginBottom: 4 }}>
+                            <img src={currentDept.leftSignatureImageUrl} alt="Left Signature" style={{ height: 50, maxWidth: 150, objectFit: 'contain', display: 'inline-block' }} />
+                          </div>
+                        ) : (
+                          <div style={{ height: 50 }}></div> /* Placeholder if no image */
+                        )}
+                        <div style={{ fontWeight: 800, fontSize: 15 }}>Verified By</div>
+                        <div style={{ fontWeight: 800, fontSize: 15, marginTop: 4 }}>{currentDept.leftSignatureLabel}</div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Right Side: Selected Signature OR Department Signature OR Fallback */}
+                  <div style={{ textAlign: 'center', minWidth: 200 }}>
+                    {selectedSig ? (
+                      <>
+                        {selectedSig.imageData && (
+                          <div style={{ marginBottom: 4 }}>
+                            <img src={selectedSig.imageData} alt="Signature" style={{ height: 50, maxWidth: 150, objectFit: 'contain', display: 'inline-block' }} />
+                          </div>
+                        )}
+                        <div style={{ fontSize: 14, fontWeight: 800 }}>{selectedSig.name}</div>
+                        <div style={{ fontSize: 12, fontWeight: 800, marginTop: 4, textTransform: 'uppercase' }}>{selectedSig.title}</div>
+                      </>
+                    ) : currentDept?.signatureLabel ? (
+                      <>
+                        {currentDept.signatureImageUrl && (
+                          <div style={{ marginBottom: 4 }}>
+                            <img src={currentDept.signatureImageUrl} alt="Signature" style={{ height: 50, maxWidth: 150, objectFit: 'contain', display: 'inline-block' }} />
+                          </div>
+                        )}
+                        {currentDept.leftSignatureLabel !== currentDept.signatureLabel && (
+                          <div style={{ fontWeight: 800, fontSize: 15, color: 'transparent', userSelect: 'none' }}>Verified By</div>
+                        )}
+                        <div style={{ fontWeight: 800, fontSize: 15, marginTop: 4 }}>{currentDept.signatureLabel}</div>
+                      </>
+                    ) : selectedBill?.doctor?.name ? (
+                      <>
+                        <div style={{ fontSize: 14, fontWeight: 800 }}>{selectedBill.doctor.name}</div>
+                        {selectedBill.doctor.department && <div style={{ fontSize: 12, fontWeight: 800, marginTop: 4, textTransform: 'uppercase' }}>{selectedBill.doctor.department}</div>}
+                      </>
+                    ) : (
+                      <>
+                        <div style={{ fontWeight: 800, fontSize: 15 }}>Verified By</div>
+                        <div style={{ fontWeight: 800, fontSize: 15, marginTop: 4 }}>LAB INCHARGE</div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
       <AddOrderModal

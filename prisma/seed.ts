@@ -52,6 +52,89 @@ async function main() {
     }
   }
 
+  // Seed default departments
+  const defaultDepts = [
+    { name: 'BIO CHEMISTRY', status: 'Active', signatureLabel: 'LAB INCHARGE', leftSignatureLabel: 'Verified By', printIndividualPages: true, labId: lab.id },
+    { 
+      name: 'IMMUNOLOGY', 
+      status: 'Active', 
+      labId: lab.id,
+      signatureLabel: 'LAB INCHARGE',
+      leftSignatureLabel: 'Verified By',
+      signatureImageUrl: '/uploads/sig_immunology.png',
+      printIndividualPages: true
+    },
+    { 
+      name: 'SEROLOGY', 
+      status: 'Active', 
+      labId: lab.id,
+      signatureLabel: 'LAB INCHARGE',
+      leftSignatureLabel: null,
+      signatureImageUrl: '/uploads/sig_immunology.png',
+      printIndividualPages: true
+    },
+    { 
+      name: 'CLINICAL PATHOLOGY', 
+      status: 'Active', 
+      labId: lab.id,
+      signatureLabel: 'LAB INCHARGE',
+      leftSignatureLabel: 'Verified By',
+      signatureImageUrl: '/uploads/sig_immunology.png',
+      printIndividualPages: true
+    },
+    { 
+      name: 'HEMATOLOGY', 
+      status: 'Active', 
+      labId: lab.id,
+      signatureLabel: 'LAB INCHARGE',
+      leftSignatureLabel: 'Verified By',
+      signatureImageUrl: '/uploads/sig_immunology.png',
+      printIndividualPages: true
+    },
+    { 
+      name: 'MICRO BIOLOGY', 
+      status: 'Active', 
+      labId: lab.id,
+      signatureLabel: 'LAB INCHARGE',
+      leftSignatureLabel: 'Verified By',
+      signatureImageUrl: '/uploads/sig_immunology.png',
+      printIndividualPages: true
+    },
+    { name: 'PATHOLOGY', status: 'Active', labId: lab.id },
+    { 
+      name: 'CYTOLOGY', 
+      status: 'Active', 
+      labId: lab.id,
+      signatureLabel: 'LAB INCHARGE',
+      leftSignatureLabel: 'Verified By',
+      signatureImageUrl: '/uploads/sig_immunology.png',
+      printIndividualPages: true
+    },
+    { name: 'X-RAY', status: 'Active', labId: lab.id },
+    { name: 'HISTOPATHOLOGY', status: 'Active', labId: lab.id },
+    { name: 'ECG', status: 'Active', labId: lab.id },
+    { name: 'HORMONES', status: 'Active', labId: lab.id },
+    { name: 'RADIOLOGY', status: 'Active', labId: lab.id },
+    { name: '2 D ECHOCARDIOGRAM', status: 'Active', labId: lab.id },
+    { name: 'PACKAGE INCLUSION', status: 'Active', labId: lab.id },
+  ];
+
+  for (const d of defaultDepts) {
+    const existing = await prisma.department.findFirst({
+      where: { name: d.name }
+    });
+    if (!existing) {
+      await prisma.department.create({
+        data: d
+      });
+    } else {
+      await prisma.department.update({
+        where: { id: existing.id },
+        data: d
+      });
+    }
+  }
+
   console.log('Seeding complete!');
 }
 

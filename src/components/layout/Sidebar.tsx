@@ -28,7 +28,7 @@ const navItems: NavItem[] = [
     adminOnly: true,
     subItems: [
       { label: 'Order Maintenance', path: '/order-maintenance' },
-      { label: 'Department Maintenance', path: '/settings' },
+      { label: 'Department Maintenance', path: '/departments' },
       { label: 'Doctors', path: '/doctors' },
       { label: 'Locations', path: '/locations' },
       { label: 'Lab Users', path: '/users' },

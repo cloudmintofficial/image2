@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     }
 
      // Duplicate phone check
-    const existing = await prisma.patient.findUnique({
+    const existing = await prisma.patient.findFirst({
       where: { phone: data.phone }
     });
     if (existing) {

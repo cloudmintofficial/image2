@@ -22,6 +22,7 @@ model Lab {
   serviceGroups ServiceGroup[]
   tests         TestMaster[]
   users         User[]
+  departments   Department[]
 }
 
 model User {
@@ -295,4 +296,19 @@ model OrderDetailTemplate {
   createdAt    DateTime        @default(now())
   test         TestMaster      @relation(fields: [testId], references: [id], onDelete: Cascade)
   components   TestComponent[]
+}
+
+model Department {
+  id                    Int      @id @default(autoincrement())
+  name                  String
+  status                String   @default("Active")
+  leftSignatureImageUrl String?
+  leftSignatureLabel    String?
+  signatureImageUrl     String?
+  signatureLabel        String?
+  printIndividualPages  Boolean  @default(false)
+  labId                 Int?
+  lab                   Lab?     @relation(fields: [labId], references: [id])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
