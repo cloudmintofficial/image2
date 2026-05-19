@@ -23,6 +23,7 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   const [dbSampleTypes, setDbSampleTypes] = useState<any[]>([]);
   const [dbOrderTypes, setDbOrderTypes] = useState<any[]>([]);
   const [dbBillingCategories, setDbBillingCategories] = useState<any[]>([]);
+  const [dbDepartments, setDbDepartments] = useState<any[]>([]);
 
   const [orderForm, setOrderForm] = useState({
     orderName: '', hasComponents: false, testCode: '', displayOrderName: '',
@@ -43,6 +44,14 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
   });
 
   useEffect(() => {
+    // Fetch Departments
+    fetch('/api/departments')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setDbDepartments(data);
+      })
+      .catch(err => console.error('Failed to fetch departments:', err));
+
     // Fetch Sample Types
     fetch('/api/sample-types')
       .then(res => res.json())
@@ -286,25 +295,19 @@ export default function OrderForm({ initialData, isEdit = false }: OrderFormProp
                 <label className="form-label">Department</label>
                 <select 
                   className="form-select" 
-                  value={orderForm.department} 
+                  value={orderForm.department || 'NONE'} 
                   onChange={e => setOrderForm({ ...orderForm, department: e.target.value })}
                 >
                   <option value="NONE">NONE</option>
-                  <option value="BIO CHEMISTRY">BIO CHEMISTRY</option>
-                  <option value="HEMATOLOGY">HEMATOLOGY</option>
-                  <option value="IMMUNOLOGY">IMMUNOLOGY</option>
-                  <option value="SEROLOGY">SEROLOGY</option>
-                  <option value="CLINICAL PATHOLOGY">CLINICAL PATHOLOGY</option>
-                  <option value="MICRO BIOLOGY">MICRO BIOLOGY</option>
-                  <option value="PATHOLOGY">PATHOLOGY</option>
-                  <option value="CYTOLOGY">CYTOLOGY</option>
-                  <option value="X-RAY">X-RAY</option>
-                  <option value="HISTOPATHOLOGY">HISTOPATHOLOGY</option>
-                  <option value="ECG">ECG</option>
-                  <option value="HORMONES">HORMONES</option>
-                  <option value="RADIOLOGY">RADIOLOGY</option>
-                  <option value="2 D ECHOCARDIOGRAM">2 D ECHOCARDIOGRAM</option>
-                  <option value="PACKAGE INCLUSION">PACKAGE INCLUSION</option>
+                  {dbDepartments.map((dept) => (
+                    <option key={dept.id} value={dept.name}>
+                      {dept.name}
+                    </option>
+                  ))}
+                  {/* Keep current department as option if it is not in the dbDepartments list */}
+                  {orderForm.department && orderForm.department !== 'NONE' && !dbDepartments.some(d => d.name === orderForm.department) && (
+                    <option value={orderForm.department}>{orderForm.department}</option>
+                  )}
                 </select>
               </div>
 

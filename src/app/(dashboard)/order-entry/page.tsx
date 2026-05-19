@@ -118,6 +118,16 @@ export default function OrderEntryPage() {
   const [docLocation, setDocLocation] = useState('');
   const [docHospital, setDocHospital] = useState('');
   const [docSalesExecutive, setDocSalesExecutive] = useState('');
+  const [dbDepartments, setDbDepartments] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/departments')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setDbDepartments(data);
+      })
+      .catch(err => console.error('Failed to fetch departments:', err));
+  }, []);
   const [docInactive, setDocInactive] = useState(false);
 
   // Expense Modals
@@ -1465,21 +1475,14 @@ export default function OrderEntryPage() {
               <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Department:</label>
               <select className="form-input form-select" value={docDepartment} onChange={e => setDocDepartment(e.target.value)}>
                 <option value="">-- Select Department --</option>
-                <option value="BIO CHEMISTRY">BIO CHEMISTRY</option>
-                <option value="IMMUNOLOGY">IMMUNOLOGY</option>
-                <option value="SEROLOGY">SEROLOGY</option>
-                <option value="CLINICAL PATHOLOGY">CLINICAL PATHOLOGY</option>
-                <option value="HEMATOLOGY">HEMATOLOGY</option>
-                <option value="MICRO BIOLOGY">MICRO BIOLOGY</option>
-                <option value="PATHOLOGY">PATHOLOGY</option>
-                <option value="CYTOLOGY">CYTOLOGY</option>
-                <option value="X-RAY">X-RAY</option>
-                <option value="HISTOPATHOLOGY">HISTOPATHOLOGY</option>
-                <option value="ECG">ECG</option>
-                <option value="HORMONES">HORMONES</option>
-                <option value="RADIOLOGY">RADIOLOGY</option>
-                <option value="2 D ECHOCARDIOGRAM">2 D ECHOCARDIOGRAM</option>
-                <option value="PACKAGE INCLUSION">PACKAGE INCLUSION</option>
+                {dbDepartments.map((dept) => (
+                  <option key={dept.id} value={dept.name}>
+                    {dept.name}
+                  </option>
+                ))}
+                {docDepartment && !dbDepartments.some(d => d.name === docDepartment) && (
+                  <option value={docDepartment}>{docDepartment}</option>
+                )}
               </select>
 
               <label className="form-label" style={{ marginBottom: 0, textAlign: 'right' }}>Specialization:</label>
