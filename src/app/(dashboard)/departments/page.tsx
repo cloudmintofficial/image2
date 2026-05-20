@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Plus, Search, Edit2, Trash2, Save, X, 
+import {
+  Plus, Search, Edit2, Trash2, Save, X,
   Upload, Image, FileText, Check, AlertCircle, FileCheck, Award
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -36,11 +36,11 @@ export default function DepartmentsPage() {
   const [activeTab, setActiveTab] = useState<'departments' | 'signatures'>('departments');
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Data States
   const [departments, setDepartments] = useState<Department[]>([]);
   const [signatures, setSignatures] = useState<DoctorSignature[]>([]);
-  
+
   // Department Modal & Form States
   const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
   const [editingDept, setEditingDept] = useState<Department | null>(null);
@@ -195,7 +195,7 @@ export default function DepartmentsPage() {
 
     try {
       setSubmitting(true);
-      
+
       let finalLeftSigUrl = leftSigUrl;
       let finalRightSigUrl = rightSigUrl;
 
@@ -254,7 +254,7 @@ export default function DepartmentsPage() {
 
     try {
       setSubmitting(true);
-      
+
       let finalSigUrl = sigUrl;
 
       if (sigFile) {
@@ -343,11 +343,11 @@ export default function DepartmentsPage() {
   };
 
   // Search filter lists
-  const filteredDepts = departments.filter(dept => 
+  const filteredDepts = departments.filter(dept =>
     dept.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredSigs = signatures.filter(sig => 
+  const filteredSigs = signatures.filter(sig =>
     sig.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     sig.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
     sig.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -424,11 +424,11 @@ export default function DepartmentsPage() {
       {/* Main content card */}
       <div className="card">
         {/* Card Header with search & actions */}
-        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid var(--border)', background: '#fff' }}>
+        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid var(--border)', background: 'var(--bg-card)' }}>
           <div style={{ position: 'relative', width: '300px' }}>
-            <input 
-              type="text" 
-              className="form-input" 
+            <input
+              type="text"
+              className="form-input"
               placeholder={activeTab === 'departments' ? "Search departments..." : "Search doctor signatures..."}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
@@ -437,8 +437,8 @@ export default function DepartmentsPage() {
             <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
           </div>
 
-          <button 
-            className="btn btn-primary" 
+          <button
+            className="btn btn-primary"
             onClick={activeTab === 'departments' ? handleOpenAddDept : handleOpenAddSig}
             style={{ borderRadius: '10px', fontWeight: '600' }}
           >
@@ -522,15 +522,15 @@ export default function DepartmentsPage() {
                         </td>
                         <td style={{ textAlign: 'right' }}>
                           <div className="table-actions" style={{ justifyContent: 'flex-end', gap: '8px' }}>
-                            <button 
-                              className="btn btn-ghost btn-icon btn-sm" 
+                            <button
+                              className="btn btn-ghost btn-icon btn-sm"
                               onClick={() => handleOpenEditDept(dept)}
                               title="Edit Department"
                             >
                               <Edit2 size={15} />
                             </button>
-                            <button 
-                              className="btn btn-ghost btn-icon btn-sm" 
+                            <button
+                              className="btn btn-ghost btn-icon btn-sm"
                               onClick={() => handleDeleteDept(dept.id, dept.name)}
                               title="Delete Department"
                               style={{ color: 'var(--danger)' }}
@@ -589,7 +589,7 @@ export default function DepartmentsPage() {
                         </td>
                         <td>
                           {sig.imageData ? (
-                            <div style={{ display: 'flex', alignItems: 'center', height: '40px', border: '1px solid var(--border)', borderRadius: '4px', padding: '2px', background: '#fff', width: '100px', justifyContent: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', height: '40px', border: '1px solid var(--border)', borderRadius: '4px', padding: '2px', background: 'var(--bg-card)', width: '100px', justifyContent: 'center' }}>
                               <img src={sig.imageData} alt="Signature Preview" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                             </div>
                           ) : (
@@ -598,15 +598,15 @@ export default function DepartmentsPage() {
                         </td>
                         <td style={{ textAlign: 'right' }}>
                           <div className="table-actions" style={{ justifyContent: 'flex-end', gap: '8px' }}>
-                            <button 
-                              className="btn btn-ghost btn-icon btn-sm" 
+                            <button
+                              className="btn btn-ghost btn-icon btn-sm"
                               onClick={() => handleOpenEditSig(sig)}
                               title="Edit Signature"
                             >
                               <Edit2 size={15} />
                             </button>
-                            <button 
-                              className="btn btn-ghost btn-icon btn-sm" 
+                            <button
+                              className="btn btn-ghost btn-icon btn-sm"
                               onClick={() => handleDeleteSig(sig.id, sig.name)}
                               title="Delete Signature"
                               style={{ color: 'var(--danger)' }}
@@ -635,16 +635,16 @@ export default function DepartmentsPage() {
                 <X size={16} />
               </button>
             </div>
-            
+
             <form onSubmit={handleDeptSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
               <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
-                
+
                 {/* Department Name */}
                 <div className="form-group">
                   <label className="form-label" style={{ fontWeight: '600' }}>Department Name *</label>
-                  <input 
-                    type="text" 
-                    className="form-input required" 
+                  <input
+                    type="text"
+                    className="form-input required"
                     placeholder="e.g. BIO CHEMISTRY, RADIOLOGY, etc."
                     value={deptName}
                     onChange={e => setDeptName(e.target.value)}
@@ -656,7 +656,7 @@ export default function DepartmentsPage() {
                 <div className="form-row form-row-2">
                   <div className="form-group">
                     <label className="form-label" style={{ fontWeight: '600' }}>Status</label>
-                    <select 
+                    <select
                       className="form-input form-select"
                       value={deptStatus}
                       onChange={e => setDeptStatus(e.target.value)}
@@ -669,9 +669,9 @@ export default function DepartmentsPage() {
                   <div className="form-group" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                     <span className="form-label" style={{ fontWeight: '600', marginBottom: '8px' }}>Print Layout Preference</span>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={printIndivPages} 
+                      <input
+                        type="checkbox"
+                        checked={printIndivPages}
                         onChange={e => setPrintIndivPages(e.target.checked)}
                         style={{ width: '16px', height: '16px', accentColor: 'var(--primary)' }}
                       />
@@ -681,7 +681,7 @@ export default function DepartmentsPage() {
                 </div>
 
                 <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '8px 0' }} />
-                
+
                 {/* Signatures Section Title */}
                 <div style={{ marginBottom: '4px' }}>
                   <h4 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -693,27 +693,27 @@ export default function DepartmentsPage() {
                 </div>
 
                 {/* Left Signature Block */}
-                <div style={{ border: '1px solid var(--border)', borderRadius: '10px', padding: '16px', backgroundColor: '#fafafa' }}>
+                <div style={{ border: '1px solid var(--border)', borderRadius: '10px', padding: '16px', backgroundColor: 'var(--bg-main)' }}>
                   <h5 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '12px' }}>Left Signature (e.g. Lab Technician)</h5>
                   <div className="form-group">
                     <label className="form-label">Signature Label / Name</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. B.Sc. DMLT / Chief Technologist"
                       value={leftSigLabel}
                       onChange={e => setLeftSigLabel(e.target.value)}
                     />
                   </div>
-                  
+
                   <div>
                     <label className="form-label">Signature Image</label>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       {leftSigUrl ? (
-                        <div style={{ position: 'relative', width: '120px', height: '50px', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ position: 'relative', width: '120px', height: '50px', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <img src={leftSigUrl} alt="Left Signature Preview" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             onClick={() => { setLeftSigUrl(null); setLeftSigFile(null); }}
                             style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(220, 38, 38, 0.8)', border: 'none', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                           >
@@ -721,12 +721,12 @@ export default function DepartmentsPage() {
                           </button>
                         </div>
                       ) : (
-                        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--border-input)', borderRadius: '10px', padding: '10px', cursor: 'pointer', width: '120px', height: '50px', background: '#fff', transition: 'border var(--transition-fast)' }}>
+                        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--border-input)', borderRadius: '10px', padding: '10px', cursor: 'pointer', width: '120px', height: '50px', background: 'var(--bg-card)', transition: 'border var(--transition-fast)' }}>
                           <Upload size={14} style={{ color: 'var(--text-secondary)' }} />
                           <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>Upload Image</span>
-                          <input 
-                            type="file" 
-                            accept="image/*" 
+                          <input
+                            type="file"
+                            accept="image/*"
                             onChange={e => {
                               if (e.target.files?.[0]) {
                                 setLeftSigFile(e.target.files[0]);
@@ -743,27 +743,27 @@ export default function DepartmentsPage() {
                 </div>
 
                 {/* Right Signature Block */}
-                <div style={{ border: '1px solid var(--border)', borderRadius: '10px', padding: '16px', backgroundColor: '#fafafa' }}>
+                <div style={{ border: '1px solid var(--border)', borderRadius: '10px', padding: '16px', backgroundColor: 'var(--bg-main)' }}>
                   <h5 style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '12px' }}>Right Signature (e.g. Pathologist / Lab Incharge)</h5>
                   <div className="form-group">
                     <label className="form-label">Signature Label / Name</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
+                    <input
+                      type="text"
+                      className="form-input"
                       placeholder="e.g. M.D. (Pathology) / Lab Incharge"
                       value={rightSigLabel}
                       onChange={e => setRightSigLabel(e.target.value)}
                     />
                   </div>
-                  
+
                   <div>
                     <label className="form-label">Signature Image</label>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       {rightSigUrl ? (
-                        <div style={{ position: 'relative', width: '120px', height: '50px', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ position: 'relative', width: '120px', height: '50px', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           <img src={rightSigUrl} alt="Right Signature Preview" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             onClick={() => { setRightSigUrl(null); setRightSigFile(null); }}
                             style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(220, 38, 38, 0.8)', border: 'none', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                           >
@@ -771,12 +771,12 @@ export default function DepartmentsPage() {
                           </button>
                         </div>
                       ) : (
-                        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--border-input)', borderRadius: '10px', padding: '10px', cursor: 'pointer', width: '120px', height: '50px', background: '#fff', transition: 'border var(--transition-fast)' }}>
+                        <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--border-input)', borderRadius: '10px', padding: '10px', cursor: 'pointer', width: '120px', height: '50px', background: 'var(--bg-card)', transition: 'border var(--transition-fast)' }}>
                           <Upload size={14} style={{ color: 'var(--text-secondary)' }} />
                           <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>Upload Image</span>
-                          <input 
-                            type="file" 
-                            accept="image/*" 
+                          <input
+                            type="file"
+                            accept="image/*"
                             onChange={e => {
                               if (e.target.files?.[0]) {
                                 setRightSigFile(e.target.files[0]);
@@ -794,17 +794,17 @@ export default function DepartmentsPage() {
 
               </div>
               <div className="modal-footer">
-                <button 
-                  type="button" 
-                  className="btn btn-outline" 
+                <button
+                  type="button"
+                  className="btn btn-outline"
                   onClick={() => setIsDeptModalOpen(false)}
                   disabled={submitting}
                   style={{ borderRadius: '10px' }}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-primary"
                   disabled={submitting}
                   style={{ borderRadius: '10px', fontWeight: '600' }}
@@ -827,16 +827,16 @@ export default function DepartmentsPage() {
                 <X size={16} />
               </button>
             </div>
-            
+
             <form onSubmit={handleSigSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
               <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
-                
+
                 {/* Signature ID */}
                 <div className="form-group">
                   <label className="form-label" style={{ fontWeight: '600' }}>Signature ID / Code *</label>
-                  <input 
-                    type="text" 
-                    className="form-input required" 
+                  <input
+                    type="text"
+                    className="form-input required"
                     placeholder="e.g. DOC01 (Unique Code)"
                     value={sigId}
                     onChange={e => setSigId(e.target.value)}
@@ -850,9 +850,9 @@ export default function DepartmentsPage() {
                 <div className="form-row form-row-2">
                   <div className="form-group">
                     <label className="form-label" style={{ fontWeight: '600' }}>Doctor Name *</label>
-                    <input 
-                      type="text" 
-                      className="form-input required" 
+                    <input
+                      type="text"
+                      className="form-input required"
                       placeholder="e.g. Dr. Ramesh Kumar"
                       value={sigName}
                       onChange={e => setSigName(e.target.value)}
@@ -861,9 +861,9 @@ export default function DepartmentsPage() {
                   </div>
                   <div className="form-group">
                     <label className="form-label" style={{ fontWeight: '600' }}>Qualification / Title *</label>
-                    <input 
-                      type="text" 
-                      className="form-input required" 
+                    <input
+                      type="text"
+                      className="form-input required"
                       placeholder="e.g. M.D. (Pathology)"
                       value={sigTitle}
                       onChange={e => setSigTitle(e.target.value)}
@@ -876,9 +876,9 @@ export default function DepartmentsPage() {
                 <div className="form-row form-row-2">
                   <div className="form-group">
                     <label className="form-label" style={{ fontWeight: '600' }}>Role / Label *</label>
-                    <input 
-                      type="text" 
-                      className="form-input required" 
+                    <input
+                      type="text"
+                      className="form-input required"
                       placeholder="e.g. Consultant Pathologist"
                       value={sigLabel}
                       onChange={e => setSigLabel(e.target.value)}
@@ -887,7 +887,7 @@ export default function DepartmentsPage() {
                   </div>
                   <div className="form-group">
                     <label className="form-label" style={{ fontWeight: '600' }}>Status</label>
-                    <select 
+                    <select
                       className="form-input form-select"
                       value={sigStatus}
                       onChange={e => setSigStatus(e.target.value)}
@@ -901,9 +901,9 @@ export default function DepartmentsPage() {
                 {/* Additional Text */}
                 <div className="form-group">
                   <label className="form-label" style={{ fontWeight: '600' }}>Additional Sign Text / Registration No.</label>
-                  <input 
-                    type="text" 
-                    className="form-input" 
+                  <input
+                    type="text"
+                    className="form-input"
                     placeholder="e.g. Reg No: 887654"
                     value={sigText}
                     onChange={e => setSigText(e.target.value)}
@@ -915,10 +915,10 @@ export default function DepartmentsPage() {
                   <label className="form-label" style={{ fontWeight: '600' }}>Signature Image Preview</label>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     {sigUrl ? (
-                      <div style={{ position: 'relative', width: '150px', height: '60px', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div style={{ position: 'relative', width: '150px', height: '60px', border: '1px solid var(--border)', borderRadius: '6px', overflow: 'hidden', background: 'var(--bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <img src={sigUrl} alt="Signature Preview" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => { setSigUrl(null); setSigFile(null); }}
                           style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(220, 38, 38, 0.8)', border: 'none', color: '#fff', borderRadius: '50%', width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                         >
@@ -926,12 +926,12 @@ export default function DepartmentsPage() {
                         </button>
                       </div>
                     ) : (
-                      <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--border-input)', borderRadius: '10px', padding: '10px', cursor: 'pointer', width: '150px', height: '60px', background: '#fff', transition: 'border var(--transition-fast)' }}>
+                      <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--border-input)', borderRadius: '10px', padding: '10px', cursor: 'pointer', width: '150px', height: '60px', background: 'var(--bg-card)', transition: 'border var(--transition-fast)' }}>
                         <Upload size={16} style={{ color: 'var(--text-secondary)' }} />
                         <span style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>Upload Image</span>
-                        <input 
-                          type="file" 
-                          accept="image/*" 
+                        <input
+                          type="file"
+                          accept="image/*"
                           onChange={e => {
                             if (e.target.files?.[0]) {
                               setSigFile(e.target.files[0]);
@@ -948,17 +948,17 @@ export default function DepartmentsPage() {
 
               </div>
               <div className="modal-footer">
-                <button 
-                  type="button" 
-                  className="btn btn-outline" 
+                <button
+                  type="button"
+                  className="btn btn-outline"
                   onClick={() => setIsSigModalOpen(false)}
                   disabled={submitting}
                   style={{ borderRadius: '10px' }}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-primary"
                   disabled={submitting}
                   style={{ borderRadius: '10px', fontWeight: '600' }}

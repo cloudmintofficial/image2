@@ -23,6 +23,7 @@ model Lab {
   tests         TestMaster[]
   users         User[]
   departments   Department[]
+  locations     Location[]
 }
 
 model User {
@@ -33,11 +34,14 @@ model User {
   role         String
   status       String     @default("Active")
   labId        Int
+  locationId   Int?
+  defaultScreen String?    @default("Order Entry")
   createdAt    DateTime   @default(now())
   auditLogs    AuditLog[]
   bills        Bill[]
   payments     Payment[]  @relation("ReceivedBy")
   lab          Lab        @relation(fields: [labId], references: [id])
+  location     Location?  @relation(fields: [locationId], references: [id])
 }
 
 model Patient {
@@ -52,8 +56,9 @@ model Patient {
   email             String?
   photoUrl          String?
   additionalDetails Json?
-  createdAt         DateTime @default(now())
+  createdAt         DateTime         @default(now())
   bills             Bill[]
+  patientRequests   PatientRequest[]
 }
 
 model Doctor {
@@ -320,5 +325,47 @@ model CloudinaryFile {
   originalName String
   uploadedBy   String?
   createdAt    DateTime @default(now())
+}
+
+model Location {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String?
+  phone     String?
+  status    String   @default("Active")
+  labId     Int?
+  lab       Lab?     @relation(fields: [labId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+}
+
+model IncomingLab {
+  id            Int      @id @default(autoincrement())
+  labName       String
+  labAddress    String?
+  contactPerson String?
+  primaryPhone  String?
+  status        String   @default("Active")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model PatientRequest {
+  id          Int      @id @default(autoincrement())
+  patientId   Int
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  requestType String
+  status      String   @default("Pending")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SMSLog {
+  id        Int      @id @default(autoincrement())
+  phone     String
+  message   String
+  status    String   @default("Sent")
+  sentAt    DateTime @default(now())
 }
 

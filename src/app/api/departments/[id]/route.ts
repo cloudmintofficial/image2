@@ -27,7 +27,7 @@ export async function PUT(
 
     // Check if another department with the same name exists
     const duplicate = await prisma.department.findFirst({
-      where: { 
+      where: {
         name: { equals: data.name.trim(), mode: 'insensitive' },
         id: { not: id }
       }

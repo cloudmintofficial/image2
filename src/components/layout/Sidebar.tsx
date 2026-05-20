@@ -53,6 +53,15 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
   const router = useRouter();
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    const activeItem = navItems.find(item => 
+      item.subItems?.some(si => pathname === si.path || (si.path !== '/' && pathname?.startsWith(si.path)))
+    );
+    if (activeItem) {
+      setOpenSubmenu(activeItem.label);
+    }
+  }, [pathname]);
+
   const filteredItems = navItems.filter(item => {
     if (item.adminOnly && userRole !== 'Owner') return false;
     return true;

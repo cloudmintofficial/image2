@@ -97,7 +97,7 @@ export default function DoctorsPage() {
       </div>
 
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-        <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', background: '#f8fafc' }}>
+        <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)', background: 'var(--bg-main)' }}>
           <div style={{ position: 'relative', width: '300px' }}>
             <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
@@ -118,11 +118,11 @@ export default function DoctorsPage() {
           <table className="medfile-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: '#fff' }}>Doctor Name</th>
-                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: '#fff' }}>Perc.toDoc</th>
-                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: '#fff' }}>Phone</th>
-                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: '#fff' }}>Status</th>
-                <th style={{ padding: '12px 24px', textAlign: 'right', background: '#fff' }}></th>
+                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: 'var(--bg-card)' }}>Doctor Name</th>
+                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: 'var(--bg-card)' }}>Perc.toDoc</th>
+                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: 'var(--bg-card)' }}>Phone</th>
+                <th style={{ color: 'var(--primary)', padding: '12px 24px', textAlign: 'left', background: 'var(--bg-card)' }}>Status</th>
+                <th style={{ padding: '12px 24px', textAlign: 'right', background: 'var(--bg-card)' }}></th>
               </tr>
             </thead>
             <tbody>
@@ -143,7 +143,7 @@ export default function DoctorsPage() {
                 </tr>
               ) : (
                 currentDoctors.map((doc, idx) => (
-                  <tr key={doc.id} style={{ borderBottom: '1px solid var(--border)', background: idx % 2 === 0 ? '#fff' : '#fcfcfc' }}>
+                  <tr key={doc.id} style={{ borderBottom: '1px solid var(--border)', background: idx % 2 === 0 ? 'var(--bg-card)' : 'var(--bg-main)' }}>
                     <td style={{ padding: '12px 24px' }}>
                       <div 
                         style={{ fontWeight: 600, color: 'var(--text-primary)', cursor: 'pointer' }}
@@ -187,7 +187,7 @@ export default function DoctorsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'center', gap: 8, background: '#f8fafc', borderTop: '1px solid var(--border)' }}>
+          <div style={{ padding: '16px 24px', display: 'flex', justifyContent: 'center', gap: 8, background: 'var(--bg-main)', borderTop: '1px solid var(--border)' }}>
             <button
               className="btn btn-outline btn-sm"
               disabled={currentPage === 1}
