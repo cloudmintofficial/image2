@@ -42,19 +42,23 @@ test.describe('Radiology Results Entry & Signature Flow', () => {
 
     // 1. Login
     await page.goto('http://localhost:3000/login');
-    await page.fill('input[placeholder="Username"]', 'IMAGEERAJANI');
-    await page.fill('input[placeholder="Password"]', '123456');
-    await page.click('button:has-text("Login")');
+    await page.fill('input[placeholder="Enter username"]', 'IMAGEERAJANI');
+    await page.fill('input[placeholder="Enter password"]', '123456');
+    await page.click('button[type="submit"]');
+
+    // Wait for successful redirection to order-entry
+    await expect(page).toHaveURL(/.*order-entry/);
 
     // 2. Navigate to in-process bills
+    await page.goto('http://localhost:3000/in-process');
     await page.waitForURL('**/in-process');
 
     // 3. Find the row for Bill #1018
     const billRow = page.locator('tr').filter({ hasText: '1018' });
     await expect(billRow).toBeVisible();
 
-    // 4. Click the row to expand orders
-    await billRow.click();
+    // 4. Click the Orders List button to view the bill orders
+    await billRow.locator('button', { hasText: 'Orders List' }).click();
 
     // 5. Click the Result Entry button
     const resultEntryBtn = page.locator('button', { hasText: 'Result Entry' }).first();
@@ -69,9 +73,17 @@ test.describe('Radiology Results Entry & Signature Flow', () => {
     await expect(saveBtn).toBeVisible();
     await saveBtn.click();
 
-    // 8. Click Save & Complete
+    // 8. Re-open result entry from the bill view
+    await expect(resultEntryBtn).toBeVisible();
+    await resultEntryBtn.click();
+
+    // 9. Click Save & Complete
     const completeBtn = page.locator('button', { hasText: 'Save & Complete' });
     await expect(completeBtn).toBeVisible();
     await completeBtn.click();
+
+    // 10. Verify order transition to completed state
+    const viewResultBtn = page.locator('button', { hasText: 'View Result' }).first();
+    await expect(viewResultBtn).toBeVisible();
   });
 });
