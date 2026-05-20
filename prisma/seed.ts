@@ -34,25 +34,7 @@ async function main() {
     });
   }
 
-  // Add some demo test catalog items
-  const tests = [
-    { testName: 'USG ABDOMEN AND PELVIS', category: 'Ultrasound', price: 800, department: 'Radiology', labId: lab.id },
-    { testName: 'CT KUB', category: 'Radiology', price: 2500, department: 'Radiology', labId: lab.id },
-    { testName: 'CBP', category: 'Pathology', price: 200, department: 'Pathology', labId: lab.id },
-  ];
-
-  for (const t of tests) {
-    const existing = await prisma.testMaster.findFirst({
-      where: { testName: t.testName }
-    });
-    if (!existing) {
-      await prisma.testMaster.create({
-        data: t
-      });
-    }
-  }
-
-  // Seed default departments
+  // Seed default departments first
   const defaultDepts = [
     { name: 'BIO CHEMISTRY', status: 'Active', signatureLabel: 'LAB INCHARGE', leftSignatureLabel: 'Verified By', printIndividualPages: true, labId: lab.id },
     { 
@@ -131,6 +113,33 @@ async function main() {
       await prisma.department.update({
         where: { id: existing.id },
         data: d
+      });
+    }
+  }
+
+  // Add some demo test catalog items
+  const tests = [
+    { testName: 'USG ABDOMEN AND PELVIS', category: 'Ultrasound', price: 800, departmentName: 'Radiology', labId: lab.id },
+    { testName: 'CT KUB', category: 'Radiology', price: 2500, departmentName: 'Radiology', labId: lab.id },
+    { testName: 'CBP', category: 'Pathology', price: 200, departmentName: 'Pathology', labId: lab.id },
+  ];
+
+  for (const t of tests) {
+    const existing = await prisma.testMaster.findFirst({
+      where: { testName: t.testName }
+    });
+    if (!existing) {
+      const dept = await prisma.department.findFirst({
+        where: { name: { equals: t.departmentName, mode: 'insensitive' } }
+      });
+      await prisma.testMaster.create({
+        data: {
+          testName: t.testName,
+          category: t.category,
+          price: t.price,
+          departmentId: dept?.id || null,
+          labId: t.labId
+        }
       });
     }
   }

@@ -24,7 +24,8 @@ export async function GET(request: Request) {
       include: {
         components: {
           orderBy: { sortOrder: 'asc' }
-        }
+        },
+        department: true
       }
     });
 
@@ -64,7 +65,7 @@ export async function GET(request: Request) {
       method: test.method,
       advice: test.advice,
       sampleType: test.sampleType,
-      department: test.department,
+      department: test.department?.name || null,
     });
   } catch (error) {
     console.error('Error fetching test template:', error);

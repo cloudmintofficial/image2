@@ -8,14 +8,18 @@ export async function GET(
   try {
     const { id } = await params;
     const doctor = await prisma.doctor.findUnique({
-      where: { id: parseInt(id) }
+      where: { id: parseInt(id) },
+      include: { department: true }
     });
 
     if (!doctor) {
       return NextResponse.json({ error: 'Doctor not found' }, { status: 404 });
     }
 
-    return NextResponse.json(doctor);
+    return NextResponse.json({
+      ...doctor,
+      department: doctor.department?.name || null
+    });
   } catch (error) {
     console.error('Error fetching doctor:', error);
     return NextResponse.json({ error: 'Failed to fetch doctor' }, { status: 500 });
@@ -59,6 +63,24 @@ export async function PUT(
       }
     }
 
+    let departmentId = null;
+    const deptStr = department === 'NONE' ? null : department;
+    if (deptStr && deptStr.trim() !== '') {
+      let dept = await prisma.department.findFirst({
+        where: { name: { equals: deptStr.trim(), mode: 'insensitive' } }
+      });
+      if (!dept) {
+        dept = await prisma.department.create({
+          data: {
+            name: deptStr.trim().toUpperCase(),
+            status: 'Active',
+            labId: 1
+          }
+        });
+      }
+      departmentId = dept.id;
+    }
+
     const doctor = await prisma.doctor.update({
       where: { id },
       data: {
@@ -68,16 +90,20 @@ export async function PUT(
         address,
         phone,
         email,
-        department,
+        departmentId,
         specialization,
         location,
         hospital,
         salesExecutive,
         status
-      }
+      },
+      include: { department: true }
     });
 
-    return NextResponse.json(doctor);
+    return NextResponse.json({
+      ...doctor,
+      department: doctor.department?.name || null
+    });
   } catch (error) {
     console.error('Error updating doctor:', error);
     return NextResponse.json({ error: 'Failed to update doctor' }, { status: 500 });

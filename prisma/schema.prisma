@@ -69,7 +69,8 @@ model Doctor {
   address        String?
   phone          String?
   email          String?
-  department     String?
+  departmentId   Int?
+  department     Department? @relation(fields: [departmentId], references: [id])
   specialization String?
   location       String?
   hospital       String?
@@ -144,7 +145,8 @@ model TestMaster {
   displayOrderName      String?
   category              String                @default("General")
   price                 Float
-  department            String?
+  departmentId          Int?
+  department            Department?           @relation(fields: [departmentId], references: [id])
   processTime           String?
   machineName           String?
   sampleType            String?
@@ -316,6 +318,8 @@ model Department {
   lab                   Lab?     @relation(fields: [labId], references: [id])
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+  doctors               Doctor[]
+  tests                 TestMaster[]
 }
 
 model CloudinaryFile {

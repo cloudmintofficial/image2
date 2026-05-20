@@ -63,18 +63,6 @@ export async function PUT(
       }
     });
 
-    // Handle Edge Case: Cascade department name changes to string-based relations
-    if (existingDept.name !== data.name) {
-      await prisma.testMaster.updateMany({
-        where: { department: existingDept.name },
-        data: { department: data.name }
-      });
-      await prisma.doctor.updateMany({
-        where: { department: existingDept.name },
-        data: { department: data.name }
-      });
-    }
-
     return NextResponse.json(department);
   } catch (error: any) {
     console.error('Failed to update department:', error);
@@ -110,12 +98,12 @@ export async function DELETE(
 
     // Cascade deletion: update referencing tests and doctors
     await prisma.testMaster.updateMany({
-      where: { department: existingDept.name },
-      data: { department: null }
+      where: { departmentId: id },
+      data: { departmentId: null }
     });
     await prisma.doctor.updateMany({
-      where: { department: existingDept.name },
-      data: { department: null }
+      where: { departmentId: id },
+      data: { departmentId: null }
     });
 
     await prisma.department.delete({

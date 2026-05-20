@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       },
       include: {
         test: {
-          select: { testName: true, department: true }
+          select: { testName: true, department: { select: { name: true } } }
         }
       },
       take: 40
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       normalRange: c.normalRange,
       method: c.method,
       testName: c.test?.testName || 'Unknown Test',
-      department: c.test?.department || 'General'
+      department: c.test?.department?.name || 'General'
     }));
 
     return NextResponse.json(formatted);

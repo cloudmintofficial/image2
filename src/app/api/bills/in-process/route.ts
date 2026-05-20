@@ -51,14 +51,24 @@ export async function GET(request: Request) {
       include: {
         patient: true,
         orders: true,
-        doctor: true,
+        doctor: {
+          include: { department: true }
+        },
       },
       orderBy: {
         billNumber: 'desc'
       }
     });
+
+    const formatted = bills.map(b => ({
+      ...b,
+      doctor: b.doctor ? {
+        ...b.doctor,
+        department: b.doctor.department?.name || null
+      } : null
+    }));
     
-    return NextResponse.json(bills);
+    return NextResponse.json(formatted);
   } catch (error) {
     console.error('Error fetching in-process bills:', error);
     return NextResponse.json({ error: 'Failed to fetch bills' }, { status: 500 });

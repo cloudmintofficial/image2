@@ -20,12 +20,14 @@ export async function GET(request: Request) {
             { displayOrderName: { contains: search, mode: 'insensitive' } }
           ]
         },
+        include: { department: true },
         orderBy: { testName: 'asc' },
         take: all ? undefined : 20
       });
     } else {
       tests = await prisma.testMaster.findMany({
         where: baseWhere,
+        include: { department: true },
         orderBy: { testName: 'asc' },
         take: all ? undefined : 20
       });
@@ -39,7 +41,7 @@ export async function GET(request: Request) {
       displayOrderName: t.displayOrderName,
       category: t.category,
       price: t.price,
-      department: t.department,
+      department: t.department?.name || null,
       orderType: t.orderType || 'Internal',
       status: t.status
     }));
@@ -65,7 +67,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Order Name is required' }, { status: 400 });
     }
 
-
+    let departmentId = null;
+    const deptStr = department === 'NONE' ? null : department;
+    if (deptStr && deptStr.trim() !== '') {
+      let dept = await prisma.department.findFirst({
+        where: { name: { equals: deptStr.trim(), mode: 'insensitive' } }
+      });
+      if (!dept) {
+        dept = await prisma.department.create({
+          data: {
+            name: deptStr.trim().toUpperCase(),
+            status: 'Active',
+            labId: 1
+          }
+        });
+      }
+      departmentId = dept.id;
+    }
 
     const test = await prisma.testMaster.create({
       data: {
@@ -73,7 +91,7 @@ export async function POST(request: Request) {
         hasComponents: hasComponents || false,
         testCode,
         displayOrderName,
-        department: department === 'NONE' ? null : department,
+        departmentId,
         price: parseFloat(amount) || 0,
         processTime,
         machineName,
@@ -91,10 +109,14 @@ export async function POST(request: Request) {
         status: status || 'Active',
         labId: labId || 1,
         uiType: hasComponents ? 'panel' : (uiType || 'richtext')
-      }
+      },
+      include: { department: true }
     });
 
-    return NextResponse.json(test);
+    return NextResponse.json({
+      ...test,
+      department: test.department?.name || null
+    });
   } catch (error: any) {
     console.error('Error creating order/test:', error);
     if (error.code === 'P2002') {

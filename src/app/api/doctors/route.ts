@@ -16,11 +16,17 @@ export async function GET(request: Request) {
         ...(type ? { type } : {}),
         name: { contains: search, mode: 'insensitive' }
       },
+      include: { department: true },
       orderBy: { name: 'asc' },
       ...(all ? {} : { take: 50 })
     });
 
-    return NextResponse.json(doctors);
+    const formatted = doctors.map(d => ({
+      ...d,
+      department: d.department?.name || null
+    }));
+
+    return NextResponse.json(formatted);
   } catch (error) {
     console.error('Error fetching doctors:', error);
     return NextResponse.json({ error: 'Failed to fetch doctors' }, { status: 500 });
@@ -56,6 +62,24 @@ export async function POST(request: Request) {
       }
     }
 
+    let departmentId = null;
+    const deptStr = department === 'NONE' ? null : department;
+    if (deptStr && deptStr.trim() !== '') {
+      let dept = await prisma.department.findFirst({
+        where: { name: { equals: deptStr.trim(), mode: 'insensitive' } }
+      });
+      if (!dept) {
+        dept = await prisma.department.create({
+          data: {
+            name: deptStr.trim().toUpperCase(),
+            status: 'Active',
+            labId: 1
+          }
+        });
+      }
+      departmentId = dept.id;
+    }
+
     const doctor = await prisma.doctor.create({
       data: {
         name,
@@ -64,16 +88,20 @@ export async function POST(request: Request) {
         address,
         phone,
         email,
-        department,
+        departmentId,
         specialization,
         location,
         hospital,
         salesExecutive,
         status: status || 'Active'
-      }
+      },
+      include: { department: true }
     });
 
-    return NextResponse.json(doctor);
+    return NextResponse.json({
+      ...doctor,
+      department: doctor.department?.name || null
+    });
   } catch (error) {
     console.error('Error creating doctor:', error);
     return NextResponse.json({ error: 'Failed to create doctor' }, { status: 500 });

@@ -12,7 +12,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const test = await prisma.testMaster.findUnique({
       where: { id },
       include: {
-        components: true
+        components: true,
+        department: true
       }
     });
 
@@ -20,7 +21,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'Test not found' }, { status: 404 });
     }
 
-    return NextResponse.json(test);
+    return NextResponse.json({
+      ...test,
+      department: test.department?.name || null
+    });
   } catch (error) {
     console.error('Error fetching test details:', error);
     return NextResponse.json({ error: 'Failed to fetch test details' }, { status: 500 });
@@ -47,7 +51,23 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'Order Name is required' }, { status: 400 });
     }
 
-
+    let departmentId = null;
+    const deptStr = department === 'NONE' ? null : department;
+    if (deptStr && deptStr.trim() !== '') {
+      let dept = await prisma.department.findFirst({
+        where: { name: { equals: deptStr.trim(), mode: 'insensitive' } }
+      });
+      if (!dept) {
+        dept = await prisma.department.create({
+          data: {
+            name: deptStr.trim().toUpperCase(),
+            status: 'Active',
+            labId: 1
+          }
+        });
+      }
+      departmentId = dept.id;
+    }
 
     const test = await prisma.testMaster.update({
       where: { id },
@@ -56,7 +76,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         hasComponents: hasComponents || false,
         testCode,
         displayOrderName,
-        department: department === 'NONE' ? null : department,
+        departmentId,
         price: parseFloat(amount) || 0,
         processTime,
         machineName,
@@ -75,10 +95,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         uiType: hasComponents ? 'panel' : (uiType || 'richtext'),
         resultTemplate: resultTemplate || null,
         labId: labId || 1
-      }
+      },
+      include: { department: true }
     });
 
-    return NextResponse.json(test);
+    return NextResponse.json({
+      ...test,
+      department: test.department?.name || null
+    });
   } catch (error: any) {
     console.error('Error updating order/test:', error);
     if (error.code === 'P2002') {
