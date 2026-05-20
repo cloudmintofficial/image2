@@ -417,7 +417,7 @@ export default function DepartmentsPage() {
             outline: 'none'
           }}
         >
-          Doctor Signatures (NoDepartment)
+          Doctor Signatures (No Department)
         </button>
       </div>
 

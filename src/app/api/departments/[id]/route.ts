@@ -97,21 +97,23 @@ export async function DELETE(
     }
 
     const existingDept = await prisma.department.findUnique({ where: { id } });
-    if (existingDept) {
-      // Clean up signature files from Cloudinary
-      await deleteCloudinaryFileByUrl(existingDept.leftSignatureImageUrl);
-      await deleteCloudinaryFileByUrl(existingDept.signatureImageUrl);
-
-      // Cascade deletion: update referencing tests and doctors
-      await prisma.testMaster.updateMany({
-        where: { department: existingDept.name },
-        data: { department: null }
-      });
-      await prisma.doctor.updateMany({
-        where: { department: existingDept.name },
-        data: { department: null }
-      });
+    if (!existingDept) {
+      return NextResponse.json({ error: 'Department not found' }, { status: 404 });
     }
+
+    // Clean up signature files from Cloudinary
+    await deleteCloudinaryFileByUrl(existingDept.leftSignatureImageUrl);
+    await deleteCloudinaryFileByUrl(existingDept.signatureImageUrl);
+
+    // Cascade deletion: update referencing tests and doctors
+    await prisma.testMaster.updateMany({
+      where: { department: existingDept.name },
+      data: { department: null }
+    });
+    await prisma.doctor.updateMany({
+      where: { department: existingDept.name },
+      data: { department: null }
+    });
 
     await prisma.department.delete({
       where: { id }

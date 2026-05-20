@@ -1300,24 +1300,22 @@ export default function InProcessPage() {
                                 onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
                               />
                             </div>
-                            {testTemplate?.uiType !== 'panel' && (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Service Doctor:</span>
-                                <select
-                                  className="form-input form-select"
-                                  style={{ maxWidth: 300, transition: 'border-color 0.2s, box-shadow 0.2s', outline: 'none' }}
-                                  value={resultDoctor}
-                                  onChange={e => setResultDoctor(e.target.value)}
-                                  onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
-                                  onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
-                                >
-                                  <option value="">Select Service Doctor</option>
-                                  {serviceDoctors.map(doc => (
-                                    <option key={doc.id} value={doc.name}>{doc.name}</option>
-                                  ))}
-                                </select>
-                              </div>
-                            )}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                              <span style={{ fontSize: 13, color: '#0f172a', fontWeight: 700, minWidth: 100 }}>Service Doctor:</span>
+                              <select
+                                className="form-input form-select"
+                                style={{ maxWidth: 300, transition: 'border-color 0.2s, box-shadow 0.2s', outline: 'none' }}
+                                value={resultDoctor}
+                                onChange={e => setResultDoctor(e.target.value)}
+                                onFocus={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(249,115,22,0.1)'; }}
+                                onBlur={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.boxShadow = 'none'; }}
+                              >
+                                <option value="">Select Service Doctor</option>
+                                {serviceDoctors.map(doc => (
+                                  <option key={doc.id} value={doc.name}>{doc.name}</option>
+                                ))}
+                              </select>
+                            </div>
                           </div>
 
                           {/* Right Column: Upload & Signature */}
@@ -1326,21 +1324,19 @@ export default function InProcessPage() {
                               <span style={{ fontSize: 13, color: '#64748b' }}>Upload Result File:</span>
                               <button className="btn btn-primary" style={{ padding: '8px 20px', borderRadius: 6, background: 'var(--primary)' }}>Add Attachments</button>
                             </div>
-                            {testTemplate?.uiType !== 'panel' && (
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
-                                <span style={{ fontSize: 13, color: '#64748b' }}>Signature:</span>
-                                <select
-                                  className="form-input form-select"
-                                  style={{ maxWidth: 250 }}
-                                  value={signatureId}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12 }}>
+                              <span style={{ fontSize: 13, color: '#64748b' }}>Signature:</span>
+                              <select
+                                className="form-input form-select"
+                                style={{ maxWidth: 250 }}
+                                value={signatureId}
                                   onChange={e => setSignatureId(e.target.value)}
-                                >
-                                  {signaturesList.map(sig => (
-                                    <option key={sig.id} value={sig.id}>{sig.label}</option>
-                                  ))}
-                                </select>
-                              </div>
-                            )}
+                              >
+                                {signaturesList.map(sig => (
+                                  <option key={sig.id} value={sig.id}>{sig.label}</option>
+                                ))}
+                              </select>
+                            </div>
                           </div>
                         </div>
 
