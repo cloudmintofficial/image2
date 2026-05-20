@@ -9,13 +9,51 @@ export async function GET(request: Request) {
     const status = searchParams.get('status');
     const type = searchParams.get('type');
     const all = searchParams.get('all') === 'true';
+    const page = searchParams.get('page');
+    const limit = searchParams.get('limit') || '50';
+
+    const where = {
+      ...(status ? { status } : {}),
+      ...(type ? { type } : {}),
+      name: { contains: search, mode: 'insensitive' as const }
+    };
+
+    if (page) {
+      let pageNum = parseInt(page) || 1;
+      if (pageNum < 1) pageNum = 1;
+
+      let limitNum = parseInt(limit) || 50;
+      if (limitNum < 1) limitNum = 50;
+      if (limitNum > 100) limitNum = 100; // Cap limit to protect server from massive loads
+
+      const skip = (pageNum - 1) * limitNum;
+
+      const [doctors, totalCount] = await Promise.all([
+        prisma.doctor.findMany({
+          where,
+          include: { department: true },
+          orderBy: { name: 'asc' },
+          skip,
+          take: limitNum
+        }),
+        prisma.doctor.count({ where })
+      ]);
+
+      const formatted = doctors.map(d => ({
+        ...d,
+        department: d.department?.name || null
+      }));
+
+      return NextResponse.json({
+        data: formatted,
+        totalCount,
+        totalPages: Math.max(1, Math.ceil(totalCount / limitNum)),
+        currentPage: pageNum
+      });
+    }
 
     const doctors = await prisma.doctor.findMany({
-      where: {
-        ...(status ? { status } : {}),
-        ...(type ? { type } : {}),
-        name: { contains: search, mode: 'insensitive' }
-      },
+      where,
       include: { department: true },
       orderBy: { name: 'asc' },
       ...(all ? {} : { take: 50 })

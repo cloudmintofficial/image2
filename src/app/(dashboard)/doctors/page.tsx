@@ -1,49 +1,70 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Loader2, Plus, Users, Search } from 'lucide-react';
 import DoctorModal from '@/components/modals/DoctorModal';
 
+interface Doctor {
+  id: number;
+  name: string;
+  type: string;
+  percentage?: number | null;
+  address?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  departmentId?: number | null;
+  department?: string | null;
+  specialization?: string | null;
+  location?: string | null;
+  hospital?: string | null;
+  salesExecutive?: string | null;
+  status: string;
+}
+
 export default function DoctorsPage() {
-  const [doctors, setDoctors] = useState<any[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const itemsPerPage = 50;
 
   const [showModal, setShowModal] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState<any | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(timer);
   }, [search]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [debouncedSearch]);
-
-  const fetchDoctors = async () => {
+  const fetchDoctors = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/doctors?all=true&search=${encodeURIComponent(debouncedSearch)}`);
+      const res = await fetch(`/api/doctors?page=${currentPage}&limit=${itemsPerPage}&search=${encodeURIComponent(debouncedSearch)}`);
       if (res.ok) {
         const data = await res.json();
-        setDoctors(data);
+        setDoctors(data.data || []);
+        setTotalPages(data.totalPages || 1);
+        setTotalCount(data.totalCount || 0);
+        if (data.totalPages > 0 && currentPage > data.totalPages) {
+          setCurrentPage(data.totalPages);
+        }
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, debouncedSearch]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDoctors();
-  }, [debouncedSearch]);
+  }, [fetchDoctors]);
 
-  const handleEdit = (doctor: any) => {
+  const handleEdit = (doctor: Doctor) => {
     setSelectedDoctor(doctor);
     setShowModal(true);
   };
@@ -53,9 +74,7 @@ export default function DoctorsPage() {
     setShowModal(true);
   };
 
-  const filteredDoctors = doctors;
-  const totalPages = Math.ceil(filteredDoctors.length / itemsPerPage) || 1;
-  const currentDoctors = filteredDoctors.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentDoctors = doctors;
 
   return (
     <div className="doctors-maintenance-container" style={{ padding: 24 }}>
@@ -106,11 +125,14 @@ export default function DoctorsPage() {
               className="form-input"
               style={{ paddingLeft: 36 }}
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
             />
           </div>
           <div style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500 }}>
-            Showing {currentDoctors.length} of {filteredDoctors.length} entries
+            Showing {currentDoctors.length} of {totalCount} entries
           </div>
         </div>
 
@@ -138,7 +160,7 @@ export default function DoctorsPage() {
               ) : currentDoctors.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ padding: '60px 0', textAlign: 'center', color: 'var(--text-muted)' }}>
-                    No doctors found matching "{search}"
+                    No doctors found matching &quot;{search}&quot;
                   </td>
                 </tr>
               ) : (
