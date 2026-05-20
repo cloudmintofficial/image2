@@ -76,8 +76,11 @@ export async function PUT(
     }
 
     return NextResponse.json(department);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to update department:', error);
+    if (error.code === 'P2025') {
+      return NextResponse.json({ error: 'Department not found' }, { status: 404 });
+    }
     return NextResponse.json({ error: 'Failed to update department' }, { status: 500 });
   }
 }
@@ -120,8 +123,11 @@ export async function DELETE(
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to delete department:', error);
+    if (error.code === 'P2025') {
+      return NextResponse.json({ error: 'Department not found' }, { status: 404 });
+    }
     return NextResponse.json({ error: 'Failed to delete department' }, { status: 500 });
   }
 }
