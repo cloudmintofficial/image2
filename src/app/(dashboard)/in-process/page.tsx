@@ -71,7 +71,6 @@ export default function InProcessPage() {
   const [showTestEditModal, setShowTestEditModal] = useState(false);
   const [testEditData, setTestEditData] = useState<any>(null);
   const [isSearchingDoctor, setIsSearchingDoctor] = useState(false);
-  const [referralDoctors, setReferralDoctors] = useState<any[]>([]);
   const [serviceDoctors, setServiceDoctors] = useState<any[]>([]);
   const [signaturesList, setSignaturesList] = useState<any[]>([]);
   const [departmentsList, setDepartmentsList] = useState<any[]>([]);
@@ -110,14 +109,13 @@ export default function InProcessPage() {
       setQrCodeUrl('');
     }
   }, [selectedBill?.billNo, selectedBill?.id]);
-
   useEffect(() => {
-    fetch('/api/doctors?all=true')
+    // Fetch only Service Providers to reduce network/database load (instead of loading 2400+ referral doctors)
+    fetch('/api/doctors?type=Service+Provider')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          setReferralDoctors(data.filter(d => d.type === 'Referral'));
-          setServiceDoctors(data.filter(d => d.type === 'Service Provider' || d.type === 'Service'));
+          setServiceDoctors(data);
         }
       })
       .catch(console.error);
