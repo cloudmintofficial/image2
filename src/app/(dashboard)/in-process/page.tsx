@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Loader2, ArrowLeft, RefreshCw, Edit, Send, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useReactToPrint } from 'react-to-print';
+// Custom print system replaces useReactToPrint
 import 'react-quill-new/dist/quill.snow.css';
 import { useToast } from '@/context/ToastContext';
 import AddOrderModal from '@/components/modals/AddOrderModal';
@@ -146,23 +146,54 @@ export default function InProcessPage() {
   }, []);
 
   const printRef = useRef<HTMLDivElement>(null);
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: 'Diagnostic_Report',
-    pageStyle: `
-      @page {
-        size: A4;
-        margin: 12mm 15mm !important;
-      }
-      #print-area-content p {
-        margin: 4px 0 !important;
-      }
-    `,
-    onBeforePrint: () => new Promise((resolve) => {
-      // Increased delay for Next.js 16 / Turbopack to ensure iframe content is fully hydrated
-      setTimeout(resolve, 1500);
-    }),
-  });
+  const handlePrint = () => {
+    let iframe = document.getElementById('medfiles_print_frame') as HTMLIFrameElement;
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'medfiles_print_frame';
+      iframe.style.position = 'absolute';
+      iframe.style.width = '0px';
+      iframe.style.height = '0px';
+      iframe.style.border = 'none';
+      document.body.appendChild(iframe);
+    }
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) return;
+
+    const printContent = printRef.current?.innerHTML || '';
+
+    doc.open();
+    doc.write('<html><head><title>Diagnostic Report</title></head><body><div class="print-container">' + printContent + '</div></body></html>');
+    doc.close();
+
+    // Copy all document styles into print iframe
+    document.querySelectorAll('style, link[rel="stylesheet"]').forEach((styleEl) => {
+      doc.head.appendChild(styleEl.cloneNode(true));
+    });
+
+    // Inject explicit A4 page sizing and margin CSS rules
+    const extraStyle = doc.createElement('style');
+    extraStyle.innerHTML = '@page { size: A4 portrait; margin: 0; } html, body { width: 210mm; height: 297mm; margin: 0 !important; padding: 0 !important; background: #ffffff !important; color: #000000 !important; font-family: "Arial", sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-container { width: 210mm; height: 297mm; padding: 12mm 15mm; box-sizing: border-box; position: relative; background: #ffffff; display: flex; flex-direction: column; } p { margin: 4px 0 !important; } @media print { html, body { width: 210mm; height: 297mm; } .print-container { page-break-after: always; page-break-inside: avoid; break-after: page; } }';
+    doc.head.appendChild(extraStyle);
+
+    // Wait for all image assets (barcode, signatures, logo) to resolve inside the iframe
+    const images = doc.getElementsByTagName('img');
+    const promises = Array.from(images).map((img) => {
+      if (img.complete) return Promise.resolve();
+      return new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => resolve();
+      });
+    });
+
+    Promise.all(promises).then(() => {
+      setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+      }, 500);
+    });
+  };
 
   // Fetch test template when order is selected for result entry with Caching & Skeleton Support
   const fetchTestTemplate = async () => {
