@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   Home, Search, Monitor, Settings, CheckCircle, Printer,
   BarChart3, Users, FileText, ClipboardList, ChevronLeft, ChevronRight
@@ -37,7 +37,22 @@ const navItems: NavItem[] = [
       { label: 'Incoming Labs', path: '/incoming-labs' },
     ]
   },
-  { icon: <FileText size={20} />, label: 'Reports', path: '/reports', adminOnly: true },
+  {
+    icon: <FileText size={20} />,
+    label: 'Reports',
+    adminOnly: true,
+    subItems: [
+      { label: 'Bill Reports', path: '/reports?tab=Bill Reports' },
+      { label: 'Collection Reports', path: '/reports?tab=Collection Reports' },
+      { label: 'Shift Collection', path: '/reports?tab=Shift Collection' },
+      { label: 'Doctor Reports', path: '/reports?tab=Doctor Reports' },
+      { label: 'Order Smry Report', path: '/reports?tab=Order Smry Report' },
+      { label: 'OP Smry Report', path: '/reports?tab=OP Smry Report' },
+      { label: 'Card Reports', path: '/reports?tab=Card Reports' },
+      { label: 'Inventory Reports', path: '/reports?tab=Inventory Reports' },
+      { label: 'Doctor Wise Smry', path: '/reports?tab=Doctor Wise Smry' },
+    ]
+  },
 ];
 
 interface SidebarProps {
@@ -51,16 +66,28 @@ interface SidebarProps {
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose, userRole = 'Owner' }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+
+  const isSubItemActive = (subItemPath: string) => {
+    if (subItemPath.includes('?')) {
+      const [basePath, searchStr] = subItemPath.split('?');
+      const params = new URLSearchParams(searchStr);
+      const subTab = params.get('tab');
+      return pathname === basePath && tab === subTab;
+    }
+    return pathname === subItemPath;
+  };
 
   React.useEffect(() => {
     const activeItem = navItems.find(item => 
-      item.subItems?.some(si => pathname === si.path || (si.path !== '/' && pathname?.startsWith(si.path)))
+      item.subItems?.some(si => isSubItemActive(si.path))
     );
     if (activeItem) {
       setOpenSubmenu(activeItem.label);
     }
-  }, [pathname]);
+  }, [pathname, tab]);
 
   const filteredItems = navItems.filter(item => {
     if (item.adminOnly && userRole !== 'Owner') return false;
@@ -107,7 +134,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
             const hasSubItems = !!item.subItems;
             const isSubmenuOpen = openSubmenu === item.label;
             const isActive = item.path ? (pathname === item.path || (item.path !== '/' && pathname?.startsWith(item.path))) : false;
-            const anySubItemActive = item.subItems?.some(si => pathname === si.path);
+            const anySubItemActive = item.subItems?.some(si => isSubItemActive(si.path));
 
             return (
               <div key={index} className="nav-item-container">
@@ -136,7 +163,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                     {item.subItems?.map((subItem, idx) => (
                       <button
                         key={idx}
-                        className={`submenu-item ${pathname === subItem.path ? 'active' : ''}`}
+                        className={`submenu-item ${isSubItemActive(subItem.path) ? 'active' : ''}`}
                         onClick={() => handleNavigate(subItem.path)}
                       >
                         {subItem.label}

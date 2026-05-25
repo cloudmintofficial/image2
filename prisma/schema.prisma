@@ -104,6 +104,12 @@ model Bill {
   patient        Patient     @relation(fields: [patientId], references: [id])
   orders         OrderItem[]
   payments       Payment[]
+
+  @@index([billDate])
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([createdBy])
+  @@index([status])
 }
 
 model OrderItem {
@@ -123,6 +129,8 @@ model OrderItem {
   verifiedAt   DateTime?
   createdAt    DateTime  @default(now())
   bill         Bill      @relation(fields: [billId], references: [id])
+
+  @@index([billId])
 }
 
 model Payment {
@@ -135,6 +143,9 @@ model Payment {
   paidAt     DateTime @default(now())
   bill       Bill     @relation(fields: [billId], references: [id])
   receivedBy User     @relation("ReceivedBy", fields: [userId], references: [id])
+
+  @@index([billId])
+  @@index([userId])
 }
 
 model TestMaster {
@@ -218,6 +229,8 @@ model Expense {
   labId       Int
   createdAt   DateTime @default(now())
   lab         Lab      @relation(fields: [labId], references: [id])
+
+  @@index([expenseDate])
 }
 
 model AuditLog {
