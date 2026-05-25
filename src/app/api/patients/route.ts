@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     }
 
     // Validate gender
-    const allowedGenders = ['Male', 'Female', 'Other'];
+    const allowedGenders = ['Male', 'Female', 'Other', 'M', 'F', 'O'];
     if (data.gender && !allowedGenders.includes(data.gender)) {
       return NextResponse.json({ error: 'Invalid gender' }, { status: 400 });
     }
