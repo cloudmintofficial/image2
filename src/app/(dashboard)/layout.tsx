@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import Sidebar from '@/components/layout/Sidebar';
@@ -46,13 +46,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="app-layout">
-      <Sidebar
-        collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-        mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
-        userRole={user?.role || 'Owner'}
-      />
+      <Suspense fallback={<div className="sidebar collapsed"><div className="sidebar-brand"><span className="brand-text">Loading...</span></div></div>}>
+        <Sidebar
+          collapsed={sidebarCollapsed}
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+          mobileOpen={mobileOpen}
+          onMobileClose={() => setMobileOpen(false)}
+          userRole={user?.role || 'Owner'}
+        />
+      </Suspense>
       <div className={`main-area ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <TopNav
           sidebarCollapsed={sidebarCollapsed}
